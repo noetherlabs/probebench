@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Batch staged/committed Git object reads and remove quadratic hostname matching
+  from publication checks while preserving content exclusions and byte fidelity.
 - Add separate direct-action and tool-assisted JSON interfaces, strict action/resource
   validation, charged initial images and resumable input/response journals.
 - Verify resumed camera images and saved estimator replies; retain explicit failed

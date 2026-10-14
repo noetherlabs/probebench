@@ -8,7 +8,10 @@ import subprocess
 EXCLUDED_NAMES = {"AGENTS.md", "PLAN.md", "STATUS.md", "DECISIONS.md"}
 EXCLUDED_DIRECTORIES = {".codex", ".gstack", ".venv", "__pycache__", ".pytest_cache", "work"}
 HOME_PATH = re.compile("/" + r"(?:Users|home)/[^/\s\"'<>]+")
-LOCAL_HOST = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]*\.local\b")
+# Detection only needs the final alphanumeric character before the suffix.
+# Excluding alphanumerics from the repetition avoids quadratic retries on long
+# encoded measurements while retaining the same existence test.
+LOCAL_HOST = re.compile(r"[A-Za-z0-9][_.-]*\.local\b")
 COORDINATION = re.compile(
     r"\b(?:Codex|Claude|gstack|workspace-credit|hourly continuation|research factory)\b", re.I)
 
@@ -33,6 +36,31 @@ def inspect_files(files):
     return findings
 
 
+def read_blobs(object_ids):
+    """Read immutable blob bytes through one length-framed Git process."""
+    blobs = {}
+    unique_ids = tuple(dict.fromkeys(object_ids))
+    if not unique_ids:
+        return blobs
+    command = ["git", "cat-file", "--batch"]
+    with subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE) as batch:
+        for object_id in unique_ids:
+            batch.stdin.write(object_id.encode("ascii") + b"\n")
+            batch.stdin.flush()
+            fields = batch.stdout.readline().split()
+            if (len(fields) != 3 or fields[0] != object_id.encode("ascii")
+                    or fields[1] != b"blob" or not fields[2].isdigit()):
+                raise ValueError(f"{object_id}: invalid Git blob response")
+            size = int(fields[2])
+            content = batch.stdout.read(size)
+            if len(content) != size or batch.stdout.read(1) != b"\n":
+                raise ValueError(f"{object_id}: incomplete Git blob response")
+            blobs[object_id] = content
+    if batch.returncode:
+        raise subprocess.CalledProcessError(batch.returncode, command)
+    return blobs
+
+
 def tracked_files(ref=None):
     if ref is None:
         raw = subprocess.check_output(["git", "ls-files", "--stage", "-z"])
@@ -40,7 +68,7 @@ def tracked_files(ref=None):
         revision = subprocess.check_output(
             ["git", "rev-parse", "--verify", "--end-of-options", ref + "^{commit}"], text=True).strip()
         raw = subprocess.check_output(["git", "ls-tree", "-r", "-z", revision])
-    files = {}
+    entries = {}
     for entry in raw.split(b"\0"):
         if not entry:
             continue
@@ -52,8 +80,9 @@ def tracked_files(ref=None):
         if ref is None and third != "0":
             raise ValueError(f"{path}: unresolved index entry")
         blob = second if ref is None else third
-        files[path] = subprocess.check_output(["git", "cat-file", "blob", blob])
-    return files
+        entries[path] = blob
+    blobs = read_blobs(entries.values())
+    return {path: blobs[blob] for path, blob in entries.items()}
 
 
 def main():
