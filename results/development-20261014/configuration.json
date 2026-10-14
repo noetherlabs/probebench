@@ -1,0 +1,75 @@
+{
+  "cohort": "public_development_fixtures_not_final_evaluation",
+  "episode": {
+    "command_limit_nm": 200.0,
+    "max_exposures": 3,
+    "photon_budget": 600000,
+    "photons_per_exposure": 200000,
+    "read_noise_electrons": 1.0
+  },
+  "fixtures": [
+    [
+      "positive_defocus",
+      [
+        45,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    [
+      "negative_defocus",
+      [
+        -45,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    [
+      "mixed_a",
+      [
+        30,
+        12,
+        -10,
+        8,
+        -6,
+        15
+      ]
+    ],
+    [
+      "mixed_b",
+      [
+        -25,
+        -8,
+        14,
+        -10,
+        9,
+        -12
+      ]
+    ]
+  ],
+  "methods": [
+    "no_action",
+    "random_probe",
+    "coordinate_search",
+    "phase_diversity"
+  ],
+  "modes": [
+    "defocus",
+    "astigmatism_cos",
+    "astigmatism_sin",
+    "coma_x",
+    "coma_y",
+    "spherical"
+  ],
+  "optics": {
+    "oversampling": 2,
+    "pupil_pixels": 32,
+    "wavelength_nm": 550.0
+  }
+}

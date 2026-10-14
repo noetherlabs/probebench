@@ -1,0 +1,57 @@
+{
+  "observations": [
+    {
+      "applied_opd_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cumulative_expected_photons": 200000,
+      "expected_photons": 200000,
+      "index": 0
+    },
+    {
+      "applied_opd_nm": [
+        39.287048011732026,
+        30.79732845121885,
+        -21.486743545734853,
+        51.42545817314336,
+        -13.343244047836102,
+        -2.7782390929749656
+      ],
+      "cumulative_expected_photons": 400000,
+      "expected_photons": 200000,
+      "index": 1
+    },
+    {
+      "applied_opd_nm": [
+        47.8055234923456,
+        12.037791919910328,
+        -31.611728428023824,
+        7.205956593104288,
+        -50.7366922162501,
+        43.960910419615054
+      ],
+      "cumulative_expected_photons": 600000,
+      "expected_photons": 200000,
+      "index": 2
+    }
+  ],
+  "public_instrument": {
+    "episode": {
+      "command_limit_nm": 200.0,
+      "max_exposures": 3,
+      "photon_budget": 600000,
+      "photons_per_exposure": 200000,
+      "read_noise_electrons": 1.0
+    },
+    "optics": {
+      "oversampling": 2,
+      "pupil_pixels": 32,
+      "wavelength_nm": 550.0
+    }
+  }
+}

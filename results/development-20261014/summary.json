@@ -1,0 +1,178 @@
+[
+  {
+    "episode_id": "episode_0000",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "positive_defocus",
+    "initial_wfe_nm": 45.00000000000001,
+    "method": "no_action",
+    "peak_probe_wfe_increase_nm": 0.0,
+    "residual_wfe_nm": 45.00000000000001,
+    "strehl_peak_ratio": 0.762108313425522
+  },
+  {
+    "episode_id": "episode_0001",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "positive_defocus",
+    "initial_wfe_nm": 45.00000000000001,
+    "method": "random_probe",
+    "peak_probe_wfe_increase_nm": 41.75794623033514,
+    "residual_wfe_nm": 45.00000000000001,
+    "strehl_peak_ratio": 0.762108313425522
+  },
+  {
+    "episode_id": "episode_0002",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "positive_defocus",
+    "initial_wfe_nm": 45.00000000000001,
+    "method": "coordinate_search",
+    "peak_probe_wfe_increase_nm": 0.0,
+    "residual_wfe_nm": 5.000000000000001,
+    "strehl_peak_ratio": 0.9967415714992425
+  },
+  {
+    "episode_id": "episode_0003",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "positive_defocus",
+    "initial_wfe_nm": 45.00000000000001,
+    "method": "phase_diversity",
+    "peak_probe_wfe_increase_nm": 0.0,
+    "residual_wfe_nm": 0.2850363494347084,
+    "strehl_peak_ratio": 0.9999893969021487
+  },
+  {
+    "episode_id": "episode_0004",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "negative_defocus",
+    "initial_wfe_nm": 45.00000000000001,
+    "method": "no_action",
+    "peak_probe_wfe_increase_nm": 0.0,
+    "residual_wfe_nm": 45.00000000000001,
+    "strehl_peak_ratio": 0.762108313425522
+  },
+  {
+    "episode_id": "episode_0005",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "negative_defocus",
+    "initial_wfe_nm": 45.00000000000001,
+    "method": "random_probe",
+    "peak_probe_wfe_increase_nm": 75.36074283630299,
+    "residual_wfe_nm": 45.00000000000001,
+    "strehl_peak_ratio": 0.762108313425522
+  },
+  {
+    "episode_id": "episode_0006",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "negative_defocus",
+    "initial_wfe_nm": 45.00000000000001,
+    "method": "coordinate_search",
+    "peak_probe_wfe_increase_nm": 40.00000000000001,
+    "residual_wfe_nm": 5.000000000000001,
+    "strehl_peak_ratio": 0.9967415714992425
+  },
+  {
+    "episode_id": "episode_0007",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "negative_defocus",
+    "initial_wfe_nm": 45.00000000000001,
+    "method": "phase_diversity",
+    "peak_probe_wfe_increase_nm": 80.00000000000003,
+    "residual_wfe_nm": 0.4268994345426125,
+    "strehl_peak_ratio": 0.999976216269921
+  },
+  {
+    "episode_id": "episode_0008",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "mixed_a",
+    "initial_wfe_nm": 38.698525029379034,
+    "method": "no_action",
+    "peak_probe_wfe_increase_nm": 0.0,
+    "residual_wfe_nm": 38.698525029379034,
+    "strehl_peak_ratio": 0.825010657518677
+  },
+  {
+    "episode_id": "episode_0009",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "mixed_a",
+    "initial_wfe_nm": 38.698525029379034,
+    "method": "random_probe",
+    "peak_probe_wfe_increase_nm": 21.779462744844956,
+    "residual_wfe_nm": 38.698525029379034,
+    "strehl_peak_ratio": 0.825010657518677
+  },
+  {
+    "episode_id": "episode_0010",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "mixed_a",
+    "initial_wfe_nm": 38.698525029379034,
+    "method": "coordinate_search",
+    "peak_probe_wfe_increase_nm": 0.0,
+    "residual_wfe_nm": 25.68023987784202,
+    "strehl_peak_ratio": 0.9172086164381003
+  },
+  {
+    "episode_id": "episode_0011",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "mixed_a",
+    "initial_wfe_nm": 38.698525029379034,
+    "method": "phase_diversity",
+    "peak_probe_wfe_increase_nm": 16.268497819939817,
+    "residual_wfe_nm": 0.6135425775977026,
+    "strehl_peak_ratio": 0.9999508739663714
+  },
+  {
+    "episode_id": "episode_0012",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "mixed_b",
+    "initial_wfe_nm": 35.05781738261787,
+    "method": "no_action",
+    "peak_probe_wfe_increase_nm": 0.0,
+    "residual_wfe_nm": 35.05781738261787,
+    "strehl_peak_ratio": 0.8546328424550633
+  },
+  {
+    "episode_id": "episode_0013",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "mixed_b",
+    "initial_wfe_nm": 35.05781738261787,
+    "method": "random_probe",
+    "peak_probe_wfe_increase_nm": 93.80799719753698,
+    "residual_wfe_nm": 35.05781738261787,
+    "strehl_peak_ratio": 0.8546328424550633
+  },
+  {
+    "episode_id": "episode_0014",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "mixed_b",
+    "initial_wfe_nm": 35.05781738261787,
+    "method": "coordinate_search",
+    "peak_probe_wfe_increase_nm": 34.65252227403391,
+    "residual_wfe_nm": 28.258974932226568,
+    "strehl_peak_ratio": 0.9004302957235546
+  },
+  {
+    "episode_id": "episode_0015",
+    "expected_photons_used": 600000,
+    "exposures": 3,
+    "fixture": "mixed_b",
+    "initial_wfe_nm": 35.05781738261787,
+    "method": "phase_diversity",
+    "peak_probe_wfe_increase_nm": 73.06254309799898,
+    "residual_wfe_nm": 0.3106936737876289,
+    "strehl_peak_ratio": 0.9999874021470586
+  }
+]
