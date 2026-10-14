@@ -1,0 +1,206 @@
+{
+  "case": {
+    "detector_seed": 60000002,
+    "exposure_budget": 2,
+    "id": "episode_0027",
+    "method": "unprobed_mle_v1",
+    "photons_per_exposure": 2000,
+    "policy_seed": 70000002,
+    "replicate": 1,
+    "truth_index": 0,
+    "truth_opd_nm": [
+      30,
+      12,
+      -10,
+      8,
+      -6,
+      15
+    ]
+  },
+  "frame_sha256": {
+    "frame_0000.npz": "da364855c96a5fa0879d90eb329baf5d03a0489593249c800aae689593928ffe",
+    "frame_0001.npz": "2cdb1b24d916275f93c8e9ee7086303d5900a0b5e6b821ec4e049c392595af18"
+  },
+  "record_sha256": "4bcc52c1958e0c981c63127f0296ecba42b895c2f2543ade08726e16d5b5e1bc",
+  "result": {
+    "decision_seconds": [
+      0.00015441697905771434,
+      1.95419997908175e-05
+    ],
+    "expected_photons_used": 4000,
+    "exposures": 2,
+    "final": {
+      "residual_wfe_nm": 3.2256537207030482,
+      "strehl_peak_ratio": 0.9986433196231812
+    },
+    "final_applied_opd_nm": [
+      28.082007266810745,
+      13.166204032268888,
+      -10.777245688824532,
+      7.73939070621859,
+      -4.399130164885407,
+      13.599730635876432
+    ],
+    "final_command_has_camera_observation": false,
+    "final_command_is_last_observation": false,
+    "final_command_observation_indices": [],
+    "final_mirror_surface_coefficients_nm": [
+      14.041003633405372,
+      6.583102016134444,
+      -5.388622844412266,
+      3.869695353109295,
+      -2.1995650824427035,
+      6.799865317938216
+    ],
+    "fit_records": [
+      {
+        "chosen_start": 1,
+        "cost": 2.9758301280868262,
+        "estimated_opd_nm": [
+          28.082007266810745,
+          13.166204032268888,
+          -10.777245688824532,
+          7.73939070621859,
+          -4.399130164885407,
+          13.599730635876432
+        ],
+        "fit_elapsed_seconds": 1.7127604160050396,
+        "fit_status": "finite",
+        "has_command_diversity": false,
+        "mean_floor_counts": 1e-12,
+        "objective": "poisson_gaussian_convolution_nll_per_expected_photon",
+        "observations_used": 2,
+        "optimizer_success": true,
+        "relative_likelihood_tail_tolerance": 1e-12,
+        "reported_function_evaluations": 33,
+        "starts": [
+          {
+            "cost": 3.0368887781987803,
+            "finite": true,
+            "function_evaluations": 9,
+            "initial_opd_nm": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "iterations": 7,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+            "solution_opd_nm": [
+              -3.470988570289116e-13,
+              -2.033871714494676e-13,
+              3.4735402119773076e-13,
+              7.349630442846133,
+              -4.125395050420455,
+              -1.109517947159098e-13
+            ],
+            "status": 0,
+            "success": true
+          },
+          {
+            "cost": 2.9758301280868262,
+            "finite": true,
+            "function_evaluations": 12,
+            "initial_opd_nm": [
+              50.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "iterations": 11,
+            "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+            "solution_opd_nm": [
+              28.082007266810745,
+              13.166204032268888,
+              -10.777245688824532,
+              7.73939070621859,
+              -4.399130164885407,
+              13.599730635876432
+            ],
+            "status": 0,
+            "success": true
+          },
+          {
+            "cost": 2.9758301280868262,
+            "finite": true,
+            "function_evaluations": 12,
+            "initial_opd_nm": [
+              -50.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "iterations": 11,
+            "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+            "solution_opd_nm": [
+              -28.082007266810745,
+              -13.166204032268888,
+              10.77724568882453,
+              7.73939070621859,
+              -4.399130164885405,
+              -13.599730635876432
+            ],
+            "status": 0,
+            "success": true
+          }
+        ],
+        "visible_history_sha256": "252b58d85598cc52c625dd01c33e6155dbf5e412f102df22dddef22c00e34701"
+      }
+    ],
+    "hidden_opd_nm": [
+      30.0,
+      12.0,
+      -10.0,
+      8.0,
+      -6.0,
+      15.0
+    ],
+    "initial": {
+      "residual_wfe_nm": 38.698525029379034,
+      "strehl_peak_ratio": 0.825010657518677
+    },
+    "peak_probe_wfe_increase_nm": 0.0,
+    "submission_seconds": 1.7134419999783859,
+    "trajectory": [
+      {
+        "applied_opd_nm": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cumulative_expected_photons": 2000,
+        "expected_photons": 2000,
+        "index": 0,
+        "realized_photoelectrons": 2021,
+        "residual_wfe_nm": 38.698525029379034,
+        "strehl_peak_ratio": 0.825010657518677
+      },
+      {
+        "applied_opd_nm": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cumulative_expected_photons": 4000,
+        "expected_photons": 2000,
+        "index": 1,
+        "realized_photoelectrons": 2007,
+        "residual_wfe_nm": 38.698525029379034,
+        "strehl_peak_ratio": 0.825010657518677
+      }
+    ]
+  },
+  "study_binding": "ac4245d59b0052c9233aa400c3472d68e99a5f0e7b8fae64a278cde45927fdec"
+}

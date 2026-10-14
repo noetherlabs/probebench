@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "noether-probebench"
+version = "0.0.1"
+description = "Development environment for photon-budgeted optical calibration experiments"
+requires-python = ">=3.11,<3.13"
+dependencies = ["numpy==2.4.6", "scipy==1.17.1", "matplotlib==3.11.2"]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/probebench"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

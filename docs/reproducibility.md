@@ -44,6 +44,17 @@ to reproduce bit-for-bit. Exact prefix comparisons within the retained experimen
 the resumption check are documented in its [results](sequential-calibration-results.md).
 They do not assert fresh-environment reproduction of all sequential artifact bytes.
 
+The matched-estimator schedule ablation has a separate source freeze:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=results/measurement-schedule-20261014/source/src \
+  uv run --locked python -m probebench.sequential \
+  --config configs/measurement_schedule_development.json --output work/schedule-reproduction
+```
+
+Its source includes the explicit unprobed estimator control. Do not substitute a source
+version that requires diverse commands for every fit.
+
 ## Artifact structure
 
 | Artifact | Contents |

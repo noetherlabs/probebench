@@ -1,0 +1,21 @@
+{
+  "bitwise_raw_matches": 624,
+  "datasets_version": "5.1.0",
+  "decoded_images": 624,
+  "export_manifest_sha256": "c37f49a16479923e88f974212cc424922901109fe60e2c3576b56edc91d043e6",
+  "input_manifest_sha256": "24b26197f326bc41c2df319312256fcffd93649559126803aa73c5771f1d697c",
+  "negative_samples_preserved": 1122478,
+  "numpy_version": "2.4.6",
+  "offline": true,
+  "pillow_version": "12.3.0",
+  "rows_by_expected_photons": {
+    "2000": 312,
+    "20000": 312
+  },
+  "rows_by_method": {
+    "fixed_diversity_mle_v1": 208,
+    "phase_diversity_mle_v1": 208,
+    "unprobed_mle_v1": 208
+  },
+  "unique_episode_exposure_keys": 624
+}

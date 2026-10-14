@@ -26,6 +26,18 @@ The prefix check independently compares retained commands, photon metadata and r
 images at smaller budgets with the matching prefix of the largest budget. Fit timings
 are not expected to match between independent executions of the same decisions.
 
+The matched-estimator schedule analysis supports multiple photon levels and retains
+every paired fixed/adaptive difference, modulo-conjugacy errors, likelihood symmetry
+checks, numerical outcomes and computation counts:
+
+```sh
+uv run --locked python scripts/analyze_measurement_schedule.py \
+  work/measurement-schedule --output work/measurement-schedule-analysis
+```
+
+Its figure uses a numeric logarithmic exposure axis. Horizontal jitter separates paired
+case markers at the same budget; it does not represent different exposure counts.
+
 ## Offline replay
 
 ```sh

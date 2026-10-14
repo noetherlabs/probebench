@@ -1,0 +1,730 @@
+{
+  "check_source_sha256": "adc8805f9182546e9384c6d6abaaa1d3d57822ffa6029f3e8e0655985659e059",
+  "comparisons": [
+    {
+      "episode_id": "episode_0000",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0072"
+    },
+    {
+      "episode_id": "episode_0024",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0072"
+    },
+    {
+      "episode_id": "episode_0048",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0072"
+    },
+    {
+      "episode_id": "episode_0001",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0073"
+    },
+    {
+      "episode_id": "episode_0025",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0073"
+    },
+    {
+      "episode_id": "episode_0049",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0073"
+    },
+    {
+      "episode_id": "episode_0002",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0074"
+    },
+    {
+      "episode_id": "episode_0026",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0074"
+    },
+    {
+      "episode_id": "episode_0050",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0074"
+    },
+    {
+      "episode_id": "episode_0003",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0075"
+    },
+    {
+      "episode_id": "episode_0027",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0075"
+    },
+    {
+      "episode_id": "episode_0051",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0075"
+    },
+    {
+      "episode_id": "episode_0004",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0076"
+    },
+    {
+      "episode_id": "episode_0028",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0076"
+    },
+    {
+      "episode_id": "episode_0052",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0076"
+    },
+    {
+      "episode_id": "episode_0005",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0077"
+    },
+    {
+      "episode_id": "episode_0029",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0077"
+    },
+    {
+      "episode_id": "episode_0053",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0077"
+    },
+    {
+      "episode_id": "episode_0006",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0078"
+    },
+    {
+      "episode_id": "episode_0030",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0078"
+    },
+    {
+      "episode_id": "episode_0054",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0078"
+    },
+    {
+      "episode_id": "episode_0007",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0079"
+    },
+    {
+      "episode_id": "episode_0031",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0079"
+    },
+    {
+      "episode_id": "episode_0055",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0079"
+    },
+    {
+      "episode_id": "episode_0008",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0080"
+    },
+    {
+      "episode_id": "episode_0032",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0080"
+    },
+    {
+      "episode_id": "episode_0056",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0080"
+    },
+    {
+      "episode_id": "episode_0009",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0081"
+    },
+    {
+      "episode_id": "episode_0033",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0081"
+    },
+    {
+      "episode_id": "episode_0057",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0081"
+    },
+    {
+      "episode_id": "episode_0010",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0082"
+    },
+    {
+      "episode_id": "episode_0034",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0082"
+    },
+    {
+      "episode_id": "episode_0058",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0082"
+    },
+    {
+      "episode_id": "episode_0011",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0083"
+    },
+    {
+      "episode_id": "episode_0035",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0083"
+    },
+    {
+      "episode_id": "episode_0059",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0083"
+    },
+    {
+      "episode_id": "episode_0012",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0084"
+    },
+    {
+      "episode_id": "episode_0036",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0084"
+    },
+    {
+      "episode_id": "episode_0060",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0084"
+    },
+    {
+      "episode_id": "episode_0013",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0085"
+    },
+    {
+      "episode_id": "episode_0037",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0085"
+    },
+    {
+      "episode_id": "episode_0061",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0085"
+    },
+    {
+      "episode_id": "episode_0014",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0086"
+    },
+    {
+      "episode_id": "episode_0038",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0086"
+    },
+    {
+      "episode_id": "episode_0062",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0086"
+    },
+    {
+      "episode_id": "episode_0015",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0087"
+    },
+    {
+      "episode_id": "episode_0039",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0087"
+    },
+    {
+      "episode_id": "episode_0063",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0087"
+    },
+    {
+      "episode_id": "episode_0016",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0088"
+    },
+    {
+      "episode_id": "episode_0040",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0088"
+    },
+    {
+      "episode_id": "episode_0064",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0088"
+    },
+    {
+      "episode_id": "episode_0017",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0089"
+    },
+    {
+      "episode_id": "episode_0041",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0089"
+    },
+    {
+      "episode_id": "episode_0065",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0089"
+    },
+    {
+      "episode_id": "episode_0018",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0090"
+    },
+    {
+      "episode_id": "episode_0042",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0090"
+    },
+    {
+      "episode_id": "episode_0066",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0090"
+    },
+    {
+      "episode_id": "episode_0019",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0091"
+    },
+    {
+      "episode_id": "episode_0043",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0091"
+    },
+    {
+      "episode_id": "episode_0067",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0091"
+    },
+    {
+      "episode_id": "episode_0020",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0092"
+    },
+    {
+      "episode_id": "episode_0044",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0092"
+    },
+    {
+      "episode_id": "episode_0068",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0092"
+    },
+    {
+      "episode_id": "episode_0021",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0093"
+    },
+    {
+      "episode_id": "episode_0045",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0093"
+    },
+    {
+      "episode_id": "episode_0069",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0093"
+    },
+    {
+      "episode_id": "episode_0022",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0094"
+    },
+    {
+      "episode_id": "episode_0046",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0094"
+    },
+    {
+      "episode_id": "episode_0070",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0094"
+    },
+    {
+      "episode_id": "episode_0023",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0095"
+    },
+    {
+      "episode_id": "episode_0047",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0095"
+    },
+    {
+      "episode_id": "episode_0071",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0095"
+    },
+    {
+      "episode_id": "episode_0096",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0168"
+    },
+    {
+      "episode_id": "episode_0120",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0168"
+    },
+    {
+      "episode_id": "episode_0144",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0168"
+    },
+    {
+      "episode_id": "episode_0097",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0169"
+    },
+    {
+      "episode_id": "episode_0121",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0169"
+    },
+    {
+      "episode_id": "episode_0145",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0169"
+    },
+    {
+      "episode_id": "episode_0098",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0170"
+    },
+    {
+      "episode_id": "episode_0122",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0170"
+    },
+    {
+      "episode_id": "episode_0146",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0170"
+    },
+    {
+      "episode_id": "episode_0099",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0171"
+    },
+    {
+      "episode_id": "episode_0123",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0171"
+    },
+    {
+      "episode_id": "episode_0147",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0171"
+    },
+    {
+      "episode_id": "episode_0100",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0172"
+    },
+    {
+      "episode_id": "episode_0124",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0172"
+    },
+    {
+      "episode_id": "episode_0148",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0172"
+    },
+    {
+      "episode_id": "episode_0101",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0173"
+    },
+    {
+      "episode_id": "episode_0125",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0173"
+    },
+    {
+      "episode_id": "episode_0149",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0173"
+    },
+    {
+      "episode_id": "episode_0102",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0174"
+    },
+    {
+      "episode_id": "episode_0126",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0174"
+    },
+    {
+      "episode_id": "episode_0150",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0174"
+    },
+    {
+      "episode_id": "episode_0103",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0175"
+    },
+    {
+      "episode_id": "episode_0127",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0175"
+    },
+    {
+      "episode_id": "episode_0151",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0175"
+    },
+    {
+      "episode_id": "episode_0104",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0176"
+    },
+    {
+      "episode_id": "episode_0128",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0176"
+    },
+    {
+      "episode_id": "episode_0152",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0176"
+    },
+    {
+      "episode_id": "episode_0105",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0177"
+    },
+    {
+      "episode_id": "episode_0129",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0177"
+    },
+    {
+      "episode_id": "episode_0153",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0177"
+    },
+    {
+      "episode_id": "episode_0106",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0178"
+    },
+    {
+      "episode_id": "episode_0130",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0178"
+    },
+    {
+      "episode_id": "episode_0154",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0178"
+    },
+    {
+      "episode_id": "episode_0107",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0179"
+    },
+    {
+      "episode_id": "episode_0131",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0179"
+    },
+    {
+      "episode_id": "episode_0155",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0179"
+    },
+    {
+      "episode_id": "episode_0108",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0180"
+    },
+    {
+      "episode_id": "episode_0132",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0180"
+    },
+    {
+      "episode_id": "episode_0156",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0180"
+    },
+    {
+      "episode_id": "episode_0109",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0181"
+    },
+    {
+      "episode_id": "episode_0133",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0181"
+    },
+    {
+      "episode_id": "episode_0157",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0181"
+    },
+    {
+      "episode_id": "episode_0110",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0182"
+    },
+    {
+      "episode_id": "episode_0134",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0182"
+    },
+    {
+      "episode_id": "episode_0158",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0182"
+    },
+    {
+      "episode_id": "episode_0111",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0183"
+    },
+    {
+      "episode_id": "episode_0135",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0183"
+    },
+    {
+      "episode_id": "episode_0159",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0183"
+    },
+    {
+      "episode_id": "episode_0112",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0184"
+    },
+    {
+      "episode_id": "episode_0136",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0184"
+    },
+    {
+      "episode_id": "episode_0160",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0184"
+    },
+    {
+      "episode_id": "episode_0113",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0185"
+    },
+    {
+      "episode_id": "episode_0137",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0185"
+    },
+    {
+      "episode_id": "episode_0161",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0185"
+    },
+    {
+      "episode_id": "episode_0114",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0186"
+    },
+    {
+      "episode_id": "episode_0138",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0186"
+    },
+    {
+      "episode_id": "episode_0162",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0186"
+    },
+    {
+      "episode_id": "episode_0115",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0187"
+    },
+    {
+      "episode_id": "episode_0139",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0187"
+    },
+    {
+      "episode_id": "episode_0163",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0187"
+    },
+    {
+      "episode_id": "episode_0116",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0188"
+    },
+    {
+      "episode_id": "episode_0140",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0188"
+    },
+    {
+      "episode_id": "episode_0164",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0188"
+    },
+    {
+      "episode_id": "episode_0117",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0189"
+    },
+    {
+      "episode_id": "episode_0141",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0189"
+    },
+    {
+      "episode_id": "episode_0165",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0189"
+    },
+    {
+      "episode_id": "episode_0118",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0190"
+    },
+    {
+      "episode_id": "episode_0142",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0190"
+    },
+    {
+      "episode_id": "episode_0166",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0190"
+    },
+    {
+      "episode_id": "episode_0119",
+      "identical_exposure_prefix": 1,
+      "reference_episode_id": "episode_0191"
+    },
+    {
+      "episode_id": "episode_0143",
+      "identical_exposure_prefix": 2,
+      "reference_episode_id": "episode_0191"
+    },
+    {
+      "episode_id": "episode_0167",
+      "identical_exposure_prefix": 3,
+      "reference_episode_id": "episode_0191"
+    }
+  ],
+  "episode_count": 192,
+  "identical_prefix_exposures": 288,
+  "input_manifest_sha256": "24b26197f326bc41c2df319312256fcffd93649559126803aa73c5771f1d697c",
+  "policy_fixture_noise_groups": 48,
+  "scope": "Exact equality of raw images and public metadata across nested budgets; elapsed timings and fit logs are not expected to match."
+}

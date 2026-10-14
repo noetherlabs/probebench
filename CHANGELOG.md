@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Retain the 192-episode measurement-schedule ablation, paired comparisons, conjugate
+  likelihood checks and complete optimizer evidence; report both correction error and
+  temporary degradation, including cases favouring each diversity schedule.
 - Add unprobed and fixed-diversity acquisition controls with identical likelihood and
   solver allowances; preserve explicit ambiguity and keep the default diversity guard.
 - Preserve all attempted optimizer starts after numerical exceptions, continue the

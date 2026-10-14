@@ -1,0 +1,90 @@
+{
+  "case": {
+    "detector_seed": 60000001,
+    "exposure_budget": 1,
+    "id": "episode_0096",
+    "method": "unprobed_mle_v1",
+    "photons_per_exposure": 20000,
+    "policy_seed": 70000001,
+    "replicate": 0,
+    "truth_index": 0,
+    "truth_opd_nm": [
+      30,
+      12,
+      -10,
+      8,
+      -6,
+      15
+    ]
+  },
+  "frame_sha256": {
+    "frame_0000.npz": "8101ddaaa53176f4ecb6ce8a75ccd1bacc66ad39fb6b1a99ea9572bdd62593c3"
+  },
+  "record_sha256": "0d374db9a4128385e83be419bfab871885dbb662f46c06e2e071afcce4fec934",
+  "result": {
+    "decision_seconds": [
+      4.054201417602599e-05
+    ],
+    "expected_photons_used": 20000,
+    "exposures": 1,
+    "final": {
+      "residual_wfe_nm": 38.698525029379034,
+      "strehl_peak_ratio": 0.825010657518677
+    },
+    "final_applied_opd_nm": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "final_command_has_camera_observation": true,
+    "final_command_is_last_observation": true,
+    "final_command_observation_indices": [
+      0
+    ],
+    "final_mirror_surface_coefficients_nm": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "fit_records": [],
+    "hidden_opd_nm": [
+      30.0,
+      12.0,
+      -10.0,
+      8.0,
+      -6.0,
+      15.0
+    ],
+    "initial": {
+      "residual_wfe_nm": 38.698525029379034,
+      "strehl_peak_ratio": 0.825010657518677
+    },
+    "peak_probe_wfe_increase_nm": 0.0,
+    "submission_seconds": 0.0003261250094510615,
+    "trajectory": [
+      {
+        "applied_opd_nm": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cumulative_expected_photons": 20000,
+        "expected_photons": 20000,
+        "index": 0,
+        "realized_photoelectrons": 19774,
+        "residual_wfe_nm": 38.698525029379034,
+        "strehl_peak_ratio": 0.825010657518677
+      }
+    ]
+  },
+  "study_binding": "ac4245d59b0052c9233aa400c3472d68e99a5f0e7b8fae64a278cde45927fdec"
+}

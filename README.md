@@ -88,6 +88,7 @@ measurement replay or load a local ImageFolder export with Hugging Face Datasets
 | [Optical ambiguity](results/development-20261014/report.md) | 16 episodes; four policies and four wavefront fixtures | Observation/action accounting and diagnostic probing |
 | [Noise qualification](results/noise-qualification-20261014/report.md) | 24 acquisitions; 48 selected estimates across three photon budgets | Estimator and convergence qualification |
 | [Sequential calibration](docs/sequential-calibration-results.md) | 192 episodes; 1,632 exposures; six exposure allowances | Complete six-mode search, sequential inference and temporary probe degradation |
+| [Measurement schedules](docs/measurement-schedule-results.md) | 192 episodes; 624 exposures; two photon levels | Fixed versus adaptive acquisition with a common estimator, plus an unprobed ambiguity control |
 
 ## Scope
 

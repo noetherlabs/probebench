@@ -1,0 +1,10 @@
+{
+  "analysis_source_sha256": "7b5084f019c1d8fce3a1c6aee4a8f2752e73f0a2c6530c1b3d82587a75ceb3b7",
+  "files": {
+    "analysis.json": "860011d0acb3e696a4c517626d224644ba0aeab376e545fd3cb0ad33b8e2f8b7",
+    "measurement-schedules.png": "c84b30183d7477943d092d003774cde0f10b04998c453ba00db325380ec0b15e",
+    "measurement-schedules.svg": "5d191a898e18a41a66eae3a470733e9fc9d4cb385c1b016b294175370e8a394b",
+    "report.md": "83a7556084c1eb7429c5270fd240f1a60c974166513aeb6c6de4509b2c4d5b3d"
+  },
+  "input_manifest_sha256": "24b26197f326bc41c2df319312256fcffd93649559126803aa73c5771f1d697c"
+}
