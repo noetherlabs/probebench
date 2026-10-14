@@ -1,0 +1,12 @@
+{
+  "case_count": 24,
+  "fit_count": 48,
+  "input_manifest_sha256": "01d7ac4a502c97ad15413bfe511c0159aafc370502e20bceba22ebe1a9f1f926",
+  "input_run": "results/noise-qualification-20261014",
+  "interpretation": "Descriptive development fixtures; no population inference or isolated likelihood-effect claim",
+  "outputs_sha256": {
+    "all-fits.png": "f7273d1db08e93528286ea7fedbe54e149b1552b626111b61a621f91c02572ba",
+    "all-fits.svg": "bb6a0e563bbe0be94e858febf4873e55c8549a36be718d01d19e467d1ff95f2e"
+  },
+  "plot_source_sha256": "0528bc527d43500bfc2bbed1fe8672c1712d226afd128777e81b51d3a0803dfe"
+}

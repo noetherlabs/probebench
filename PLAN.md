@@ -16,6 +16,11 @@ completed scientific release. Recheck source and running processes before resumi
   development demonstration of sign ambiguity and diagnostic probing.
 - [ ] Classical references: validated phase-diversity estimator, image-based derivative-free
   optimizer, random-probe and no-action controls with comparable measurement budgets.
+  - [x] Independent pinned environment; exact reproduction of the original development run.
+  - [x] Mixed Poisson–Gaussian likelihood, analytic optical derivatives and independent checks.
+  - [x] Complete retained photon-level estimator pilot and inspect all convergence records:
+    24 cases, 48 selected fits and 144 optimizer starts, all converged.
+  - [ ] Genuine six-mode derivative-free search and declared multi-budget policy contract.
 - [ ] Preregister development/selection/evaluation cohorts, primary curve, uncertainty,
   exclusions, failures, resource accounting and multi-agent comparison tracks.
 - [ ] Isolate agent observations from private evaluator state; add local agent transport.

@@ -77,13 +77,15 @@ The optimizer can still reach a local minimum. Shared images are appropriate for
 estimator comparison because all estimators use the same fixed acquisition commands;
 do not reuse identical frames for controllers whose actions alter the optical field.
 
-## Planned development acquisition
+## Retained development acquisition
 
 `configs/noise_qualification_development.json` declares four six-mode wavefronts,
 two detector realizations per wavefront, and 2,000 / 20,000 / 200,000 expected photons
-per exposure. The planned acquisition uses zero command followed by +80 and -80 nm
-defocus commands. Thus the planned dataset contains 24 measured cases and 48 estimator
-fits. These counts are planned until a complete, verified run exists.
+per exposure. The acquisition uses zero command followed by +80 and -80 nm
+defocus commands. The verified [retained run](../results/noise-qualification-20261014/report.md)
+contains 24 measured cases and 48 estimator fits. All 144 optimizer starts converged;
+the source is frozen at commit `816bec5`. Four cases were acquired first, then the
+run resumed. Their eight record/acquisition files remained unchanged.
 
 The four wavefronts comprise two conjugate-inversion pairs: negate even modes and keep
 odd coma modes unchanged. This preserves the initial ideal intensity for the symmetric
@@ -104,3 +106,13 @@ The pilot reports every case and solver convergence status. It does not use corr
 image pixels as experimental samples and does not claim a population ranking from two
 related wavefront pairs. Equal physical measurements do not imply equal optimization
 effort; solver differences and failure counts remain explicit.
+
+![All retained estimator fits](../results/noise-analysis-20261014/all-fits.png)
+
+In this run the noise-aware estimator had lower mean residual WFE at all three photon
+levels and lower individual error in 22 of 24 paired cases. The two exceptions remain
+visible above the equality line. For example, at 6,000 total photons, case 0006 gave
+2.3993 nm for least squares and 3.3083 nm for the noise-aware estimator. The figure and
+its input/output hashes are retained separately from the immutable acquisition run.
+This is evidence for continuing development with the noise-aware reference, not a
+population superiority claim or an isolated causal comparison of likelihood functions.

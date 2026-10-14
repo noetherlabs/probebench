@@ -1,0 +1,104 @@
+{
+  "configuration": {
+    "acquisition_commands_nm": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        80,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        -80,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "command_limit_nm": 200.0,
+    "detector_seed_root": 30000001,
+    "max_mle_iterations": 200,
+    "methods": [
+      "least_squares",
+      "poisson_gaussian_mle"
+    ],
+    "operating_reserve_bytes": 1073741824,
+    "optics": {
+      "oversampling": 2,
+      "pupil_pixels": 32,
+      "wavelength_nm": 550.0
+    },
+    "photons_per_exposure": [
+      2000,
+      20000,
+      200000
+    ],
+    "purpose": "public_development_only",
+    "read_noise_electrons": 1.0,
+    "replicates": 2,
+    "truths_opd_nm": [
+      [
+        30,
+        12,
+        -10,
+        8,
+        -6,
+        15
+      ],
+      [
+        -30,
+        -12,
+        10,
+        8,
+        -6,
+        -15
+      ],
+      [
+        -25,
+        -8,
+        14,
+        -10,
+        9,
+        -12
+      ],
+      [
+        25,
+        8,
+        -14,
+        -10,
+        9,
+        12
+      ]
+    ]
+  },
+  "runtime": {
+    "machine": "arm64",
+    "numpy": "2.4.6",
+    "platform": "macOS-14.6-arm64-arm-64bit",
+    "python": "3.11.15",
+    "scipy": "1.17.1"
+  },
+  "source_sha256": {
+    "pyproject.toml": "05cc2c8336a1f1305c91a46f96e206310148f061fd959ea428eb321a9ae247ec",
+    "src/probebench/__init__.py": "76dd528905cdc29c99ad3ec38d9011b496c6e7c84b45145b537cd9cd44d59885",
+    "src/probebench/environment.py": "52861614817b663924d6475115b06faaf67aaa4dd960f5795f9b8fbb5a147c28",
+    "src/probebench/estimation.py": "deed8f934f6f30cb78462e63e49dc584f036cde19d09bf1b22734740e6d41b26",
+    "src/probebench/likelihood.py": "7cfd9020d8881149c096212a1f27661b12703adfb30a074d1f19e81f9b592419",
+    "src/probebench/optics.py": "abdb6315033fa7607102803eb528608e048fd1593bdde9c14415924bc770123f",
+    "src/probebench/policies.py": "c84de28ac19fbc9f961225fbb0f57c37277c75f3ab66082d8b2cb31042354e80",
+    "src/probebench/qualification.py": "7cb718f2df2b0a5773caf0cfc65f3cbab7dbcbc7c9dd2f0f22a74df9ea46e932",
+    "src/probebench/run.py": "c20dc47f8b819040a36896e9676d29f5e0bb8eea6072b7a333f36be949df8462",
+    "uv.lock": "e70f6b9414ce39d38bffd62278610660229a331bd1a2675f5e7a42d5f55f60e3"
+  }
+}
