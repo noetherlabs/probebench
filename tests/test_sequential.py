@@ -147,3 +147,29 @@ def test_verifier_rejects_source_inventory_escape(config_path,tmp_path):
     manifest_path.write_text(json.dumps(manifest))
     with pytest.raises(ValueError,match="Unsafe source snapshot path"):
         sequential.verify_run(root)
+
+
+@pytest.mark.parametrize("method", ["unprobed_mle_v1", "fixed_diversity_mle_v1"])
+def test_schedule_control_resume_preserves_every_acquired_frame(config_path,tmp_path,monkeypatch,method):
+    config = json.loads(config_path.read_text())
+    config["methods"] = [method]
+    config_path.write_text(json.dumps(config))
+    root = tmp_path/"run"
+    original = sequential.ClassicalPolicy.final_command
+    def interrupt(*args,**kwargs):
+        raise RuntimeError("interrupt after acquisition")
+    monkeypatch.setattr(sequential.ClassicalPolicy,"final_command",interrupt)
+    with pytest.raises(RuntimeError,match="interrupt after acquisition"):
+        sequential.run(root,config_path)
+    saved = {str(p.relative_to(root)):p.read_bytes() for p in root.rglob("frame_*.npz")}
+    assert len(saved) == 3
+    monkeypatch.setattr(sequential.ClassicalPolicy,"final_command",original)
+    def forbidden(*args,**kwargs):
+        raise AssertionError("Completed acquisitions cannot be repeated")
+    monkeypatch.setattr(sequential.ClassicalPolicy,"command",forbidden)
+    manifest = sequential.run(root,config_path,resume=True)
+    assert manifest["episode_count"] == 1 and manifest["exposure_count"] == 3
+    assert all((root/name).read_bytes()==value for name,value in saved.items())
+    record = json.loads((root/"cases/episode_0000.json").read_text())
+    assert len(record["result"]["fit_records"]) == 1
+    assert record["result"]["fit_records"][0]["has_command_diversity"] is (method != "unprobed_mle_v1")

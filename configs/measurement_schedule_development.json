@@ -1,0 +1,17 @@
+{
+  "purpose": "public_development_only",
+  "optics": {"pupil_pixels": 32, "oversampling": 2, "wavelength_nm": 550.0},
+  "exposure_budgets": [1, 2, 3, 7],
+  "photons_per_exposure": [2000, 20000],
+  "read_noise_electrons": 1.0,
+  "command_limit_nm": 200.0,
+  "replicates": 2,
+  "detector_seed_root": 60000001,
+  "policy_seed_root": 70000001,
+  "truths_opd_nm": [[30,12,-10,8,-6,15], [-30,-12,10,8,-6,-15],
+                   [-25,-8,14,-10,9,-12], [25,8,-14,-10,9,12]],
+  "methods": ["unprobed_mle_v1", "fixed_diversity_mle_v1", "phase_diversity_mle_v1"],
+  "policy": {"random_amplitude_nm": 60.0, "coordinate_step_nm": 40.0,
+             "coordinate_step_floor_nm": 5.0, "diversity_probe_nm": 80.0, "max_mle_iterations": 200},
+  "operating_reserve_bytes": 1073741824
+}

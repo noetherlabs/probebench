@@ -94,3 +94,33 @@ def test_all_nonfinite_starts_are_carried_by_failure(monkeypatch):
     assert diagnostics["reported_function_evaluations"]==9
     assert diagnostics["chosen_start"] is None
     json.dumps(diagnostics,allow_nan=False)
+
+
+def test_repeated_images_require_explicit_ambiguous_control_opt_in():
+    model, observed = measurements([30,12,-10,8,-6,15], photons=5000, pixels=12)
+    repeated = [observed[0], observed[0]]
+    with pytest.raises(ValueError, match="Known diverse commands"):
+        estimate_phase_mle(model, repeated, 1)
+    estimate, diagnostics = estimate_phase_mle(model, repeated, 1, require_diversity=False)
+    assert np.isfinite(estimate).all()
+    assert diagnostics["has_command_diversity"] is False
+    assert len(diagnostics["starts"]) == 3
+    with pytest.raises(ValueError, match="boolean"):
+        estimate_phase_mle(model, repeated, 1, require_diversity="false")
+
+
+def test_unprobed_likelihood_and_gradient_preserve_full_conjugate_symmetry():
+    model = OpticalModel(OpticsConfig(pupil_pixels=16))
+    truth = np.array([30.,12,-10,8,-6,15])
+    config = EpisodeConfig(max_exposures=3, photon_budget=6000, photons_per_exposure=2000)
+    episode = Episode(model, config, truth, detector_seed=87)
+    observations = [episode.expose(np.zeros(6)) for _ in range(3)]
+    point = np.array([.24,-.11,.07,.09,-.05,.13])
+    conjugacy = np.array([-1,-1,-1,1,1,-1])
+    objective, gradient = phase_objective(model, observations, 1, point)
+    other, other_gradient = phase_objective(model, observations, 1, point*conjugacy)
+    assert objective == pytest.approx(other, rel=0, abs=1e-12)
+    np.testing.assert_allclose(other_gradient, gradient*conjugacy, rtol=1e-11, atol=1e-12)
+    np.testing.assert_allclose(model.intensity(truth), model.intensity(truth*conjugacy), atol=1e-15)
+    probe = np.array([80,0,0,0,0,0])
+    assert np.linalg.norm(model.intensity(truth-probe)-model.intensity(truth*conjugacy-probe)) > .01

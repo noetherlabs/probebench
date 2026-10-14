@@ -33,11 +33,19 @@ def phase_objective(model, observations, read_noise_electrons, scaled_coefficien
 
 
 def estimate_phase_mle(model, observations, read_noise_electrons, coefficient_limit_nm=200.0,
-                       max_iterations=200):
+                       max_iterations=200, *, require_diversity=True):
+    """Fit known commands; permit ambiguous data only for explicit negative controls.
+
+    Disabling the diversity check does not resolve phase-retrieval ambiguities. The
+    selected numerical minimum is then a representative, not an identified wavefront.
+    """
+    if type(require_diversity) is not bool:
+        raise ValueError("require_diversity must be a boolean")
     if len(observations) < 2:
-        raise ValueError("At least two known diverse measurements are required")
+        raise ValueError("At least two measurements are required")
     commands = np.asarray([o.applied_opd_nm for o in observations])
-    if np.all(commands == commands[0]):
+    has_command_diversity = not np.all(commands == commands[0])
+    if require_diversity and not has_command_diversity:
         raise ValueError("Known diverse commands are required")
     if not np.isfinite(coefficient_limit_nm) or coefficient_limit_nm <= 0:
         raise ValueError("Coefficient limit must be finite and positive")
@@ -70,6 +78,7 @@ def estimate_phase_mle(model, observations, read_noise_electrons, coefficient_li
             "function_evaluations": int(fit.nfev)})
     diagnostics = {
         "objective": "poisson_gaussian_convolution_nll_per_expected_photon",
+        "has_command_diversity": bool(has_command_diversity),
         "cost": None, "optimizer_success": False, "chosen_start": None,
         "mean_floor_counts": MEAN_FLOOR,
         "relative_likelihood_tail_tolerance": TAIL_RELATIVE_TOLERANCE,

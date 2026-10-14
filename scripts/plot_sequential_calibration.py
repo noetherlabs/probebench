@@ -25,9 +25,15 @@ def main():
     if any(r["residual_wfe_nm"] <= 0 for r in rows):
         raise ValueError("Zero-error outcomes require a linear scale or an explicit zero panel")
     args.output.mkdir(parents=True, exist_ok=False)
-    methods = ["no_action_v2", "random_probe_v2", "coordinate_search_v2", "phase_diversity_mle_v1"]
-    labels = ["No action", "Random probes", "Coordinate search", "Sequential phase diversity"]
-    colors = ["#626b72", "#ad5e34", "#80668d", "#246c70"]
+    methods = json.loads((args.run/"study.json").read_text())["configuration"]["methods"]
+    styles = {
+        "no_action_v2": ("No action", "#626b72"),
+        "random_probe_v2": ("Random probes", "#ad5e34"),
+        "coordinate_search_v2": ("Coordinate search", "#80668d"),
+        "phase_diversity_mle_v1": ("Sequential phase diversity", "#246c70"),
+        "unprobed_mle_v1": ("Unprobed estimation", "#ad5e34"),
+        "fixed_diversity_mle_v1": ("Fixed phase diversity", "#80668d"),
+    }
     budgets = sorted({r["exposures"] for r in rows})
     statistics = []
     fig, axes = plt.subplots(1, 2, figsize=(12, 5.3), constrained_layout=True)
@@ -41,7 +47,8 @@ def main():
         ax.set_xticks(budgets, labels=[str(b) for b in budgets])
         ax.minorticks_off()
         ax.set_xlabel(f"Acquired exposures · {photons[0]:,} expected photons each")
-    for method, label, color in zip(methods, labels, colors):
+    for method in methods:
+        label, color = styles[method]
         selected = [r for r in rows if r["method"] == method]
         if not selected:
             continue

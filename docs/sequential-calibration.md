@@ -53,6 +53,10 @@ The estimator assumes an exactly matched optical model. Its comparison with flux
 search consequently combines differences in inference, calibration and measurement
 selection. It does not isolate any one of those factors.
 
+The separate [measurement-schedule ablation](measurement-schedule-ablation.md) adds
+`unprobed_mle_v1` and `fixed_diversity_mle_v1` to compare acquisition schedules with a
+common estimator. These controls are not part of the original four-policy dataset.
+
 ## Development design
 
 `configs/sequential_calibration_development.json` specifies four known mixed-mode

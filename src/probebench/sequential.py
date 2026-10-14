@@ -275,6 +275,12 @@ def report_text(rows, config):
         "Coordinate search completes its first six-mode sweep at 13 exposures. The phase-diversity",
         "reference submits zero after one exposure, then uses known probes and all available frames.",
         "Reported decision durations are recorded local execution costs, not real-time guarantees.", ""]
+    if {"unprobed_mle_v1", "fixed_diversity_mle_v1"}.intersection(config["methods"]):
+        lines += ["The schedule controls retain the same estimator. Unprobed estimation acquires",
+            "only zero-command images; its selected minimum is not an identified wavefront.",
+            "Fixed diversity repeats 0,+d,-d defocus commands without using camera feedback",
+            "during acquisition. Both fit all available images once at final submission;",
+            "all three estimator policies submit zero with only one exposure.", ""]
     return "\n".join(lines)
 
 

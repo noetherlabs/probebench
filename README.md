@@ -78,6 +78,8 @@ uv run --locked python -m probebench.sequential --verify work/sequential-calibra
 
 The [sequential protocol](docs/sequential-calibration.md) defines all four policies,
 budget pairing, final-command measurement status and exposure-level resumption.
+The [measurement-schedule ablation](docs/measurement-schedule-ablation.md) specifies
+matched-estimator controls for repeated unprobed and fixed-diversity acquisition.
 See [artifact formats](docs/artifact-formats.md) to generate figures, inspect an offline
 measurement replay or load a local ImageFolder export with Hugging Face Datasets.
 

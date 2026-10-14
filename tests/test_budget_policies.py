@@ -105,6 +105,48 @@ def test_all_failed_optimizer_starts_remain_in_policy_evidence(monkeypatch):
     assert controller.fit_records[0]["fit_status"]=="numerical_failure"
 
 
+@pytest.mark.parametrize("name,offsets", [
+    ("unprobed_mle_v1", [0]*7), ("fixed_diversity_mle_v1", [0,80,-80,0,80,-80,0])])
+def test_schedule_controls_do_not_consult_images_or_fit_during_acquisition(monkeypatch,name,offsets):
+    first, second = policy(name, budget=7), policy(name, budget=25)
+    calls = []
+    def fit(model, history, *args, **kwargs):
+        calls.append((len(history), kwargs["require_diversity"]))
+        return np.arange(6, dtype=float), {"optimizer_success": True, "starts": []}
+    monkeypatch.setattr(policies, "estimate_phase_mle", fit)
+    histories = [[],[]]
+    for index, offset in enumerate(offsets):
+        for controller, history, score in ((first,histories[0],1.), (second,histories[1],9.)):
+            command = controller.command(history)
+            np.testing.assert_array_equal(command,[offset,0,0,0,0,0])
+            history.append(observed(command,index,score))
+    assert calls == []
+    np.testing.assert_array_equal(first.final_command(histories[0]), np.arange(6))
+    assert calls == [(7,name != "unprobed_mle_v1")]
+    # A checkpoint before submission has no fits. A saved final fit is reusable.
+    resumed = policy(name,budget=7)
+    resumed.restore_fit_records(first.fit_records,histories[0])
+    np.testing.assert_array_equal(resumed.final_command(histories[0]),np.arange(6))
+    assert len(calls) == 1
+
+
+def test_fixed_and_adaptive_diversity_have_identical_two_frame_estimates():
+    from probebench.environment import Episode
+    instrument = EpisodeConfig(max_exposures=2, photon_budget=10000, photons_per_exposure=5000)
+    model = OpticalModel(OpticsConfig(pupil_pixels=12))
+    outputs = []
+    for name in ("fixed_diversity_mle_v1", "phase_diversity_mle_v1"):
+        controller = policies.ClassicalPolicy(name,model,instrument)
+        episode = Episode(model,instrument,[30,12,-10,8,-6,15],detector_seed=19)
+        history = []
+        for _ in range(2):
+            history.append(episode.expose(controller.command(history)))
+        outputs.append((history,controller.final_command(history)))
+    for first, second in zip(outputs[0][0],outputs[1][0]):
+        np.testing.assert_array_equal(first.image_electrons,second.image_electrons)
+    np.testing.assert_array_equal(outputs[0][1],outputs[1][1])
+
+
 @pytest.mark.parametrize("settings", [{"coordinate_step_nm": 0}, {"diversity_probe_nm": np.nan},
     {"coordinate_step_floor_nm": 41}, {"max_mle_iterations": 0}])
 def test_invalid_policy_settings_rejected(settings):

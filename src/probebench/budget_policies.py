@@ -13,7 +13,9 @@ from .estimation import estimate_phase_mle
 from .optics import coefficients
 from .policies import visible_score
 
-METHODS = ("no_action_v2", "random_probe_v2", "coordinate_search_v2", "phase_diversity_mle_v1")
+METHODS = ("no_action_v2", "random_probe_v2", "coordinate_search_v2", "phase_diversity_mle_v1",
+           "unprobed_mle_v1", "fixed_diversity_mle_v1")
+MLE_METHODS = frozenset({"phase_diversity_mle_v1", "unprobed_mle_v1", "fixed_diversity_mle_v1"})
 
 
 @dataclass(frozen=True)
@@ -89,7 +91,8 @@ class ClassicalPolicy:
             try:
                 estimate, diagnostics = estimate_phase_mle(self.model, history,
                     self.instrument.read_noise_electrons, self.instrument.command_limit_nm,
-                    max_iterations=self.config.max_mle_iterations)
+                    max_iterations=self.config.max_mle_iterations,
+                    require_diversity=self.name != "unprobed_mle_v1")
                 record = {"fit_status": "finite", **diagnostics}
             except FloatingPointError as error:
                 # Retain failure and its camera-only fallback; never silently drop the episode.
@@ -105,8 +108,12 @@ class ClassicalPolicy:
 
     def command(self, history):
         count = len(history)
-        if not count or self.name == "no_action_v2":
+        if not count or self.name in {"no_action_v2", "unprobed_mle_v1"}:
             return np.zeros(6)
+        if self.name == "fixed_diversity_mle_v1":
+            # An open-loop 0,+d,-d cycle; no camera value changes the schedule.
+            offset = (0, 1, -1)[count % 3] * self.config.diversity_probe_nm
+            return self._bound(np.array([offset, 0, 0, 0, 0, 0]))
         if self.name == "random_probe_v2":
             # Public seed and observation index make diagnostic calls order-independent.
             rng = np.random.default_rng(np.random.SeedSequence([self.seed, count]))
@@ -137,6 +144,6 @@ class ClassicalPolicy:
             raise ValueError("Final submission requires at least one measurement")
         if self.name == "no_action_v2":
             return np.zeros(6)
-        if self.name == "phase_diversity_mle_v1":
+        if self.name in MLE_METHODS:
             return self._estimate(history)
         return np.array(max(history, key=visible_score).applied_opd_nm)

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add unprobed and fixed-diversity acquisition controls with identical likelihood and
+  solver allowances; preserve explicit ambiguity and keep the default diversity guard.
 - Preserve all attempted optimizer starts after numerical exceptions, continue the
   remaining starts, and carry their diagnostics into declared failure records.
 - Add complete-case figures, exact budget-prefix comparisons, offline measurement
