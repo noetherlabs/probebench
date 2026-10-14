@@ -121,7 +121,7 @@ def analyze(root):
 def plot(data, output):
     config = data["configuration"]
     budgets = config["exposure_budgets"]
-    x = np.arange(len(budgets))
+    x = np.asarray(budgets,dtype=float)
     fig, axes = plt.subplots(len(config["photons_per_exposure"]),3,
         figsize=(13.5,4*len(config["photons_per_exposure"])), squeeze=False, constrained_layout=True)
     fig.set_facecolor("#fbfaf7")
@@ -130,10 +130,12 @@ def plot(data, output):
         for ax in axes[row_index]:
             ax.set_facecolor("#fbfaf7")
             ax.spines[["top","right"]].set_visible(False)
+            ax.set_xscale("log")
             ax.set_xticks(x,labels=[str(v) for v in budgets])
+            ax.minorticks_off()
             ax.grid(color="#d9d7d2",linewidth=.6,alpha=.65)
             ax.set_axisbelow(True)
-            ax.set_xlabel("Acquired exposures")
+            ax.set_xlabel("Acquired exposures (log scale)")
         for method in config["methods"]:
             label,color = STYLES[method]
             selected = [r for r in data["episodes"] if r["method"] == method and r["photons_per_exposure"] == photons]
@@ -147,8 +149,8 @@ def plot(data, output):
         paired = [r for r in data["paired_comparisons"] if r["photons_per_exposure"] == photons]
         for index,budget in enumerate(budgets):
             values = [r["fixed_minus_adaptive_wfe_nm"] for r in paired if r["exposures"] == budget]
-            middle.scatter(index+np.linspace(-.11,.11,len(values)),values,s=18,color="#626b72",alpha=.75)
-            middle.plot(index,np.mean(values),"D",color="#246c70",markersize=5)
+            middle.scatter(x[index]*(1+np.linspace(-.04,.04,len(values))),values,s=18,color="#626b72",alpha=.75)
+            middle.plot(x[index],np.mean(values),"D",color="#246c70",markersize=5)
         middle.axhline(0,color="#434943",linewidth=.8)
         left.set_ylabel("Final evaluator WFE (nm)")
         if all(r["final_wfe_nm"] > 0 for r in data["episodes"]):
