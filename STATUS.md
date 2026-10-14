@@ -4,6 +4,9 @@
 
 The supplied destination `noetherlabs/probebench` is private and was empty. Work is on
 `codex/probebench-foundation`. The existing noether-ao checkout and scheduler are untouched.
+Foundation commit `39198f26041aa6afd3a932edc3ec03596dcd1198` was pushed to that private
+branch, and the remote hash was independently checked. The empty repository had no
+base branch for a pull request; the initial development checkpoint is directly inspectable.
 The native task goal is active; an hourly continuation is attached to the same task.
 Three initial subagents stopped with workspace-credit errors; do not describe them as
 running. Main-task implementation and local tools remain available.
@@ -32,6 +35,6 @@ Local-only compute remains the spending constraint. Full controller acquisition 
 subject to its unchanged 105,033,365,984-byte storage gate; the user was asked about an
 additional local volume. Never delete unrelated files to satisfy that gate.
 
-Next: verify the new environment, review and publish the private development foundation;
-then qualify the estimator and define multi-budget, genuinely six-mode comparison runs
+Next: verify the new environment, then qualify the estimator and define multi-budget,
+genuinely six-mode comparison runs
 before adding the replay explorer and isolated agent interface.
