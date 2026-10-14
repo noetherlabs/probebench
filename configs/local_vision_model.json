@@ -1,0 +1,13 @@
+{
+  "backend": "ollama_local_vision_v1",
+  "model": "qwen3-vl:2b",
+  "endpoint": "http://127.0.0.1:11434",
+  "think": false,
+  "options": {"temperature": 0.0, "seed": 91000001, "num_ctx": 8192,
+              "num_predict": 512, "top_p": 1.0, "top_k": 40},
+  "http_timeout_seconds": 60,
+  "max_response_bytes": 1048576,
+  "max_request_bytes": 4194304,
+  "max_public_message_bytes": 1048576,
+  "operating_reserve_bytes": 1073741824
+}

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add a local vision-model adapter with explicit image/metadata prompts, model-digest
+  checks, retained raw responses, bounded HTTP requests and interruption accounting.
+- Verify model actions against the optical transcript; replay saved decisions and
+  retain uncertain generations as failures without automatic inference retries.
 - Batch staged/committed Git object reads and remove quadratic hostname matching
   from publication checks while preserving content exclusions and byte fidelity.
 - Add separate direct-action and tool-assisted JSON interfaces, strict action/resource

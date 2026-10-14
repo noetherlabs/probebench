@@ -15,6 +15,15 @@ The client still needs separate OS/container isolation before hostile code is ad
 Saved inputs can contain arbitrary client text, including secrets; retaining a valid
 scientific manifest does not make a transcript safe to publish.
 
+The local model adapter accepts literal loopback HTTP endpoints and checks installed
+weight metadata before generation. It does not authenticate the service, isolate its
+process, or prevent a trusted server from making network requests of its own. Use a
+locally configured service with cloud features disabled when network isolation is
+required. Model outputs are data: only validated optical JSON actions are forwarded.
+No returned code or native tool call is executed. An HTTP deadline stops the client;
+it does not establish cancellation of server-side work. Model metadata and transcripts
+must be reviewed separately before distribution.
+
 NumPy measurements are loaded with object deserialization disabled. Artifact verification
 checks file membership, path containment and content hashes. It does not authenticate an
 archive's author, prevent a malicious party from replacing both data and hashes, or bound

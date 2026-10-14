@@ -107,6 +107,11 @@ tool-assisted JSON interfaces, strict action validation, charged initial observa
 and resumable message journals. Its scripted process control qualifies the interface;
 it does not represent a language-model result.
 
+The [local vision-model adapter](docs/local-model-adapter.md) connects an installed
+Ollama model to that protocol, retains exact prompts and raw responses, and verifies
+the correspondence between model decisions and optical measurements. Its integration
+tests use a service fixture; real model evaluations require separate qualification.
+
 ## Repository structure
 
 - `src/probebench/`: propagation, detector, policies, likelihood and experiment runners.
