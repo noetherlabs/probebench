@@ -83,6 +83,20 @@ class OpticalModel:
         # No image-wise renormalization: discrete Parseval power is already one.
         return np.abs(self.field(residual_opd_nm)) ** 2
 
+    def intensity_and_jacobian(self, residual_opd_nm):
+        """Intensity and analytic derivatives per nanometre of each OPD coefficient."""
+        pupil = self.pupil_field(residual_opd_nm)
+        derivative = (2j * np.pi / self.config.wavelength_nm) * self.basis * pupil
+        fields = np.concatenate((pupil[None], derivative), axis=0)
+        n = self.config.pupil_pixels
+        m = n * self.config.oversampling
+        before, after = (m - n) // 2, m - n - (m - n) // 2
+        padded = np.pad(fields, ((0, 0), (before, after), (before, after)))
+        focal = np.fft.fftshift(np.fft.fft2(
+            np.fft.ifftshift(padded, axes=(-2, -1)), axes=(-2, -1), norm="ortho"
+        ), axes=(-2, -1))
+        return np.abs(focal[0])**2, 2 * np.real(focal[0].conj() * focal[1:])
+
     def evaluate(self, residual_opd_nm):
         wavefront = self.wavefront_nm(residual_opd_nm)[self.pupil]
         piston_removed = wavefront - wavefront.mean()

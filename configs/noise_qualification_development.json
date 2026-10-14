@@ -1,0 +1,19 @@
+{
+  "purpose": "public_development_only",
+  "optics": {"pupil_pixels": 32, "oversampling": 2, "wavelength_nm": 550.0},
+  "photons_per_exposure": [2000, 20000, 200000],
+  "read_noise_electrons": 1.0,
+  "command_limit_nm": 200.0,
+  "replicates": 2,
+  "detector_seed_root": 30000001,
+  "truths_opd_nm": [
+    [30, 12, -10, 8, -6, 15],
+    [-30, -12, 10, 8, -6, -15],
+    [-25, -8, 14, -10, 9, -12],
+    [25, 8, -14, -10, 9, 12]
+  ],
+  "acquisition_commands_nm": [[0,0,0,0,0,0], [80,0,0,0,0,0], [-80,0,0,0,0,0]],
+  "methods": ["least_squares", "poisson_gaussian_mle"],
+  "max_mle_iterations": 200,
+  "operating_reserve_bytes": 1073741824
+}
