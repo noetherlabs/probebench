@@ -52,3 +52,15 @@ def test_read_noise_retained_display_fixed_and_final_sign_correct():
     {"read_noise_electrons": -1}, {"command_limit_nm": float("nan")}])
 def test_reject_invalid_episode_config(kw):
     with pytest.raises(ValueError): EpisodeConfig(**kw)
+
+
+@pytest.mark.parametrize("final,indices,last", [(45, [1], False), (80, [2], True), (40, [], False)])
+def test_final_measurement_status_includes_earlier_observations_without_new_exposure(final, indices, last):
+    episode = make_episode()
+    for value in (0, 45, 80):
+        episode.expose([value, 0, 0, 0, 0, 0])
+    result = episode.submit([final, 0, 0, 0, 0, 0])
+    assert result["final_command_has_camera_observation"] == bool(indices)
+    assert result["final_command_observation_indices"] == indices
+    assert result["final_command_is_last_observation"] == last
+    assert result["exposures"] == 3 and result["expected_photons_used"] == 600_000

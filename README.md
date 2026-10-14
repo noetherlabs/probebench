@@ -67,6 +67,18 @@ qualification run with the same source, configuration and numerical environment.
 See [reproducibility](docs/reproducibility.md) for archived-source execution,
 artifact schemas and verification scope.
 
+Run sequential calibration with exposure allowances spanning partial and complete
+six-mode coordinate sweeps:
+
+```sh
+uv run --locked python -m probebench.sequential \
+  --config configs/sequential_calibration_development.json --output work/sequential-calibration
+uv run --locked python -m probebench.sequential --verify work/sequential-calibration
+```
+
+The [sequential protocol](docs/sequential-calibration.md) defines all four policies,
+budget pairing, final-command measurement status and exposure-level resumption.
+
 | Experiment | Retained evidence | Purpose |
 | --- | --- | --- |
 | [Optical ambiguity](results/development-20261014/report.md) | 16 episodes; four policies and four wavefront fixtures | Observation/action accounting and diagnostic probing |
@@ -78,7 +90,8 @@ This is a research implementation with public development fixtures. These fixtur
 not a held-out benchmark cohort. The current experiments assume a static wavefront and
 an exactly matched optical model; they do not establish telescope performance, model
 mismatch robustness, or multimodal-agent capability. The three-exposure coordinate
-baseline probes defocus only and is not a complete six-dimensional search.
+baseline in the original ambiguity demonstration probes defocus only. The sequential
+runner includes complete six-dimensional sweeps at larger exposure allowances.
 
 The policy API separates observations from evaluator state but does not sandbox
 untrusted Python. See [security](SECURITY.md) for execution and artifact trust boundaries.

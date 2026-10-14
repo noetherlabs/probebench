@@ -117,13 +117,17 @@ class Episode:
             raise RuntimeError("Final evaluator record requires submission")
         metrics = self.model.evaluate(self._hidden - self._applied)
         initial = self.model.evaluate(self._hidden)
+        measured_indices = [o.index for o in self.observations
+                            if np.array_equal(self._applied, o.applied_opd_nm)]
         return {
             "hidden_opd_nm": self._hidden.tolist(),
             "initial": initial,
             "final": metrics,
             "final_applied_opd_nm": self._applied.tolist(),
             "final_mirror_surface_coefficients_nm": opd_to_surface_nm(self._applied).tolist(),
-            "final_command_has_camera_observation": bool(np.array_equal(
+            "final_command_has_camera_observation": bool(measured_indices),
+            "final_command_observation_indices": measured_indices,
+            "final_command_is_last_observation": bool(np.array_equal(
                 self._applied, self.observations[-1].applied_opd_nm
             )),
             "expected_photons_used": self._photons,

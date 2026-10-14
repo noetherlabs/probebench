@@ -36,7 +36,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=results/noise-qualification-20261014/source
 | --- | --- |
 | `source/` | Exact Python source, package metadata and dependency lock |
 | `configuration.json` or `study.json` | Optical parameters, experiment design, seeds and source/runtime identity |
-| `observations/` or `acquisitions/` | Raw signed detector arrays and applied calibration commands |
+| `observations/`, `acquisitions/` or `frames/` | Raw signed detector arrays and applied calibration commands |
 | `evaluator/` or `cases/` | Latent simulated state, estimated corrections, metrics and fit diagnostics |
 | `summary.json` | Complete machine-readable experiment outcomes |
 | `report.md` | Tables generated from retained outcomes |
@@ -59,3 +59,9 @@ The original ambiguity dataset's `final_command_has_camera_observation` field me
 the final command equals the last acquired command. It does not search earlier frames.
 Interpret that historical field using its retained source; do not infer an additional
 exposure from a submitted command.
+
+The sequential runner records all earlier exposures of the final command in
+`final_command_observation_indices`; its `final_command_has_camera_observation` is true
+when that list is nonempty. `final_command_is_last_observation` retains the narrower
+last-frame condition. Per-exposure checkpoints, completed-fit reuse and verification
+of physical metrics are specified in the [sequential protocol](sequential-calibration.md).

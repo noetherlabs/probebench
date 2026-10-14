@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add complete six-mode coordinate search and sequential Poisson–Gaussian phase
+  diversity with explicit exposure allowances and unmeasured final submissions.
+- Checkpoint every exposure and completed estimator fit; verify resumed detector
+  states, source identity, resource accounting and recomputed optical metrics.
+- Distinguish a final command measured earlier in an episode from its last exposure.
 - Add Poisson–Gaussian maximum-likelihood phase estimation with analytic optical
   derivatives, bounded multistart optimization and explicit convergence diagnostics.
 - Add a resumable, source-bound estimator comparison using shared acquired frames.
