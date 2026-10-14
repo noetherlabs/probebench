@@ -1,0 +1,13 @@
+{
+  "input_manifest_sha256": "dd7ccd764dc03f720b02ac4b7e590e01ed9c4a677045f42e7e739769974b6f88",
+  "export_manifest_sha256": "1718443a57e946d42b1fba4706fccf26c0612fa194a1feccfc2181fa32802c34",
+  "development_rows_loaded": 1632,
+  "decoded_images_checked": 1632,
+  "bitwise_raw_array_matches": 1632,
+  "retained_negative_samples": 2679554,
+  "offline": true,
+  "datasets": "5.1.0",
+  "Pillow": "12.3.0",
+  "numpy": "2.4.6",
+  "pyarrow": "26.0.0"
+}

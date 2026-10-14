@@ -1,0 +1,4 @@
+# Retained scientific artifacts are hashed; preserve their bytes on checkout.
+results/** -text
+# Generated SVG paths contain renderer-supplied trailing whitespace.
+results/**/*.svg -whitespace

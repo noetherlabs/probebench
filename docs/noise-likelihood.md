@@ -1,4 +1,4 @@
-# Noise-aware phase-diversity development
+# Poisson–Gaussian phase estimation
 
 This is a development extension. The original least-squares baseline and retained
 development run remain unchanged. No final cohort or superiority claim is defined here.
@@ -56,8 +56,8 @@ kept distinct from the finite-sum bound.
 ## Optimizer and interpretation
 
 Use bounded L-BFGS-B with analytic gradients and the same three declared starting
-defocus guesses as the initial least-squares fit. The installed SciPy interface was
-checked against the opened [official minimize documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html).
+defocus guesses as the initial least-squares fit, implemented through SciPy's
+[minimize interface](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html).
 Each fit retains all start statuses and costs, selects the lowest finite objective,
 and reports whether that selected fit converged. A finite unconverged fit is not silently
 reported as convergence. No finite fit raises an explicit failure.
@@ -99,8 +99,7 @@ fit reuses its saved acquisition. Completed cases are immutable and skipped only
 source/configuration/runtime, case identity, record digest and raw archive hash checks.
 An exclusive process lock prevents concurrent writers. A changed binding refuses resume.
 Partial final report publication can be completed from retained cases without refitting.
-An operating reserve of 1 GiB plus a conservative raw-evidence envelope is required;
-this has no effect on the separate frozen controller study's much larger storage gate.
+An operating reserve of 1 GiB plus a conservative raw-evidence envelope is required.
 
 The pilot reports every case and solver convergence status. It does not use correlated
 image pixels as experimental samples and does not claim a population ranking from two
@@ -114,5 +113,5 @@ levels and lower individual error in 22 of 24 paired cases. The two exceptions r
 visible above the equality line. For example, at 6,000 total photons, case 0006 gave
 2.3993 nm for least squares and 3.3083 nm for the noise-aware estimator. The figure and
 its input/output hashes are retained separately from the immutable acquisition run.
-This is evidence for continuing development with the noise-aware reference, not a
-population superiority claim or an isolated causal comparison of likelihood functions.
+These results characterize the declared development fixtures and implemented estimators;
+they do not establish population superiority or isolate a causal effect of the likelihood.

@@ -12,6 +12,8 @@ uv run --locked python scripts/plot_sequential_calibration.py \
   work/sequential-calibration --output work/sequential-figures
 uv run --locked python scripts/check_sequential_prefixes.py \
   work/sequential-calibration --output work/sequential-figures/prefix-check.json
+uv run --locked python scripts/summarize_sequential_diagnostics.py \
+  work/sequential-calibration --output work/sequential-figures/solver-diagnostics.json
 ```
 
 The figure includes every fixture/noise trajectory; bold lines show descriptive means.

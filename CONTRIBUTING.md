@@ -10,6 +10,7 @@ uv sync --locked --extra dev
 uv run --locked python -m pytest -q
 uv run --locked python -m probebench.run --verify results/development-20261014
 uv run --locked python -m probebench.qualification --verify results/noise-qualification-20261014
+uv run --locked python -m probebench.sequential --verify results/sequential-calibration-20261014
 python3 scripts/check_repository.py
 gitleaks git . --redact --no-banner
 ```

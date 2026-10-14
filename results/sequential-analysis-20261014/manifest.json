@@ -1,0 +1,16 @@
+{
+  "files": {
+    "ambiguity-verification.json": "3f1304c3e26c747993050ffdff120de7df126ee8f73b86505953bea11aa68df7",
+    "budget-curves.png": "668dfaff056b9cac53a2f7e02900c68c59031f2287d8f827542a84048a8298d4",
+    "budget-curves.svg": "1712d23eb49ebb678213404a1986d0ce16f8504c2e668bb11446f1c4d284dd12",
+    "descriptive-statistics.json": "3098563835f05aa3020dbefb590f9573743b180c1e5d17e0f2ca049e067481d3",
+    "imagefolder-validation.json": "3cc0e8241d1e44875b950f376b665d63e0bd9243ba2e2c0c760040bc6a090481",
+    "prefix-verification.json": "83c4fa7f12fe202c4c736034f0966dfe7fc25e236624d784d45d0bc608002be8",
+    "provenance.json": "e03c4a831308daa8361e714ffcbb6d5f97e1ff494460bf147e865f1c64b47bd1",
+    "resume-verification.json": "4571ebc6bbf72d64688429360158663a0e7ac9d319c016313bf4d4fa3e8359ca",
+    "solver-and-nonmonotonicity.json": "a4793e9043aabf3cbc43568eee6bc6afaba5ef8978fde3fb0856985282e125cd"
+  },
+  "input_manifest_sha256": "dd7ccd764dc03f720b02ac4b7e590e01ed9c4a677045f42e7e739769974b6f88",
+  "purpose": "sequential_development_analysis",
+  "schema": 1
+}

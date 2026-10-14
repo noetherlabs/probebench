@@ -1,0 +1,18 @@
+{
+  "input_manifest_sha256": "dd7ccd764dc03f720b02ac4b7e590e01ed9c4a677045f42e7e739769974b6f88",
+  "maximum_absolute_intensity_difference": [
+    6.938893903907228e-17,
+    6.938893903907228e-17
+  ],
+  "pair_indices": [
+    [
+      0,
+      1
+    ],
+    [
+      2,
+      3
+    ]
+  ],
+  "scope": "Noiseless Fourier intensity; detector draws for distinct fixtures need not match."
+}

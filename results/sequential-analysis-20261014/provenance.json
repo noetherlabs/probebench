@@ -1,0 +1,13 @@
+{
+  "episode_count": 192,
+  "exposure_count": 1632,
+  "input_manifest_sha256": "dd7ccd764dc03f720b02ac4b7e590e01ed9c4a677045f42e7e739769974b6f88",
+  "input_run": "sequential-calibration-20261014",
+  "interpretation": "Known, correlated development fixtures. No population inference; final evaluator scores need not have a corresponding measured image.",
+  "outputs_sha256": {
+    "budget-curves.png": "668dfaff056b9cac53a2f7e02900c68c59031f2287d8f827542a84048a8298d4",
+    "budget-curves.svg": "1712d23eb49ebb678213404a1986d0ce16f8504c2e668bb11446f1c4d284dd12",
+    "descriptive-statistics.json": "3098563835f05aa3020dbefb590f9573743b180c1e5d17e0f2ca049e067481d3"
+  },
+  "plot_source_sha256": "e1ad6a83223804e2508555fb43e3c9e2ec3fb2dc7a46ba538f4753a2cf1a7ca8"
+}

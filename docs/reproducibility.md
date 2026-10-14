@@ -30,6 +30,20 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=results/noise-qualification-20261014/source
   --config configs/noise_qualification_development.json --output work/noise-reproduction
 ```
 
+Use the sequential experiment's retained source to reproduce its original estimator
+and policy implementation:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=results/sequential-calibration-20261014/source/src \
+  uv run --locked python -m probebench.sequential \
+  --config configs/sequential_calibration_development.json --output work/sequential-reproduction
+```
+
+The sequential archive includes recorded wall-clock durations, which are not expected
+to reproduce bit-for-bit. Exact prefix comparisons within the retained experiment and
+the resumption check are documented in its [results](sequential-calibration-results.md).
+They do not assert fresh-environment reproduction of all sequential artifact bytes.
+
 ## Artifact structure
 
 | Artifact | Contents |

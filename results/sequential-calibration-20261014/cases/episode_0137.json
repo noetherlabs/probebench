@@ -1,0 +1,306 @@
+{
+  "case": {
+    "detector_seed": 40000003,
+    "exposure_budget": 13,
+    "id": "episode_0137",
+    "method": "random_probe_v2",
+    "photons_per_exposure": 20000,
+    "policy_seed": 50000003,
+    "replicate": 0,
+    "truth_index": 1,
+    "truth_opd_nm": [
+      -30,
+      -12,
+      10,
+      8,
+      -6,
+      -15
+    ]
+  },
+  "frame_sha256": {
+    "frame_0000.npz": "377e65f054067a62eb2511c36f9ca2d569007311cc03b50d20dd5b1b1c66b9f4",
+    "frame_0001.npz": "6d88f456340872416bfb2d199b9e505d9d64345a31eaf4bbce81faa5e46877d2",
+    "frame_0002.npz": "98153b3efbc7112e9b27726889d469229d16eb6801ea157d7e5bbbed7ce1c30b",
+    "frame_0003.npz": "39529dbb28bfa0ebc3dd2d078c19d773f3f3ec5b719d8fcbabcfdcdad4a6cd9d",
+    "frame_0004.npz": "8b50b69672f8b6f8c08a85141435a3ccd53443f457db885542ac454abaaedd03",
+    "frame_0005.npz": "3e31f41ac3794d4471b77e3d0698ee7038087c3594ab7c0a0b4ded9fd1ea4c5c",
+    "frame_0006.npz": "e4236189b0d8e64caf5a28af0b8e5ef0b86b852c1e3f67234714612a580475bc",
+    "frame_0007.npz": "447aeecfc6bd03640cacd637b5d67c886b4809f1f9b687f1e6c7618a1ce55fa4",
+    "frame_0008.npz": "f926fec47a5f727c0b8c75fbb63fcb296ffa703133750af1ee6f872b55b2460a",
+    "frame_0009.npz": "e1d0a89e4cf93fa681bcf759beb4adbb3018b74c45044baad70dea205992ddf0",
+    "frame_0010.npz": "69890e8be5cfeb3ed9bca39b776d892422d1ff32518046c0312f601777c5e5a7",
+    "frame_0011.npz": "0ff07c5effc8ecb9dfe78ceaf7a67139c3071c39dcb12c38fc2aa17c52317a04",
+    "frame_0012.npz": "d1d5071e38b79dc6e679f99e2c6c7980a0aec53aa7afc708f26b963572c6668e"
+  },
+  "record_sha256": "c68a80a616a1ed07469e89f5165ef1ca93cd94cee09a067d479c28b3294fff7a",
+  "result": {
+    "decision_seconds": [
+      6.667018169537187e-06,
+      0.00018108301446773112,
+      0.0002302499779034406,
+      0.0001949580037035048,
+      0.00030466599855571985,
+      0.0002989579807035625,
+      0.0001589170133229345,
+      0.00017058398225344718,
+      0.0003333750064484775,
+      0.00016037499881349504,
+      0.00019229200552217662,
+      0.00046854198444634676,
+      0.00016350002260878682
+    ],
+    "expected_photons_used": 260000,
+    "exposures": 13,
+    "final": {
+      "residual_wfe_nm": 38.698525029379034,
+      "strehl_peak_ratio": 0.825010657518677
+    },
+    "final_applied_opd_nm": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "final_command_has_camera_observation": true,
+    "final_command_is_last_observation": false,
+    "final_command_observation_indices": [
+      0
+    ],
+    "final_mirror_surface_coefficients_nm": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "fit_records": [],
+    "hidden_opd_nm": [
+      -30.0,
+      -12.0,
+      10.0,
+      8.0,
+      -6.0,
+      -15.0
+    ],
+    "initial": {
+      "residual_wfe_nm": 38.698525029379034,
+      "strehl_peak_ratio": 0.825010657518677
+    },
+    "peak_probe_wfe_increase_nm": 85.95795548920796,
+    "submission_seconds": 0.00015437498223036528,
+    "trajectory": [
+      {
+        "applied_opd_nm": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cumulative_expected_photons": 20000,
+        "expected_photons": 20000,
+        "index": 0,
+        "realized_photoelectrons": 19996,
+        "residual_wfe_nm": 38.698525029379034,
+        "strehl_peak_ratio": 0.825010657518677
+      },
+      {
+        "applied_opd_nm": [
+          19.317828944601292,
+          40.15896250048657,
+          -15.521371539127053,
+          -29.303856244796695,
+          -59.824005759585376,
+          57.25106779035733
+        ],
+        "cumulative_expected_photons": 40000,
+        "expected_photons": 20000,
+        "index": 1,
+        "realized_photoelectrons": 19804,
+        "residual_wfe_nm": 124.656480518587,
+        "strehl_peak_ratio": 0.2232935575642562
+      },
+      {
+        "applied_opd_nm": [
+          30.20749107967383,
+          15.596458612048153,
+          30.028557543418202,
+          5.873265902937468,
+          -2.120702146632163,
+          -49.20180611288115
+        ],
+        "cumulative_expected_photons": 60000,
+        "expected_photons": 20000,
+        "index": 2,
+        "realized_photoelectrons": 19990,
+        "residual_wfe_nm": 76.46058961091512,
+        "strehl_peak_ratio": 0.4553345224014577
+      },
+      {
+        "applied_opd_nm": [
+          39.75944181965502,
+          -29.03481496217918,
+          -37.519337642172786,
+          -5.407145275633081,
+          46.444223427664596,
+          -55.5764833137597
+        ],
+        "cumulative_expected_photons": 80000,
+        "expected_photons": 20000,
+        "index": 3,
+        "realized_photoelectrons": 19774,
+        "residual_wfe_nm": 108.68074016309318,
+        "strehl_peak_ratio": 0.2072546180668983
+      },
+      {
+        "applied_opd_nm": [
+          46.0105862527281,
+          45.911124019309234,
+          -37.67545122624927,
+          51.29230459017206,
+          -19.75927043609392,
+          -40.774517392735746
+        ],
+        "cumulative_expected_photons": 100000,
+        "expected_photons": 20000,
+        "index": 4,
+        "realized_photoelectrons": 19895,
+        "residual_wfe_nm": 118.35418987875941,
+        "strehl_peak_ratio": 0.2807778681180958
+      },
+      {
+        "applied_opd_nm": [
+          36.720467546106384,
+          -14.312316044431581,
+          -6.568338191815921,
+          28.038995035477775,
+          23.372556682927378,
+          10.584011860324756
+        ],
+        "cumulative_expected_photons": 120000,
+        "expected_photons": 20000,
+        "index": 5,
+        "realized_photoelectrons": 20175,
+        "residual_wfe_nm": 82.2114574439478,
+        "strehl_peak_ratio": 0.4292972354723066
+      },
+      {
+        "applied_opd_nm": [
+          -52.49545611267388,
+          50.07809013063169,
+          18.239478987641707,
+          -42.675779837605795,
+          22.356223062482368,
+          -15.0438717881969
+        ],
+        "cumulative_expected_photons": 140000,
+        "expected_photons": 20000,
+        "index": 6,
+        "realized_photoelectrons": 20039,
+        "residual_wfe_nm": 88.31646776351623,
+        "strehl_peak_ratio": 0.3617958756575336
+      },
+      {
+        "applied_opd_nm": [
+          7.525658272339135,
+          11.470194299670716,
+          -48.43832953925482,
+          -26.909362629210072,
+          -30.663395192318575,
+          38.39708942953935
+        ],
+        "cumulative_expected_photons": 160000,
+        "expected_photons": 20000,
+        "index": 7,
+        "realized_photoelectrons": 19773,
+        "residual_wfe_nm": 100.89351706978768,
+        "strehl_peak_ratio": 0.31674762558195196
+      },
+      {
+        "applied_opd_nm": [
+          12.120093444180098,
+          9.551401646656874,
+          -20.379559502465145,
+          -31.620949496689256,
+          -4.317259578806447,
+          51.364980444055334
+        ],
+        "cumulative_expected_photons": 180000,
+        "expected_photons": 20000,
+        "index": 8,
+        "realized_photoelectrons": 19766,
+        "residual_wfe_nm": 96.5191764168528,
+        "strehl_peak_ratio": 0.38955695697414827
+      },
+      {
+        "applied_opd_nm": [
+          -8.992351217142751,
+          -51.72320175684256,
+          -52.63825466758937,
+          57.76014740399507,
+          -0.7515229583060234,
+          22.42916477489097
+        ],
+        "cumulative_expected_photons": 200000,
+        "expected_photons": 20000,
+        "index": 9,
+        "realized_photoelectrons": 20062,
+        "residual_wfe_nm": 99.48516274778682,
+        "strehl_peak_ratio": 0.29117119865029795
+      },
+      {
+        "applied_opd_nm": [
+          5.835097209512163,
+          -26.928845187194995,
+          3.409316248372134,
+          -5.748381990936835,
+          32.65796965147977,
+          14.657876102294583
+        ],
+        "cumulative_expected_photons": 220000,
+        "expected_photons": 20000,
+        "index": 10,
+        "realized_photoelectrons": 19864,
+        "residual_wfe_nm": 64.66063170755416,
+        "strehl_peak_ratio": 0.6138315843031686
+      },
+      {
+        "applied_opd_nm": [
+          57.6585737989037,
+          -11.490703013600188,
+          12.928139160159663,
+          50.7283421522552,
+          51.33446126803443,
+          7.071018851179005
+        ],
+        "cumulative_expected_photons": 240000,
+        "expected_photons": 20000,
+        "index": 11,
+        "realized_photoelectrons": 20189,
+        "residual_wfe_nm": 115.82658778636498,
+        "strehl_peak_ratio": 0.3525896145225942
+      },
+      {
+        "applied_opd_nm": [
+          -7.137584239760577,
+          12.230007789556453,
+          45.501479208413905,
+          58.617240851534966,
+          22.981074688911463,
+          40.02821438308568
+        ],
+        "cumulative_expected_photons": 260000,
+        "expected_photons": 20000,
+        "index": 12,
+        "realized_photoelectrons": 20075,
+        "residual_wfe_nm": 94.23449894875667,
+        "strehl_peak_ratio": 0.39634501708926717
+      }
+    ]
+  },
+  "study_binding": "e2cb35209d1db2053dc4eb6705d640accd8ee4d8d30422a276c9e4f00456213a"
+}

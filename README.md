@@ -85,6 +85,7 @@ measurement replay or load a local ImageFolder export with Hugging Face Datasets
 | --- | --- | --- |
 | [Optical ambiguity](results/development-20261014/report.md) | 16 episodes; four policies and four wavefront fixtures | Observation/action accounting and diagnostic probing |
 | [Noise qualification](results/noise-qualification-20261014/report.md) | 24 acquisitions; 48 selected estimates across three photon budgets | Estimator and convergence qualification |
+| [Sequential calibration](docs/sequential-calibration-results.md) | 192 episodes; 1,632 exposures; six exposure allowances | Complete six-mode search, sequential inference and temporary probe degradation |
 
 ## Scope
 
@@ -107,4 +108,5 @@ untrusted Python. See [security](SECURITY.md) for execution and artifact trust b
 - `scripts/`: reproducibility checks and figure generation.
 - `docs/`: scientific specifications and experiment documentation.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for validation requirements.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for validation requirements and
+[CHANGELOG.md](CHANGELOG.md) for implementation changes.

@@ -1,0 +1,11 @@
+{
+  "display": "log1p(max(raw electrons,0))/log1p(expected photons), magma, fixed limits 0..1",
+  "episode_count": 192,
+  "exposure_count": 1632,
+  "generator_sha256": "5cee5645a15af2c091117559db08a74816ffd642fbde2163047576b82ed8677b",
+  "html_sha256": "7b113fa9582bf04775f093148a807efad3fbf97009e44fc72bfafa97782ef09d",
+  "input_manifest_sha256": "dd7ccd764dc03f720b02ac4b7e590e01ed9c4a677045f42e7e739769974b6f88",
+  "input_run": "sequential-calibration-20261014",
+  "scope": "Recorded development exposures only; final evaluator scores do not synthesize a measured image.",
+  "template_sha256": "2e33b195c518e3f857e42b367a84f93d48b2dd795185b212302dc24c4a219220"
+}
