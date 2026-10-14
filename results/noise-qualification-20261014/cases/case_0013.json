@@ -1,0 +1,160 @@
+{
+  "acquisition_sha256": "6cfe051095b3140a01cff7f610ccfa9b50fc2771810996f0170794688fe424f7",
+  "case": {
+    "detector_seed": 30000014,
+    "id": "case_0013",
+    "photons_per_exposure": 20000,
+    "replicate": 1,
+    "truth_index": 2,
+    "truth_opd_nm": [
+      -25,
+      -8,
+      14,
+      -10,
+      9,
+      -12
+    ]
+  },
+  "fits": {
+    "least_squares": {
+      "actual_residual_evaluations": 161,
+      "chosen_start": 2,
+      "cost": 7.56934157700621e-05,
+      "estimated_opd_nm": [
+        -24.976582781439184,
+        -8.944790988587872,
+        13.929509988338657,
+        -9.789535957403118,
+        9.154764204564316,
+        -12.048925028390038
+      ],
+      "objective": "unweighted_calibrated_intensity_least_squares",
+      "optimizer_status": 2,
+      "optimizer_success": true,
+      "reported_function_evaluations": 23,
+      "residual_wfe_nm": 0.9842333043029601,
+      "start_records": [
+        {
+          "cost": 7.569341577006277e-05,
+          "finite": true,
+          "initial_opd_nm": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "message": "`ftol` termination condition is satisfied.",
+          "status": 2,
+          "success": true
+        },
+        {
+          "cost": 7.569341577006234e-05,
+          "finite": true,
+          "initial_opd_nm": [
+            50.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "message": "`ftol` termination condition is satisfied.",
+          "status": 2,
+          "success": true
+        },
+        {
+          "cost": 7.56934157700621e-05,
+          "finite": true,
+          "initial_opd_nm": [
+            -50.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "message": "`ftol` termination condition is satisfied.",
+          "status": 2,
+          "success": true
+        }
+      ],
+      "starts": 3,
+      "status": "finite",
+      "strehl_peak_ratio": 0.9998735834737518
+    },
+    "poisson_gaussian_mle": {
+      "chosen_start": 0,
+      "cost": 0.32778973093682057,
+      "estimated_opd_nm": [
+        -25.18581359790217,
+        -8.07240076923798,
+        14.363167948270508,
+        -9.92801480216346,
+        9.266137675591347,
+        -12.389063323177314
+      ],
+      "mean_floor_counts": 1e-12,
+      "objective": "poisson_gaussian_convolution_nll_per_expected_photon",
+      "optimizer_success": true,
+      "relative_likelihood_tail_tolerance": 1e-12,
+      "reported_function_evaluations": 34,
+      "residual_wfe_nm": 0.6353201400311385,
+      "starts": [
+        {
+          "cost": 0.32778973093682057,
+          "finite": true,
+          "initial_opd_nm": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "iterations": 9,
+          "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "status": 0,
+          "success": true
+        },
+        {
+          "cost": 0.3277897309368327,
+          "finite": true,
+          "initial_opd_nm": [
+            50.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "iterations": 9,
+          "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "status": 0,
+          "success": true
+        },
+        {
+          "cost": 0.32778973093682207,
+          "finite": true,
+          "initial_opd_nm": [
+            -50.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "iterations": 9,
+          "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "status": 0,
+          "success": true
+        }
+      ],
+      "status": "finite",
+      "strehl_peak_ratio": 0.9999473247375548
+    }
+  },
+  "record_sha256": "cda6a35a1090dafe53e8cfe822c90f432baf69372cb01f65535b0ff9094de4a5",
+  "study_binding": "d46f068cf31175c72c7af7997bbeff799350466f4e85989af63b1e7afcbe7372"
+}

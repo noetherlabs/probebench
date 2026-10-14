@@ -1,0 +1,21 @@
+{
+  "completed_cases": 24,
+  "conjugate_pair_maximum_intensity_difference": [
+    6.938893903907228e-17,
+    6.938893903907228e-17
+  ],
+  "first_chunk_cases": 4,
+  "manifest_sha256": "01d7ac4a502c97ad15413bfe511c0159aafc370502e20bceba22ebe1a9f1f926",
+  "passed": true,
+  "run": "results/noise-qualification-20261014",
+  "unchanged_first_chunk_files": {
+    "acquisitions/case_0000.npz": "4b4720acf0d24103e65414e5cef6f8274898b195a4e3cdc11694b70e7680e5f6",
+    "acquisitions/case_0001.npz": "eee31c107cfdd248353d3aeb7f5482ec7bee6abbad9f45d990de0387546d3a42",
+    "acquisitions/case_0002.npz": "e17c4615b45cc8748f0253331f099c17d9692b0f02fe7a84e5596f2bfe97336f",
+    "acquisitions/case_0003.npz": "1c235c65c42844d75a501bcad79adc77ea2e22c12214510b5b93619d0fa9e97a",
+    "cases/case_0000.json": "d78c8798e9b62537445f025efe7de570fcd9b6eafc7ac27bdec733259100b37a",
+    "cases/case_0001.json": "10e9d755bae7403093cd9284c70ca60d3cc091587aab7418e06e3284103fb389",
+    "cases/case_0002.json": "36386759e900ab9175eb18a8fadedecd613c9a5cb4da40d8444266edc7851929",
+    "cases/case_0003.json": "85837732d8bb0c5d1d18fd827204d036dfade8e9f5338a55b8ce81aa74e590d5"
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "acquisition_sha256": "87b392db4fe7e76502fe6f7efd1cf9cc5800423fc924535e71a2fa9bf0fc376c",
+  "case": {
+    "detector_seed": 30000019,
+    "id": "case_0018",
+    "photons_per_exposure": 200000,
+    "replicate": 0,
+    "truth_index": 1,
+    "truth_opd_nm": [
+      -30,
+      -12,
+      10,
+      8,
+      -6,
+      -15
+    ]
+  },
+  "fits": {
+    "least_squares": {
+      "actual_residual_evaluations": 161,
+      "chosen_start": 0,
+      "cost": 6.0884401002639645e-06,
+      "estimated_opd_nm": [
+        -29.673236393563606,
+        -11.798421980038047,
+        9.987486913438184,
+        7.921755487540471,
+        -6.087793031353476,
+        -14.619526090308527
+      ],
+      "objective": "unweighted_calibrated_intensity_least_squares",
+      "optimizer_status": 1,
+      "optimizer_success": true,
+      "reported_function_evaluations": 23,
+      "residual_wfe_nm": 0.5604014785197401,
+      "start_records": [
+        {
+          "cost": 6.0884401002639645e-06,
+          "finite": true,
+          "initial_opd_nm": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "message": "`gtol` termination condition is satisfied.",
+          "status": 1,
+          "success": true
+        },
+        {
+          "cost": 6.088440100264154e-06,
+          "finite": true,
+          "initial_opd_nm": [
+            50.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "message": "`ftol` termination condition is satisfied.",
+          "status": 2,
+          "success": true
+        },
+        {
+          "cost": 6.088440100263973e-06,
+          "finite": true,
+          "initial_opd_nm": [
+            -50.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "message": "`gtol` termination condition is satisfied.",
+          "status": 1,
+          "success": true
+        }
+      ],
+      "starts": 3,
+      "status": "finite",
+      "strehl_peak_ratio": 0.9999590152238896
+    },
+    "poisson_gaussian_mle": {
+      "chosen_start": 2,
+      "cost": 0.041595595140608566,
+      "estimated_opd_nm": [
+        -29.882015586887267,
+        -11.932494231800439,
+        10.146463457877806,
+        8.01333062414426,
+        -5.993410891496159,
+        -14.968158726616702
+      ],
+      "mean_floor_counts": 1e-12,
+      "objective": "poisson_gaussian_convolution_nll_per_expected_photon",
+      "optimizer_success": true,
+      "relative_likelihood_tail_tolerance": 1e-12,
+      "reported_function_evaluations": 34,
+      "residual_wfe_nm": 0.20347590940199994,
+      "starts": [
+        {
+          "cost": 0.04159559514060938,
+          "finite": true,
+          "initial_opd_nm": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "iterations": 9,
+          "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "status": 0,
+          "success": true
+        },
+        {
+          "cost": 0.04159559514061392,
+          "finite": true,
+          "initial_opd_nm": [
+            50.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "iterations": 10,
+          "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "status": 0,
+          "success": true
+        },
+        {
+          "cost": 0.041595595140608566,
+          "finite": true,
+          "initial_opd_nm": [
+            -50.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "iterations": 9,
+          "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "status": 0,
+          "success": true
+        }
+      ],
+      "status": "finite",
+      "strehl_peak_ratio": 0.9999945967002003
+    }
+  },
+  "record_sha256": "3b4b01b567fc5b727dd033cc3d133ef00c2af0bf425742833fa92d98e6ffe0fe",
+  "study_binding": "d46f068cf31175c72c7af7997bbeff799350466f4e85989af63b1e7afcbe7372"
+}
