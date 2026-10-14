@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'sha256-%%SCRIPT_HASH%%'; base-uri 'none'; form-action 'none'">
+<title>ProbeBench — measurement replay</title>
+<style>
+:root{color-scheme:light;--paper:#f6f4ef;--ink:#24312e;--muted:#57615a;--line:#c9ccc2;--accent:#246c70;--warm:#92552c}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 Optima,Candara,"Segoe UI",sans-serif}
+main{max-width:1180px;margin:auto;padding:30px clamp(20px,4vw,54px) 46px}header{border-top:2px solid var(--ink);padding-top:15px}
+.eyebrow{font-size:12px;letter-spacing:.13em;text-transform:uppercase;display:flex;justify-content:space-between;gap:14px}
+h1{font:400 clamp(36px,4.6vw,58px)/1.12 "Iowan Old Style","Palatino Linotype",Palatino,serif;margin:28px 0 13px;letter-spacing:-.025em}
+.intro{max-width:770px;color:var(--muted);margin:0 0 28px}.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:18px;padding:18px 0 24px;border-top:1px solid var(--line)}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}select,button{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:0;min-height:40px;padding:7px 10px}select{width:100%;font-size:15px}button{cursor:pointer}button:hover:not(:disabled){border-color:var(--ink);background:#e9ece4}button:disabled{opacity:.38;cursor:default}:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.workspace{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:38px;align-items:start}.frame-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:9px;gap:8px}.muted{color:var(--muted)}
+.viewport{position:relative;overflow:hidden;aspect-ratio:1;background:#100f1b;touch-action:pan-y;cursor:default}.viewport.zoomed{touch-action:none;cursor:grab}.viewport.dragging{cursor:grabbing}.viewport img{display:block;width:100%;height:100%;image-rendering:pixelated;user-select:none;-webkit-user-drag:none;transform-origin:center}
+.controls{display:flex;gap:8px;margin-top:12px;align-items:center}.controls button{min-width:46px}#play{min-width:78px;background:var(--ink);color:var(--paper);border-color:var(--ink)}input[type=range]{accent-color:var(--accent);min-width:0;flex:1;width:100%}.slider-label{margin:10px 0}.zoom{display:flex;align-items:center;gap:11px;font-size:13px;margin-top:11px}.zoom label{flex-direction:row;align-items:center;flex:1}.zoom input{max-width:150px}.zoom button{font-size:12px;min-height:32px}.image-note{font-size:12px;line-height:1.5;color:var(--muted);margin:11px 0 0}
+h2{font-weight:500;font-size:18px;margin:0 0 15px}dl{margin:0;display:grid;grid-template-columns:1fr auto;gap:7px 18px;font-size:14px}dt{color:var(--muted)}dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}.panel{padding:18px 0;border-top:1px solid var(--line)}.panel:first-child{padding-top:0;border-top:0}.number{font-size:21px;color:var(--ink)}.command{font-size:12px;line-height:1.6;margin:13px 0 0;color:var(--muted);overflow-wrap:anywhere}.command span{color:var(--ink);font-variant-numeric:tabular-nums}.status{font-size:13px;margin:0 0 12px}.unmeasured{color:var(--warm)}
+svg{width:100%;height:auto;display:block;margin-top:10px}svg text{font-family:Optima,Candara,"Segoe UI",sans-serif;font-size:12px;fill:var(--muted)}svg circle{cursor:pointer}svg circle:focus{outline:2px solid var(--accent)}.chart-note{font-size:12px;color:var(--muted);margin:1px 0 0}
+details{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;font-size:13px}summary{cursor:pointer;font-size:14px}details p{max-width:880px}code{font-size:11px;overflow-wrap:anywhere}footer{margin-top:26px;border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:var(--muted)}
+@media(max-width:760px){main{padding-top:20px}.eyebrow{font-size:10px}.filters{grid-template-columns:1fr 1fr;gap:13px}.filters label:first-child,.filters label:last-child{grid-column:1/-1}.workspace{grid-template-columns:1fr;gap:25px}.panel:first-child{border-top:1px solid var(--line);padding-top:18px}h1{margin-top:23px}.intro{font-size:15px}.frame-head{font-size:12px}.zoom{flex-wrap:wrap}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow"><span>Noether Labs / ProbeBench</span><span>Measurement replay</span></div>
+<h1>What did each probe buy?</h1>
+<p class="intro">Inspect the camera record behind sequential optical calibration. Follow the measurements, their photon cost, and the temporary degradation that can accompany an informative probe.</p></header>
+<section class="filters" aria-label="Choose an experiment">
+<label>Policy<select id="method"></select></label><label>Exposure allowance<select id="budget"></select></label>
+<label>Wavefront fixture<select id="fixture"></select></label><label>Noise replicate<select id="replicate"></select></label>
+</section>
+<section class="workspace">
+<div><div class="frame-head"><span id="frame-heading" aria-live="polite"></span><span class="muted" id="case-id"></span></div>
+<div class="viewport" id="viewport"><img id="camera" alt="Recorded focal-plane detector image" draggable="false"></div>
+<div class="controls"><button id="previous" aria-label="Previous exposure">←</button><button id="play">Play</button><button id="next" aria-label="Next exposure">→</button><label style="flex:1" for="frame">Exposure<input id="frame" type="range" min="0" max="0" value="0"></label></div>
+<div class="zoom"><label for="zoom">Zoom <input id="zoom" type="range" min="1" max="6" step=".25" value="1"></label><output id="zoom-label" for="zoom">1×</output><button id="reset">Reset view</button></div>
+<p class="image-note">Fixed brightness scale for every exposure. Zoom to inspect pixels; drag to pan when zoomed. No inferred image replaces a measured frame.</p>
+</div>
+<div>
+<section class="panel"><h2>At this exposure</h2><dl>
+<dt>Residual wavefront error</dt><dd class="number" id="wfe"></dd><dt>Sampled peak Strehl</dt><dd id="strehl"></dd>
+<dt>Expected photons used</dt><dd id="photons"></dd><dt>Photoelectrons realized</dt><dd id="electrons"></dd></dl>
+<p class="command">Applied OPD, nm · defocus, astigmatism ×2, coma ×2, spherical<br><span id="command"></span></p>
+<svg id="trajectory" viewBox="0 0 440 145" role="group" aria-label="Evaluator wavefront error at every recorded exposure"></svg>
+<p class="chart-note">Evaluator WFE (nm) at recorded exposures. Select a point to inspect its camera image.</p></section>
+<section class="panel"><h2>Final submitted correction</h2><p class="status" id="final-status"></p><dl>
+<dt>Evaluator wavefront error</dt><dd id="final-wfe"></dd><dt>Evaluator peak Strehl</dt><dd id="final-strehl"></dd>
+<dt>Recorded fits / failed / unconverged</dt><dd id="fit-status"></dd></dl><p class="command">Final OPD command, nm<br><span id="final-command"></span></p></section>
+</div></section>
+<details><summary>Model, display and evidence</summary>
+<p id="design"></p><p>The simulator uses a static, monochromatic circular pupil and six OPD modes. All policies receive public optical calibration and noisy camera observations. Wavefront error and Strehl shown here are computed by the evaluator from latent simulation state. The phase-diversity estimator uses an exactly matched model.</p>
+<p>Pixel display: log1p(max(measured electrons, 0)) / log1p(expected photons), with the magma colour map and fixed limits 0–1. Signed raw measurements remain in the source dataset. Commands are OPD; ideal reflective surface displacement is half that value.</p>
+<p>The record contains all development outcomes. Related fixtures and shared noise streams do not establish population rankings, telescope performance, or agent capability. This replay is self-contained and makes no network requests.</p>
+<p>Input manifest SHA-256<br><code id="manifest"></code></p></details>
+<footer>ProbeBench · development measurements · Noether Labs</footer>
+</main>
+<script type="application/json" id="experiment">%%DATA%%</script>
+<script id="replay-script">
+"use strict";
+const data=JSON.parse(document.getElementById("experiment").textContent);
+const get=id=>document.getElementById(id);
+const labels={no_action_v2:"No action",random_probe_v2:"Random probes",coordinate_search_v2:"Coordinate search",phase_diversity_mle_v1:"Sequential phase diversity"};
+const ns="http://www.w3.org/2000/svg";
+let episode,index=0,timer=null,panX=0,panY=0,drag=null;
+const number=x=>Number(x).toLocaleString(undefined,{maximumFractionDigits:0});
+const vector=x=>x.map(v=>(v>=0?"+":"")+v.toFixed(2)).join("   ");
+function options(id,values,label){for(const value of values){const o=document.createElement("option");o.value=value;o.textContent=label(value);get(id).append(o)}}
+options("method",data.configuration.methods,v=>labels[v]||v);
+options("budget",data.configuration.exposure_budgets,v=>v+(v===1?" exposure":" exposures"));
+options("fixture",data.configuration.truths_opd_nm.map((_,i)=>i),v=>"Fixture "+(v+1));
+options("replicate",Array.from({length:data.configuration.replicates},(_,i)=>i),v=>"Replicate "+(v+1));
+get("method").value=data.configuration.methods.includes("phase_diversity_mle_v1")?"phase_diversity_mle_v1":data.configuration.methods[0];
+get("budget").value=data.configuration.exposure_budgets.includes(13)?13:data.configuration.exposure_budgets[0];
+function stop(){if(timer!==null)clearInterval(timer);timer=null;get("play").textContent="Play";get("play").setAttribute("aria-pressed","false")}
+function transform(){const z=Number(get("zoom").value),bound=get("viewport").clientWidth*(z-1)/2;panX=Math.max(-bound,Math.min(bound,panX));panY=Math.max(-bound,Math.min(bound,panY));get("camera").style.transform=`translate(${panX}px,${panY}px) scale(${z})`;get("viewport").classList.toggle("zoomed",z>1);get("zoom-label").textContent=z+"×"}
+function reset(){get("zoom").value=1;panX=panY=0;transform()}
+function select(){stop();episode=data.episodes.find(e=>e.case.method===get("method").value&&e.case.exposure_budget===Number(get("budget").value)&&e.case.truth_index===Number(get("fixture").value)&&e.case.replicate===Number(get("replicate").value));if(!episode)throw Error("The selected episode is absent from the verified dataset");index=0;get("frame").max=episode.frames.length-1;reset();render()}
+function svg(name,attrs,text){const e=document.createElementNS(ns,name);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e}
+function chart(){const target=get("trajectory");target.replaceChildren();const values=episode.frames.map(f=>f.measurement.residual_wfe_nm),top=Math.max(...values)*1.12||1;const x=i=>45+(values.length>1?i/(values.length-1):.5)*377,y=v=>114-v/top*96;
+for(const v of [0,top/2,top]){target.append(svg("line",{x1:45,x2:422,y1:y(v),y2:y(v),stroke:"#c9ccc2","stroke-width":.7}));target.append(svg("text",{x:35,y:y(v)+4,"text-anchor":"end"},v.toFixed(0)))}
+target.append(svg("polyline",{points:values.map((v,i)=>x(i)+","+y(v)).join(" "),fill:"none",stroke:"#246c70","stroke-width":1.5}));
+values.forEach((v,i)=>{const p=svg("circle",{cx:x(i),cy:y(v),r:i===index?5:3.5,fill:i===index?"#92552c":"#246c70",tabindex:0,role:"button","aria-label":`Exposure ${i+1}, wavefront error ${v.toFixed(2)} nanometres`});p.append(svg("title",{},`Exposure ${i+1}: ${v.toFixed(2)} nm`));const choose=()=>{stop();index=i;render()};p.addEventListener("click",choose);p.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();choose()}});target.append(p)});
+if(values.length===1){target.append(svg("text",{x:233.5,y:137,"text-anchor":"middle"},"Exposure 1"))}else{target.append(svg("text",{x:45,y:137},"Exposure 1"));target.append(svg("text",{x:422,y:137,"text-anchor":"end"},"Exposure "+values.length))}}
+function render(){const f=episode.frames[index],m=f.measurement;get("camera").src=f.png;get("camera").alt=`Recorded exposure ${index+1} of ${episode.frames.length}, ${labels[episode.case.method]}, fixture ${episode.case.truth_index+1}`;get("frame-heading").textContent=`Measured exposure ${index+1} / ${episode.frames.length}`;get("case-id").textContent=episode.case.id;get("frame").value=index;get("frame").setAttribute("aria-valuetext",`Exposure ${index+1} of ${episode.frames.length}`);get("previous").disabled=index===0;get("next").disabled=index===episode.frames.length-1;get("play").disabled=episode.frames.length===1;get("frame").disabled=episode.frames.length===1;
+get("wfe").textContent=m.residual_wfe_nm.toFixed(3)+" nm";get("strehl").textContent=m.strehl_peak_ratio.toFixed(6);get("photons").textContent=number(m.cumulative_expected_photons)+" / "+number(episode.case.exposure_budget*episode.case.photons_per_exposure);get("electrons").textContent=number(m.realized_photoelectrons);get("command").textContent=vector(m.applied_opd_nm);
+const measured=episode.measured_indices;get("final-status").classList.toggle("unmeasured",measured.length===0);get("final-status").textContent=measured.length?`This command has ${measured.length} recorded camera exposure${measured.length===1?"":"s"}. First measured at exposure ${measured[0]+1}.` : "No camera exposure was acquired at this final command. These scores are evaluator computations; there is no measured image of this final command.";
+get("final-wfe").textContent=episode.final.residual_wfe_nm.toFixed(3)+" nm";get("final-strehl").textContent=episode.final.strehl_peak_ratio.toFixed(6);get("final-command").textContent=vector(episode.final_command);get("fit-status").textContent=[episode.fit_count,episode.failed_fits,episode.unconverged_fits].join(" / ");chart()}
+for(const id of ["method","budget","fixture","replicate"])get(id).addEventListener("change",select);
+get("previous").addEventListener("click",()=>{stop();if(index>0){index--;render()}});get("next").addEventListener("click",()=>{stop();if(index<episode.frames.length-1){index++;render()}});
+get("frame").addEventListener("input",()=>{stop();index=Number(get("frame").value);render()});get("play").addEventListener("click",()=>{if(timer!==null){stop();return}if(index===episode.frames.length-1){index=0;render()}get("play").textContent="Pause";get("play").setAttribute("aria-pressed","true");timer=setInterval(()=>{index++;render();if(index===episode.frames.length-1)stop()},850)});
+get("zoom").addEventListener("input",transform);get("reset").addEventListener("click",reset);get("viewport").addEventListener("dblclick",reset);
+get("viewport").addEventListener("pointerdown",e=>{if(Number(get("zoom").value)<=1)return;drag={x:e.clientX,y:e.clientY,panX,panY};get("viewport").setPointerCapture(e.pointerId);get("viewport").classList.add("dragging")});get("viewport").addEventListener("pointermove",e=>{if(!drag)return;panX=drag.panX+e.clientX-drag.x;panY=drag.panY+e.clientY-drag.y;transform()});for(const type of ["pointerup","pointercancel","lostpointercapture"])get("viewport").addEventListener(type,()=>{drag=null;get("viewport").classList.remove("dragging")});window.addEventListener("resize",transform);document.addEventListener("visibilitychange",()=>{if(document.hidden)stop()});
+get("manifest").textContent=data.manifest_sha256;get("design").textContent=`${data.episodes.length} retained development episodes and ${number(data.exposure_count)} measured exposures. The fixture and replicate selectors expose every case in the dataset. Budget points share detector streams and are correlated.`;select();
+</script>
+</body></html>

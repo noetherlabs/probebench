@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add complete-case figures, exact budget-prefix comparisons, offline measurement
+  replays and ImageFolder exports preserving signed detector arrays and provenance.
 - Add complete six-mode coordinate search and sequential Poisson–Gaussian phase
   diversity with explicit exposure allowances and unmeasured final submissions.
 - Checkpoint every exposure and completed estimator fit; verify resumed detector

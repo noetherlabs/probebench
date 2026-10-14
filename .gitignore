@@ -17,3 +17,4 @@ work/
 /STATUS.md
 /DECISIONS.md
 /results/verification-*.xml
+.gstack/

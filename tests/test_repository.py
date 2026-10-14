@@ -15,11 +15,12 @@ def test_local_records_and_machine_metadata_are_rejected():
     files = {
         "AGENTS.md": b"instructions",
         ".env": b"configuration",
+        ".gstack/browser.json": b"{}",
         "docs/example.md": ("/" + "Users" + "/example/run").encode(),
         "results/test.xml": ('hostname="research-machine.' + 'local"').encode(),
     }
     findings = checks.inspect_files(files)
-    assert len(findings) == 4
+    assert len(findings) == 5
     assert all(any(f.startswith(name + ":") for f in findings) for name in files)
 
 

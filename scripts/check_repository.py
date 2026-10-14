@@ -6,7 +6,7 @@ import subprocess
 
 
 EXCLUDED_NAMES = {"AGENTS.md", "PLAN.md", "STATUS.md", "DECISIONS.md"}
-EXCLUDED_DIRECTORIES = {".codex", ".venv", "__pycache__", ".pytest_cache", "work"}
+EXCLUDED_DIRECTORIES = {".codex", ".gstack", ".venv", "__pycache__", ".pytest_cache", "work"}
 HOME_PATH = re.compile("/" + r"(?:Users|home)/[^/\s\"'<>]+")
 LOCAL_HOST = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]*\.local\b")
 COORDINATION = re.compile(
