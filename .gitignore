@@ -5,3 +5,15 @@ __pycache__/
 dist/
 work/
 .codex/
+.DS_Store
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.log
+/AGENTS.md
+/PLAN.md
+/STATUS.md
+/DECISIONS.md
+/results/verification-*.xml
