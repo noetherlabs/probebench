@@ -1,0 +1,93 @@
+{
+  "detector_seed": 10000004,
+  "expected_photons_used": 600000,
+  "exposures": 3,
+  "final": {
+    "residual_wfe_nm": 35.05781738261787,
+    "strehl_peak_ratio": 0.8546328424550633
+  },
+  "final_applied_opd_nm": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "final_command_has_camera_observation": false,
+  "final_mirror_surface_coefficients_nm": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "fit_diagnostics": [],
+  "fixture": "mixed_b",
+  "hidden_opd_nm": [
+    -25.0,
+    -8.0,
+    14.0,
+    -10.0,
+    9.0,
+    -12.0
+  ],
+  "initial": {
+    "residual_wfe_nm": 35.05781738261787,
+    "strehl_peak_ratio": 0.8546328424550633
+  },
+  "method": "random_probe",
+  "peak_probe_wfe_increase_nm": 93.80799719753698,
+  "policy_seed": 20000302,
+  "trajectory": [
+    {
+      "applied_opd_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cumulative_expected_photons": 200000,
+      "expected_photons": 200000,
+      "index": 0,
+      "realized_photoelectrons": 200266,
+      "residual_wfe_nm": 35.05781738261787,
+      "strehl_peak_ratio": 0.8546328424550633
+    },
+    {
+      "applied_opd_nm": [
+        33.841663868355376,
+        5.893834058734289,
+        -36.71429397399902,
+        52.930306216855264,
+        -26.948454608178878,
+        -11.394003422810473
+      ],
+      "cumulative_expected_photons": 400000,
+      "expected_photons": 200000,
+      "index": 1,
+      "realized_photoelectrons": 200957,
+      "residual_wfe_nm": 107.1562692792179,
+      "strehl_peak_ratio": 0.39932442476648655
+    },
+    {
+      "applied_opd_nm": [
+        58.153499684263004,
+        29.68577503659084,
+        -32.06883806317647,
+        55.92032386701876,
+        34.13290203875328,
+        19.698654014847016
+      ],
+      "cumulative_expected_photons": 600000,
+      "expected_photons": 200000,
+      "index": 2,
+      "realized_photoelectrons": 200747,
+      "residual_wfe_nm": 128.86581458015485,
+      "strehl_peak_ratio": 0.32635525975660745
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "detector_seed": 10000003,
+  "expected_photons_used": 600000,
+  "exposures": 3,
+  "final": {
+    "residual_wfe_nm": 0.6135425775977026,
+    "strehl_peak_ratio": 0.9999508739663714
+  },
+  "final_applied_opd_nm": [
+    29.898762791564366,
+    12.07694617330916,
+    -9.71944932233868,
+    8.078552246325522,
+    -6.204398956879883,
+    14.519874879098715
+  ],
+  "final_command_has_camera_observation": true,
+  "final_mirror_surface_coefficients_nm": [
+    14.949381395782183,
+    6.03847308665458,
+    -4.85972466116934,
+    4.039276123162761,
+    -3.1021994784399416,
+    7.259937439549358
+  ],
+  "fit_diagnostics": [
+    {
+      "cost": 3.3675209131349106e-06,
+      "objective": "unweighted_calibrated_intensity_least_squares",
+      "optimizer_status": 1,
+      "optimizer_success": true,
+      "reported_function_evaluations": 24,
+      "starts": 3
+    }
+  ],
+  "fixture": "mixed_a",
+  "hidden_opd_nm": [
+    30.0,
+    12.0,
+    -10.0,
+    8.0,
+    -6.0,
+    15.0
+  ],
+  "initial": {
+    "residual_wfe_nm": 38.698525029379034,
+    "strehl_peak_ratio": 0.825010657518677
+  },
+  "method": "phase_diversity",
+  "peak_probe_wfe_increase_nm": 16.268497819939817,
+  "policy_seed": 20000204,
+  "trajectory": [
+    {
+      "applied_opd_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cumulative_expected_photons": 200000,
+      "expected_photons": 200000,
+      "index": 0,
+      "realized_photoelectrons": 200396,
+      "residual_wfe_nm": 38.698525029379034,
+      "strehl_peak_ratio": 0.825010657518677
+    },
+    {
+      "applied_opd_nm": [
+        80.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cumulative_expected_photons": 400000,
+      "expected_photons": 200000,
+      "index": 1,
+      "realized_photoelectrons": 200041,
+      "residual_wfe_nm": 54.96702284931885,
+      "strehl_peak_ratio": 0.6678439863788337
+    },
+    {
+      "applied_opd_nm": [
+        29.898762791564366,
+        12.07694617330916,
+        -9.71944932233868,
+        8.078552246325522,
+        -6.204398956879883,
+        14.519874879098715
+      ],
+      "cumulative_expected_photons": 600000,
+      "expected_photons": 200000,
+      "index": 2,
+      "realized_photoelectrons": 200817,
+      "residual_wfe_nm": 0.6135425775977026,
+      "strehl_peak_ratio": 0.9999508739663714
+    }
+  ]
+}
