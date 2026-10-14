@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve interrupted response-publication buffers as incomplete evidence and
+  finalize the corresponding unknown-outcome failure without repeated generation.
 - Add a local vision-model adapter with explicit image/metadata prompts, model-digest
   checks, retained raw responses, bounded HTTP requests and interruption accounting.
 - Verify model actions against the optical transcript; replay saved decisions and

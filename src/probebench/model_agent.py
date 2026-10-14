@@ -176,6 +176,20 @@ class ModelAgent:
             request = {"index":len(self.records),"previous_sha256":self.previous,
                        "public_request":message,"payload":self.payload(message),"generation_started":False}
             publish_json(pending_path,agent_session.signed(request))
+        receipt_buffer = response_path.with_suffix(response_path.suffix+".pending")
+        if receipt_buffer.exists():
+            # A receipt's atomic replacement may have been interrupted. Keep its
+            # bytes as incomplete evidence; an uncommitted buffer cannot authorize
+            # an action or a second generation attempt.
+            if not request["generation_started"] or response_path.exists():
+                raise ValueError("Unexpected incomplete response receipt")
+            incomplete = self.root/"decisions"/f"receipt_{len(self.records):06d}.incomplete"
+            if incomplete.exists():
+                if incomplete.read_bytes() != receipt_buffer.read_bytes():
+                    raise ValueError("Changed incomplete response receipt")
+                receipt_buffer.unlink()
+            else:
+                os.replace(receipt_buffer,incomplete)
         failure,transport,after = None,None,None
         if response_path.exists():
             saved = agent_session.read_signed(response_path)

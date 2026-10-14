@@ -149,6 +149,29 @@ def test_uncertain_pending_generation_becomes_failure_without_retry(configs,tmp_
     assert json.loads((root/"result.json").read_text())["model_failure"] == "interrupted_generation_unknown_outcome"
 
 
+def test_partial_response_publication_is_preserved_without_repeat_generation(configs,tmp_path,monkeypatch):
+    model,session = configs
+    api = FixtureModel(model["model"])
+    root = tmp_path/"run"
+    publish = adapter.publish_json
+    partial = b'{"request_sha256":"incomplete receipt'
+    def interrupt(path,value):
+        if path.name == "response.pending.json":
+            path.with_suffix(path.suffix+".pending").write_bytes(partial)
+            raise OSError("interrupted receipt write")
+        publish(path,value)
+    monkeypatch.setattr(adapter,"publish_json",interrupt)
+    with pytest.raises(OSError,match="receipt write"):
+        adapter.run(root,model,session,api=api)
+    assert len(api.calls) == 1
+    monkeypatch.setattr(adapter,"publish_json",publish)
+    manifest = adapter.run(root,model,session,resume=True,api=api)
+    assert manifest["status"] == "failed" and len(api.calls) == 1
+    assert (root/"decisions/receipt_000000.incomplete").read_bytes() == partial
+    assert adapter.verify(root) == manifest
+    assert not any(path.name.endswith(".pending") for path in root.rglob("*"))
+
+
 def test_saved_action_replays_after_interrupted_pending_cleanup(configs,tmp_path,monkeypatch):
     model,session = configs
     api = FixtureModel(model["model"])

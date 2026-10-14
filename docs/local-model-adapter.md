@@ -122,6 +122,8 @@ identity checks, and the complete decision is written before sending an action.
 - A prepared request without dispatch intent can proceed after admission checks.
 - A dispatch intent without a response receipt becomes an explicit unknown-outcome
   failure. It is never automatically generated again.
+- A partially published receipt is retained as an `.incomplete` artifact. Its bytes
+  do not authorize an action or a repeated generation.
 - A saved response can be revalidated without repeating generation.
 - A saved action is replayed when the optical driver requests that same observation.
 - A completed run verifies and returns without new camera or model calls.
