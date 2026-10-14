@@ -1,6 +1,9 @@
 import numpy as np
 import pytest
+import json
+from types import SimpleNamespace
 
+import probebench.estimation as estimation
 from probebench.environment import Episode, EpisodeConfig
 from probebench.estimation import phase_objective, estimate_phase_mle
 from probebench.optics import OpticalModel, OpticsConfig
@@ -55,3 +58,39 @@ def test_iteration_limit_is_retained_as_nonconvergence():
     assert np.isfinite(estimated).all()
     assert not diagnostics["optimizer_success"]
     assert all(not start["success"] for start in diagnostics["starts"])
+
+
+def test_numerical_start_failure_does_not_skip_remaining_starts(monkeypatch):
+    model, observed = measurements([30,12,-10,8,-6,15], photons=5000, pixels=12)
+    attempts=[]
+    def minimize(objective,start,**kwargs):
+        attempts.append(start.copy())
+        if len(attempts)==1:
+            raise FloatingPointError("synthetic numerical failure")
+        return SimpleNamespace(x=start,fun=float(len(attempts)),success=True,status=0,
+                               message="converged",nit=1,nfev=2)
+    monkeypatch.setattr(estimation,"minimize",minimize)
+    estimate,diagnostics=estimate_phase_mle(model,observed,1)
+    assert len(attempts)==3 and diagnostics["chosen_start"]==1
+    assert diagnostics["starts"][0]["failure_kind"]=="floating_point_exception"
+    assert diagnostics["starts"][0]["function_evaluations"] is None
+    assert diagnostics["reported_function_evaluations"] is None
+    np.testing.assert_array_equal(estimate,[50,0,0,0,0,0])
+    json.dumps(diagnostics,allow_nan=False)
+
+
+def test_all_nonfinite_starts_are_carried_by_failure(monkeypatch):
+    model, observed = measurements([30,12,-10,8,-6,15], photons=5000, pixels=12)
+    def minimize(*args,**kwargs):
+        return SimpleNamespace(x=np.full(6,np.nan),fun=np.inf,success=False,status=2,
+                               message="nonfinite",nit=2,nfev=3)
+    monkeypatch.setattr(estimation,"minimize",minimize)
+    with pytest.raises(estimation.PhaseEstimationError) as caught:
+        estimate_phase_mle(model,observed,1)
+    diagnostics=caught.value.diagnostics
+    assert len(diagnostics["starts"])==3
+    assert all(not start["finite"] for start in diagnostics["starts"])
+    assert all(start["solution_opd_nm"]==[None]*6 for start in diagnostics["starts"])
+    assert diagnostics["reported_function_evaluations"]==9
+    assert diagnostics["chosen_start"] is None
+    json.dumps(diagnostics,allow_nan=False)

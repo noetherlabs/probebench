@@ -263,7 +263,8 @@ def run_qualification(root, config_path, resume=False, limit_cases=None):
                     fits[method] = {"status": "finite", "estimated_opd_nm": estimate.tolist(),
                                    **metrics, **diagnostics}
                 except FloatingPointError as error:
-                    fits[method] = {"status": "numerical_failure", "reason": str(error)}
+                    fits[method] = {"status": "numerical_failure", "reason": str(error),
+                                    **getattr(error, "diagnostics", {})}
             record = {"case": case, "study_binding": binding, "acquisition_sha256": acquisition_hash,
                       "fits": fits}
             record["record_sha256"] = canonical_hash(record)

@@ -92,6 +92,19 @@ def test_numerical_failure_is_retained_and_fallback_uses_camera_only(monkeypatch
     assert not controller.fit_records[0]["optimizer_success"]
 
 
+def test_all_failed_optimizer_starts_remain_in_policy_evidence(monkeypatch):
+    from probebench.estimation import PhaseEstimationError
+    controller = policy("phase_diversity_mle_v1")
+    history = [observed([0]*6,0,2),observed([80,0,0,0,0,0],1,1)]
+    diagnostics={"starts":[{"finite":False,"message":str(i)} for i in range(3)]}
+    def failed(*args,**kwargs):
+        raise PhaseEstimationError("all starts failed",diagnostics)
+    monkeypatch.setattr(policies,"estimate_phase_mle",failed)
+    np.testing.assert_array_equal(controller.final_command(history),[0]*6)
+    assert controller.fit_records[0]["starts"]==diagnostics["starts"]
+    assert controller.fit_records[0]["fit_status"]=="numerical_failure"
+
+
 @pytest.mark.parametrize("settings", [{"coordinate_step_nm": 0}, {"diversity_probe_nm": np.nan},
     {"coordinate_step_floor_nm": 41}, {"max_mle_iterations": 0}])
 def test_invalid_policy_settings_rejected(settings):

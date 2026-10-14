@@ -7,6 +7,14 @@ from scipy.optimize import minimize
 from .likelihood import MEAN_FLOOR, TAIL_RELATIVE_TOLERANCE, poisson_gaussian_nll
 
 
+class PhaseEstimationError(FloatingPointError):
+    """A failed multistart estimate with the diagnostics of every attempted start."""
+
+    def __init__(self, message, diagnostics):
+        super().__init__(message)
+        self.diagnostics = diagnostics
+
+
 def phase_objective(model, observations, read_noise_electrons, scaled_coefficients):
     """NLL per expected photon, gradient with respect to 100-nm coefficients."""
     estimate = 100 * np.asarray(scaled_coefficients, dtype=np.float64)
@@ -38,25 +46,42 @@ def estimate_phase_mle(model, observations, read_noise_electrons, coefficient_li
     start_offset = min(0.5, coefficient_limit_nm / 200)
     starts = [np.zeros(6), np.array([start_offset, 0, 0, 0, 0, 0]),
               np.array([-start_offset, 0, 0, 0, 0, 0])]
-    fits = [minimize(lambda x: phase_objective(model, observations, read_noise_electrons, x),
-                    start, method="L-BFGS-B", jac=True,
-                    bounds=[(-coefficient_limit_nm/100, coefficient_limit_nm/100)] * 6,
-                    options={"maxiter": max_iterations, "ftol": 1e-12, "gtol": 1e-8, "maxls": 30})
-            for start in starts]
-    finite = [i for i, fit in enumerate(fits) if np.isfinite(fit.fun) and np.isfinite(fit.x).all()]
+    fits, records = [], []
+    for start in starts:
+        initial = {"initial_opd_nm": (100*start).tolist()}
+        try:
+            fit = minimize(lambda x: phase_objective(model, observations, read_noise_electrons, x),
+                start, method="L-BFGS-B", jac=True,
+                bounds=[(-coefficient_limit_nm/100, coefficient_limit_nm/100)] * 6,
+                options={"maxiter": max_iterations, "ftol": 1e-12, "gtol": 1e-8, "maxls": 30})
+        except FloatingPointError as error:
+            fits.append(None)
+            records.append({**initial, "solution_opd_nm": None, "success": False,
+                "status": None, "message": str(error), "iterations": None, "cost": None,
+                "finite": False, "function_evaluations": None,
+                "failure_kind": "floating_point_exception"})
+            continue
+        fits.append(fit)
+        records.append({**initial,
+            "solution_opd_nm": [float(100*x) if np.isfinite(x) else None for x in fit.x],
+            "success": bool(fit.success), "status": int(fit.status), "message": str(fit.message),
+            "iterations": int(fit.nit), "cost": float(fit.fun) if np.isfinite(fit.fun) else None,
+            "finite": bool(np.isfinite(fit.fun) and np.isfinite(fit.x).all()),
+            "function_evaluations": int(fit.nfev)})
+    diagnostics = {
+        "objective": "poisson_gaussian_convolution_nll_per_expected_photon",
+        "cost": None, "optimizer_success": False, "chosen_start": None,
+        "mean_floor_counts": MEAN_FLOOR,
+        "relative_likelihood_tail_tolerance": TAIL_RELATIVE_TOLERANCE,
+        "reported_function_evaluations": (None if any(f is None for f in fits)
+                                          else sum(int(f.nfev) for f in fits)),
+        "starts": records,
+    }
+    finite = [i for i, record in enumerate(records) if record["finite"]]
     if not finite:
-        raise FloatingPointError("No finite phase-diversity fit; retain the episode as a failure")
+        raise PhaseEstimationError("No finite phase-diversity fit; retain the episode as a failure",
+                                   diagnostics)
     chosen = min(finite, key=lambda i: fits[i].fun)
     best = fits[chosen]
-    return 100 * best.x, {
-        "objective": "poisson_gaussian_convolution_nll_per_expected_photon",
-        "cost": float(best.fun), "optimizer_success": bool(best.success),
-        "chosen_start": chosen, "mean_floor_counts": MEAN_FLOOR,
-        "relative_likelihood_tail_tolerance": TAIL_RELATIVE_TOLERANCE,
-        "reported_function_evaluations": sum(int(f.nfev) for f in fits),
-        "starts": [{"initial_opd_nm": (100*start).tolist(), "success": bool(fit.success),
-                    "status": int(fit.status), "message": str(fit.message),
-                    "iterations": int(fit.nit), "cost": float(fit.fun) if np.isfinite(fit.fun) else None,
-                    "finite": bool(np.isfinite(fit.fun) and np.isfinite(fit.x).all())}
-                   for start, fit in zip(starts, fits)],
-    }
+    diagnostics.update(cost=float(best.fun), optimizer_success=bool(best.success), chosen_start=chosen)
+    return 100*best.x, diagnostics

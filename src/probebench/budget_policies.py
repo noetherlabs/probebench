@@ -95,7 +95,8 @@ class ClassicalPolicy:
                 # Retain failure and its camera-only fallback; never silently drop the episode.
                 estimate = np.array(max(history, key=visible_score).applied_opd_nm)
                 record = {"fit_status": "numerical_failure", "reason": str(error),
-                          "fallback": "best_measured_camera_score", "optimizer_success": False}
+                          "fallback": "best_measured_camera_score", "optimizer_success": False,
+                          **getattr(error, "diagnostics", {})}
             self.fit_records.append({"observations_used": len(history),
                 "visible_history_sha256": key, "fit_elapsed_seconds": perf_counter()-started,
                 "estimated_opd_nm": estimate.tolist(), **record})

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve all attempted optimizer starts after numerical exceptions, continue the
+  remaining starts, and carry their diagnostics into declared failure records.
 - Add complete-case figures, exact budget-prefix comparisons, offline measurement
   replays and ImageFolder exports preserving signed detector arrays and provenance.
 - Add complete six-mode coordinate search and sequential Poisson–Gaussian phase
