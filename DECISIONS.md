@@ -1,5 +1,16 @@
 # Decisions
 
+## 2026-10-14 — noise-aware estimator qualification
+
+Preserve the original least-squares baseline and add a separate Poisson-Gaussian
+convolution likelihood using the same public instrument calibration. Verify the finite
+sum and analytic derivatives independently before collecting a small public development
+comparison. The discrete-sum tail bound excludes floating-point error and the declared
+1e-12-count numerical floor. Optimizer nonconvergence remains visible even when a finite
+correction can be evaluated. Calibration parameters are given by the task, not estimated
+from uncounted measurements. The new configuration is explicitly development-only and
+does not define or consume final evaluation cohorts.
+
 ## 2026-10-14 — repository supplied
 
 The user supplied `https://github.com/noetherlabs/probebench`. GitHub access verified it

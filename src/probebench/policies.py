@@ -26,7 +26,11 @@ def estimate_phase(model, observations, coefficient_limit_nm=200.0):
     if np.all(commands == commands[0]):
         raise ValueError("Known diverse commands are required")
 
+    residual_calls = 0
+
     def residual(scaled):
+        nonlocal residual_calls
+        residual_calls += 1
         estimate = 100 * scaled
         return np.concatenate([
             (model.intensity(estimate - o.applied_opd_nm)
@@ -40,7 +44,11 @@ def estimate_phase(model, observations, coefficient_limit_nm=200.0):
     fits = [least_squares(residual, x, bounds=(-coefficient_limit_nm/100,
             coefficient_limit_nm/100), max_nfev=160, ftol=1e-10, xtol=1e-10,
             gtol=1e-10) for x in starts]
-    best = min(fits, key=lambda f: f.cost)
+    finite = [i for i, fit in enumerate(fits) if np.isfinite(fit.cost) and np.isfinite(fit.x).all()]
+    if not finite:
+        raise FloatingPointError("No finite least-squares phase-diversity fit")
+    chosen = min(finite, key=lambda i: fits[i].cost)
+    best = fits[chosen]
     return 100 * best.x, {
         "objective": "unweighted_calibrated_intensity_least_squares",
         "cost": float(best.cost),
@@ -48,6 +56,13 @@ def estimate_phase(model, observations, coefficient_limit_nm=200.0):
         "optimizer_status": int(best.status),
         "reported_function_evaluations": sum(int(f.nfev) for f in fits),
         "starts": len(starts),
+        "chosen_start": chosen,
+        "actual_residual_evaluations": residual_calls,
+        "start_records": [{"initial_opd_nm": (100*start).tolist(), "success": bool(fit.success),
+            "status": int(fit.status), "message": str(fit.message),
+            "cost": float(fit.cost) if np.isfinite(fit.cost) else None,
+            "finite": bool(np.isfinite(fit.cost) and np.isfinite(fit.x).all())}
+            for start, fit in zip(starts, fits)],
     }
 
 

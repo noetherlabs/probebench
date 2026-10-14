@@ -46,7 +46,8 @@ def source_inventory():
     return root, {str(p.relative_to(root)): digest(p) for p in paths}
 
 
-def verify_run(path):
+def verify_files(path):
+    """Shared artifact-integrity check; callers validate their own study schema."""
     root = Path(path)
     if root.is_symlink():
         raise ValueError("Run root must not be a symbolic link")
@@ -54,8 +55,6 @@ def verify_run(path):
     if manifest_path.is_symlink():
         raise ValueError("Manifest must not be a symbolic link")
     manifest = json.loads(manifest_path.read_text())
-    if manifest.get("schema") != 1 or manifest.get("purpose") != "development_only":
-        raise ValueError("Unknown run schema or purpose")
     actual = {str(p.relative_to(root)) for p in root.rglob("*") if p.is_file()}
     if actual != set(manifest["files"]) | {"manifest.json"}:
         raise ValueError("Missing or unlisted run artifact")
@@ -66,6 +65,14 @@ def verify_run(path):
             raise ValueError("Unsafe artifact path")
         if digest(file) != expected:
             raise ValueError(f"Artifact hash mismatch: {name}")
+    return manifest
+
+
+def verify_run(path):
+    root = Path(path)
+    manifest = verify_files(root)
+    if manifest.get("schema") != 1 or manifest.get("purpose") != "development_only":
+        raise ValueError("Unknown run schema or purpose")
     summaries = json.loads((root / "summary.json").read_text())
     if len(summaries) != manifest["episodes"]:
         raise ValueError("Incomplete episode summary")

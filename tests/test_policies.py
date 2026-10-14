@@ -18,6 +18,8 @@ def test_known_phase_diversity_recovers_noiseless_six_mode_truth(truth):
     estimate, diagnostics = estimate_phase(model, observations)
     np.testing.assert_allclose(estimate, truth, atol=0.002, rtol=0)
     assert diagnostics["optimizer_success"]
+    assert len(diagnostics["start_records"]) == 3
+    assert diagnostics["actual_residual_evaluations"] >= diagnostics["reported_function_evaluations"]
 
 
 def test_estimator_rejects_missing_diversity():
