@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add separate direct-action and tool-assisted JSON interfaces, strict action/resource
+  validation, charged initial images and resumable input/response journals.
+- Verify resumed camera images and saved estimator replies; retain explicit failed
+  outcomes for input deadlines, malformed-request exhaustion, EOF and oversized input.
 - Retain the 192-episode measurement-schedule ablation, paired comparisons, conjugate
   likelihood checks and complete optimizer evidence; report both correction error and
   temporary degradation, including cases favouring each diversity schedule.

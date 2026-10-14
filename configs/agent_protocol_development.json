@@ -1,0 +1,14 @@
+{
+  "purpose": "public_development_only",
+  "optics": {"pupil_pixels": 32, "oversampling": 2, "wavelength_nm": 550.0},
+  "instrument": {"max_exposures": 3, "photon_budget": 60000, "photons_per_exposure": 20000,
+                 "read_noise_electrons": 1.0, "command_limit_nm": 200.0},
+  "hidden_opd_nm": [30,12,-10,8,-6,15],
+  "detector_seed": 80000001,
+  "track": "tool_assisted",
+  "max_requests": 16,
+  "max_tool_calls": 3,
+  "max_mle_iterations": 200,
+  "decision_timeout_seconds": 120,
+  "operating_reserve_bytes": 1073741824
+}

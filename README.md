@@ -102,6 +102,11 @@ runner includes complete six-dimensional sweeps at larger exposure allowances.
 The policy API separates observations from evaluator state but does not sandbox
 untrusted Python. See [security](SECURITY.md) for execution and artifact trust boundaries.
 
+The [local agent protocol](docs/agent-protocol.md) provides separate direct-action and
+tool-assisted JSON interfaces, strict action validation, charged initial observations
+and resumable message journals. Its scripted process control qualifies the interface;
+it does not represent a language-model result.
+
 ## Repository structure
 
 - `src/probebench/`: propagation, detector, policies, likelihood and experiment runners.
