@@ -90,3 +90,22 @@ The sequential runner records all earlier exposures of the final command in
 when that list is nonempty. `final_command_is_last_observation` retains the narrower
 last-frame condition. Per-exposure checkpoints, completed-fit reuse and verification
 of physical metrics are specified in the [sequential protocol](sequential-calibration.md).
+
+## Selection and paired analysis
+
+The [global parameter selector](parameter-selection.md) has separate estimate,
+acquisition, resume and verification modes. `--estimate` validates the proposed
+cohort and reports whole-study storage requirements without acquiring observations.
+Limited acquisition chunks remain incomplete until every expected episode is retained.
+Incomplete resumes verify retained evidence before granting storage credit; completed
+archive verification replays camera draws and policy commands using saved fits,
+without rerunning the optimizer. The full v1 selection has not been completed and
+supplies no selected reference yet.
+
+The [paired curve reducer](paired-curve-analysis.md) is a Python API; it does not
+write an archive or provide a command-line verification mode. For reproducible
+analysis, retain the expected cases, outcomes, reference/target assignment, track,
+bootstrap arguments and returned result together with source and numerical-environment
+bindings. Its input hash covers validated records, not all of those analysis settings,
+and does not authenticate their origin. A complete paired reduction does not establish
+reserved-cohort provenance or turn tuning outcomes into held-out evidence.

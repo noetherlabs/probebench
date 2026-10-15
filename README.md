@@ -86,6 +86,24 @@ It supports development and selection cases; reserved evaluation is not implemen
 See [artifact formats](docs/artifact-formats.md) to generate figures, inspect an offline
 measurement replay or load a local ImageFolder export with Hugging Face Datasets.
 
+The [global parameter selector](docs/parameter-selection.md) compares 14 settings across
+six classical families on a separate public tuning cohort. It retains every candidate
+and numerical fallback and selects one setting per family with equal cell and RMS-stratum
+weights. The full v1 acquisition has not run, and no v1 winner exists. Inspect its
+whole-study storage requirements before acquisition:
+
+```sh
+uv run --locked python -m probebench.selection \
+  --config configs/classical_selection_v1.json --estimate
+```
+
+The [paired curve analysis](docs/paired-curve-analysis.md) computes target-minus-reference
+WFE at each photon and exposure allowance. It resamples independent wavefront bases
+within RMS strata while retaining paired methods, conjugate members, detector replicates
+and the complete budget curve. Pointwise percentile intervals are conditional on fixed
+methods and a complete input inventory; the reducer does not select policies or establish
+held-out evaluation provenance.
+
 | Experiment | Retained evidence | Purpose |
 | --- | --- | --- |
 | [Optical ambiguity](results/development-20261014/report.md) | 16 episodes; four policies and four wavefront fixtures | Observation/action accounting and diagnostic probing |

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Add paired WFE curves with equal RMS-stratum weights, whole-base cluster resampling,
+  pointwise percentile intervals, complete outcome accounting and deterministic streams.
+- Preserve small signed cancellation terms and finite extreme values in hierarchical
+  means and percentile interpolation; bound bootstrap matrix size and sampling work.
+- Add global classical-parameter selection on a separate physical-RMS tuning cohort,
+  with complete paired case coverage, equal cell/stratum weights and one setting per
+  family; retain every candidate and numerical fallback in the selection loss.
+- Verify candidate-bound camera and command replay, exact fit observation-prefix
+  sequences and camera-score fallback commands without rerunning the optimizer.
+- Add whole-study storage estimates and verified allocated-byte credit on incomplete
+  resumes, preserving the operating reserve; cap selector v1 at 13 exposures per episode.
 - Add physical-RMS wavefront sampling with conjugate-cluster identities, explicit
   fixture exclusions and cross-cohort overlap checks using the finite-pupil metric.
 - Retain source-bound development/selection cohorts with deterministic per-base
