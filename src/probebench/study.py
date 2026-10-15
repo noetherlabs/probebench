@@ -15,7 +15,15 @@ from .run import digest, source_inventory, verify_files
 
 
 @contextmanager
-def study_directory(root, configuration, raw_bytes, resume=False):
+def study_directory(root, configuration, raw_bytes, resume=False, *, resume_credit=None):
+    """Open a bound study under an exclusive lock and enforce storage admission.
+
+    An optional ``resume_credit(root, study)`` callback may validate retained
+    artifacts and return their allocated byte count. It runs only for incomplete,
+    already-bound resumes, after source and binding checks and while holding the
+    lock. Credit reduces the remaining storage requirement, but never the operating
+    reserve plus 16 MiB headroom. Omitting it preserves full admission on every run.
+    """
     root = Path(root)
     source_root, sources = source_inventory()
     study = {"configuration": configuration, "source_sha256": sources,
@@ -37,6 +45,7 @@ def study_directory(root, configuration, raw_bytes, resume=False):
     with (root / ".lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         header = root / "study.json"
+        resuming_bound_study = resume and header.exists()
         if header.exists():
             if json.loads(header.read_text()) != study:
                 raise ValueError("Source, configuration or runtime changed; resume refused")
@@ -56,8 +65,15 @@ def study_directory(root, configuration, raw_bytes, resume=False):
                 temporary = dest.with_suffix(dest.suffix + ".pending")
                 shutil.copyfile(source_root / relative, temporary)
                 os.replace(temporary, dest)
-        if not (root / "manifest.json").exists() and shutil.disk_usage(root.parent).free < required:
-            raise OSError("Insufficient disk for continued study and operating reserve")
+        if not (root / "manifest.json").exists():
+            remaining_required = required
+            if resuming_bound_study and resume_credit is not None:
+                credit = resume_credit(root, study)
+                if type(credit) is not int or credit < 0:
+                    raise ValueError("Resume storage credit must be a nonnegative integer")
+                remaining_required = max(reserve + 16*1024**2, required - credit)
+            if shutil.disk_usage(root.parent).free < remaining_required:
+                raise OSError("Insufficient disk for continued study and operating reserve")
         yield study
 
 
