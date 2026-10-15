@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add physical-RMS wavefront sampling with conjugate-cluster identities, explicit
+  fixture exclusions and cross-cohort overlap checks using the finite-pupil metric.
+- Retain source-bound development/selection cohorts with deterministic per-base
+  streams, correctability checks and exact regeneration during artifact verification.
 - Preserve interrupted response-publication buffers as incomplete evidence and
   finalize the corresponding unknown-outcome failure without repeated generation.
 - Add a local vision-model adapter with explicit image/metadata prompts, model-digest

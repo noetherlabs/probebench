@@ -1,0 +1,93 @@
+{
+  "specification": {
+    "schema": 1,
+    "cohort_id": "rms_development_example",
+    "split": "development",
+    "optics": {
+      "pupil_pixels": 32,
+      "oversampling": 2,
+      "wavelength_nm": 550.0
+    },
+    "strata": [
+      {
+        "id": "low",
+        "rms_min_nm": 10.0,
+        "rms_max_nm": 25.0,
+        "base_count": 4
+      },
+      {
+        "id": "medium",
+        "rms_min_nm": 25.0,
+        "rms_max_nm": 50.0,
+        "base_count": 4
+      },
+      {
+        "id": "high",
+        "rms_min_nm": 50.0,
+        "rms_max_nm": 90.0,
+        "base_count": 4
+      }
+    ],
+    "command_limit_nm": 200.0,
+    "overlap_tolerance_nm": 1e-06
+  },
+  "seed_hex": "a57030d379620c6a3da968751abea6d27e382f928875ce670ae31361100eb748",
+  "exclusions": {
+    "schema": 1,
+    "optics": {
+      "pupil_pixels": 32,
+      "oversampling": 2,
+      "wavelength_nm": 550.0
+    },
+    "wavefronts": [
+      {
+        "id": "development_defocus",
+        "truth_opd_nm": [
+          -45.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sources": [
+          "results/development-20261014/configuration.json#/fixtures/1/1"
+        ]
+      },
+      {
+        "id": "development_mixed_a",
+        "truth_opd_nm": [
+          -30.0,
+          -12.0,
+          10.0,
+          8.0,
+          -6.0,
+          -15.0
+        ],
+        "sources": [
+          "configs/noise_qualification_development.json#/truths_opd_nm/1",
+          "configs/sequential_calibration_development.json#/truths_opd_nm/1",
+          "configs/measurement_schedule_development.json#/truths_opd_nm/1"
+        ]
+      },
+      {
+        "id": "development_mixed_b",
+        "truth_opd_nm": [
+          -25.0,
+          -8.0,
+          14.0,
+          -10.0,
+          9.0,
+          -12.0
+        ],
+        "sources": [
+          "results/development-20261014/configuration.json#/fixtures/3/1",
+          "configs/noise_qualification_development.json#/truths_opd_nm/2",
+          "configs/sequential_calibration_development.json#/truths_opd_nm/2",
+          "configs/measurement_schedule_development.json#/truths_opd_nm/2"
+        ]
+      }
+    ]
+  },
+  "operating_reserve_bytes": 1073741824
+}

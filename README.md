@@ -80,6 +80,9 @@ The [sequential protocol](docs/sequential-calibration.md) defines all four polic
 budget pairing, final-command measurement status and exposure-level resumption.
 The [measurement-schedule ablation](docs/measurement-schedule-ablation.md) specifies
 matched-estimator controls for repeated unprobed and fixed-diversity acquisition.
+The [wavefront cohort generator](docs/wavefront-cohorts.md) samples declared physical
+RMS ranges and checks separation from exposed fixtures modulo conjugate ambiguity.
+It supports development and selection cases; reserved evaluation is not implemented.
 See [artifact formats](docs/artifact-formats.md) to generate figures, inspect an offline
 measurement replay or load a local ImageFolder export with Hugging Face Datasets.
 
