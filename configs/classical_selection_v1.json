@@ -1,0 +1,966 @@
+{
+  "schema": 1,
+  "purpose": "classical_parameter_selection_v1",
+  "cohort": {
+    "specification": {
+      "schema": 1,
+      "cohort_id": "rms_selection_v1",
+      "split": "selection",
+      "optics": {
+        "pupil_pixels": 32,
+        "oversampling": 2,
+        "wavelength_nm": 550.0
+      },
+      "strata": [
+        {
+          "id": "low",
+          "rms_min_nm": 10.0,
+          "rms_max_nm": 25.0,
+          "base_count": 4
+        },
+        {
+          "id": "medium",
+          "rms_min_nm": 25.0,
+          "rms_max_nm": 50.0,
+          "base_count": 4
+        },
+        {
+          "id": "high",
+          "rms_min_nm": 50.0,
+          "rms_max_nm": 90.0,
+          "base_count": 4
+        }
+      ],
+      "command_limit_nm": 200.0,
+      "overlap_tolerance_nm": 1e-06
+    },
+    "seed_hex": "aca9f5cde1783a947097a2f6be1647ba074a700779236def80958888c0b4c911",
+    "exclusions": {
+      "schema": 1,
+      "optics": {
+        "pupil_pixels": 32,
+        "oversampling": 2,
+        "wavelength_nm": 550.0
+      },
+      "wavefronts": [
+        {
+          "id": "development_defocus",
+          "truth_opd_nm": [
+            -45.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sources": [
+            "results/development-20261014/configuration.json#/fixtures/1/1"
+          ]
+        },
+        {
+          "id": "development_mixed_a",
+          "truth_opd_nm": [
+            -30.0,
+            -12.0,
+            10.0,
+            8.0,
+            -6.0,
+            -15.0
+          ],
+          "sources": [
+            "configs/noise_qualification_development.json#/truths_opd_nm/1",
+            "configs/sequential_calibration_development.json#/truths_opd_nm/1",
+            "configs/measurement_schedule_development.json#/truths_opd_nm/1"
+          ]
+        },
+        {
+          "id": "development_mixed_b",
+          "truth_opd_nm": [
+            -25.0,
+            -8.0,
+            14.0,
+            -10.0,
+            9.0,
+            -12.0
+          ],
+          "sources": [
+            "results/development-20261014/configuration.json#/fixtures/3/1",
+            "configs/noise_qualification_development.json#/truths_opd_nm/2",
+            "configs/sequential_calibration_development.json#/truths_opd_nm/2",
+            "configs/measurement_schedule_development.json#/truths_opd_nm/2"
+          ]
+        },
+        {
+          "id": "analytic_gram_conjugacy",
+          "truth_opd_nm": [
+            31.0,
+            -12.0,
+            8.0,
+            19.0,
+            -7.0,
+            15.0
+          ],
+          "sources": [
+            "tests/test_cohorts.py#test_physical_gram_and_conjugacy_against_direct_pupil_and_fft"
+          ]
+        },
+        {
+          "id": "analytic_zero",
+          "truth_opd_nm": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sources": [
+            "tests/test_cohorts.py#test_conjugate_singletons_and_pure_coma_sign_are_distinct"
+          ]
+        },
+        {
+          "id": "pure_coma_positive",
+          "truth_opd_nm": [
+            0.0,
+            0.0,
+            0.0,
+            25.0,
+            -10.0,
+            0.0
+          ],
+          "sources": [
+            "tests/test_cohorts.py#test_conjugate_singletons_and_pure_coma_sign_are_distinct"
+          ]
+        },
+        {
+          "id": "pure_coma_negative",
+          "truth_opd_nm": [
+            0.0,
+            0.0,
+            0.0,
+            -25.0,
+            10.0,
+            0.0
+          ],
+          "sources": [
+            "tests/test_cohorts.py#test_conjugate_singletons_and_pure_coma_sign_are_distinct"
+          ]
+        },
+        {
+          "id": "analytic_pupil_rms",
+          "truth_opd_nm": [
+            35.0,
+            10.0,
+            -12.0,
+            8.0,
+            6.0,
+            -15.0
+          ],
+          "sources": [
+            "tests/test_optics.py#test_unit_power_piston_free_modes_and_actual_pupil_rms"
+          ]
+        },
+        {
+          "id": "analytic_direct_fourier",
+          "truth_opd_nm": [
+            31.0,
+            -11.0,
+            7.0,
+            14.0,
+            -5.0,
+            20.0
+          ],
+          "sources": [
+            "tests/test_optics.py#test_fft_field_matches_direct_matrix_fourier_sum"
+          ]
+        },
+        {
+          "id": "protocol_private_mutation",
+          "truth_opd_nm": [
+            91.0,
+            82.0,
+            73.0,
+            64.0,
+            55.0,
+            46.0
+          ],
+          "sources": [
+            "tests/test_agent_protocol.py#test_public_schema_contains_only_calibration_measurements_and_declared_resources"
+          ]
+        },
+        {
+          "id": "analytic_difference_0_plus",
+          "truth_opd_nm": [
+            30.0001,
+            12.0,
+            -10.0,
+            8.0,
+            -6.0,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_0_minus",
+          "truth_opd_nm": [
+            29.9999,
+            12.0,
+            -10.0,
+            8.0,
+            -6.0,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_1_plus",
+          "truth_opd_nm": [
+            30.0,
+            12.0001,
+            -10.0,
+            8.0,
+            -6.0,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_1_minus",
+          "truth_opd_nm": [
+            30.0,
+            11.9999,
+            -10.0,
+            8.0,
+            -6.0,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_2_plus",
+          "truth_opd_nm": [
+            30.0,
+            12.0,
+            -9.9999,
+            8.0,
+            -6.0,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_2_minus",
+          "truth_opd_nm": [
+            30.0,
+            12.0,
+            -10.0001,
+            8.0,
+            -6.0,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_3_plus",
+          "truth_opd_nm": [
+            30.0,
+            12.0,
+            -10.0,
+            8.0001,
+            -6.0,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_3_minus",
+          "truth_opd_nm": [
+            30.0,
+            12.0,
+            -10.0,
+            7.9999,
+            -6.0,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_4_plus",
+          "truth_opd_nm": [
+            30.0,
+            12.0,
+            -10.0,
+            8.0,
+            -5.9999,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_4_minus",
+          "truth_opd_nm": [
+            30.0,
+            12.0,
+            -10.0,
+            8.0,
+            -6.0001,
+            15.0
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_5_plus",
+          "truth_opd_nm": [
+            30.0,
+            12.0,
+            -10.0,
+            8.0,
+            -6.0,
+            15.0001
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "analytic_difference_5_minus",
+          "truth_opd_nm": [
+            30.0,
+            12.0,
+            -10.0,
+            8.0,
+            -6.0,
+            14.9999
+          ],
+          "sources": [
+            "tests/test_estimation.py#test_optical_jacobian_matches_six_directional_differences"
+          ]
+        },
+        {
+          "id": "near_primary",
+          "truth_opd_nm": [
+            47.54531942410715,
+            -18.83614148196474,
+            -27.431578859915373,
+            -16.915878681264626,
+            7.55364873485045,
+            22.050577658287867
+          ],
+          "sources": [
+            "tests/test_cohorts.py#test_exclusion_overlap_rejected_modulo_conjugacy"
+          ]
+        },
+        {
+          "id": "near_conjugate",
+          "truth_opd_nm": [
+            -47.54531842410715,
+            18.83614148196474,
+            27.431578859915373,
+            -16.915878681264626,
+            7.55364873485045,
+            -22.050577658287867
+          ],
+          "sources": [
+            "tests/test_cohorts.py#test_exclusion_overlap_rejected_modulo_conjugacy"
+          ]
+        },
+        {
+          "id": "rejected_archive",
+          "truth_opd_nm": [
+            48.54531892410715,
+            -18.83614148196474,
+            -27.431578859915373,
+            -16.915878681264626,
+            7.55364873485045,
+            22.050577658287867
+          ],
+          "sources": [
+            "tests/test_cohorts.py#test_artifact_resume_verification_and_rehashed_tamper"
+          ]
+        },
+        {
+          "id": "shifted_exclusion",
+          "truth_opd_nm": [
+            -44.9999992,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sources": [
+            "tests/test_cohorts.py#test_approximate_registry_cannot_shift_original_fixture_exclusion"
+          ]
+        },
+        {
+          "id": "selection_unit_fixture",
+          "truth_opd_nm": [
+            11.887560297947818,
+            -4.0381572995638795,
+            -3.308738887089495,
+            -1.0792238139105135,
+            -1.5023631913119853,
+            6.966848667830512
+          ],
+          "sources": [
+            "tests/test_selection.py#config"
+          ]
+        },
+        {
+          "id": "selection_exclusion_test_11",
+          "truth_opd_nm": [
+            4.711832330486372,
+            -4.152118087684256,
+            -0.7452176923078002,
+            -8.067722183427735,
+            6.78368866981547,
+            3.18593245214075
+          ],
+          "sources": [
+            "tests/test_selection.py#test_composite_exclusions_reject_overlap_and_allow_repeated_exclusion_ids"
+          ]
+        },
+        {
+          "id": "selection_exclusion_test_02",
+          "truth_opd_nm": [
+            -10.211088085702269,
+            -10.309056670767776,
+            0.9742334758596113,
+            1.7072626031915807,
+            0.16187016346490063,
+            -2.3539721416705457
+          ],
+          "sources": [
+            "tests/test_selection.py#test_composite_exclusions_reject_overlap_and_allow_repeated_exclusion_ids"
+          ]
+        },
+        {
+          "id": "selection_fingerprint_test",
+          "truth_opd_nm": [
+            -5.733033644045801,
+            11.992093933900955,
+            11.35666136438945,
+            3.305588792908304,
+            -10.504818252548349,
+            3.254877545634464
+          ],
+          "sources": [
+            "tests/test_selection.py#test_changed_exclusion_fingerprint_is_rejected"
+          ]
+        }
+      ]
+    },
+    "operating_reserve_bytes": 1073741824
+  },
+  "excluded_cohorts": [
+    {
+      "configuration": {
+        "specification": {
+          "schema": 1,
+          "cohort_id": "rms_development_example",
+          "split": "development",
+          "optics": {
+            "pupil_pixels": 32,
+            "oversampling": 2,
+            "wavelength_nm": 550.0
+          },
+          "strata": [
+            {
+              "id": "low",
+              "rms_min_nm": 10.0,
+              "rms_max_nm": 25.0,
+              "base_count": 4
+            },
+            {
+              "id": "medium",
+              "rms_min_nm": 25.0,
+              "rms_max_nm": 50.0,
+              "base_count": 4
+            },
+            {
+              "id": "high",
+              "rms_min_nm": 50.0,
+              "rms_max_nm": 90.0,
+              "base_count": 4
+            }
+          ],
+          "command_limit_nm": 200.0,
+          "overlap_tolerance_nm": 1e-06
+        },
+        "seed_hex": "a57030d379620c6a3da968751abea6d27e382f928875ce670ae31361100eb748",
+        "exclusions": {
+          "schema": 1,
+          "optics": {
+            "pupil_pixels": 32,
+            "oversampling": 2,
+            "wavelength_nm": 550.0
+          },
+          "wavefronts": [
+            {
+              "id": "development_defocus",
+              "truth_opd_nm": [
+                -45.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "sources": [
+                "results/development-20261014/configuration.json#/fixtures/1/1"
+              ]
+            },
+            {
+              "id": "development_mixed_a",
+              "truth_opd_nm": [
+                -30.0,
+                -12.0,
+                10.0,
+                8.0,
+                -6.0,
+                -15.0
+              ],
+              "sources": [
+                "configs/noise_qualification_development.json#/truths_opd_nm/1",
+                "configs/sequential_calibration_development.json#/truths_opd_nm/1",
+                "configs/measurement_schedule_development.json#/truths_opd_nm/1"
+              ]
+            },
+            {
+              "id": "development_mixed_b",
+              "truth_opd_nm": [
+                -25.0,
+                -8.0,
+                14.0,
+                -10.0,
+                9.0,
+                -12.0
+              ],
+              "sources": [
+                "results/development-20261014/configuration.json#/fixtures/3/1",
+                "configs/noise_qualification_development.json#/truths_opd_nm/2",
+                "configs/sequential_calibration_development.json#/truths_opd_nm/2",
+                "configs/measurement_schedule_development.json#/truths_opd_nm/2"
+              ]
+            }
+          ]
+        },
+        "operating_reserve_bytes": 1073741824
+      },
+      "clusters_sha256": "769bb018ea2f3eb7f7d8ea650f84e6764bb103d5467779bca7d13754051863f2"
+    },
+    {
+      "configuration": {
+        "specification": {
+          "schema": 1,
+          "cohort_id": "rms_development_example",
+          "split": "development",
+          "optics": {
+            "pupil_pixels": 32,
+            "oversampling": 2,
+            "wavelength_nm": 550.0
+          },
+          "strata": [
+            {
+              "id": "shell",
+              "rms_min_nm": 20.0,
+              "rms_max_nm": 80.0,
+              "base_count": 4096
+            }
+          ],
+          "command_limit_nm": 200.0,
+          "overlap_tolerance_nm": 1e-06
+        },
+        "seed_hex": "a57030d379620c6a3da968751abea6d27e382f928875ce670ae31361100eb748",
+        "exclusions": {
+          "schema": 1,
+          "optics": {
+            "pupil_pixels": 32,
+            "oversampling": 2,
+            "wavelength_nm": 550.0
+          },
+          "wavefronts": [
+            {
+              "id": "development_defocus",
+              "truth_opd_nm": [
+                -45.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "sources": [
+                "results/development-20261014/configuration.json#/fixtures/1/1"
+              ]
+            },
+            {
+              "id": "development_mixed_a",
+              "truth_opd_nm": [
+                -30.0,
+                -12.0,
+                10.0,
+                8.0,
+                -6.0,
+                -15.0
+              ],
+              "sources": [
+                "configs/noise_qualification_development.json#/truths_opd_nm/1",
+                "configs/sequential_calibration_development.json#/truths_opd_nm/1",
+                "configs/measurement_schedule_development.json#/truths_opd_nm/1"
+              ]
+            },
+            {
+              "id": "development_mixed_b",
+              "truth_opd_nm": [
+                -25.0,
+                -8.0,
+                14.0,
+                -10.0,
+                9.0,
+                -12.0
+              ],
+              "sources": [
+                "results/development-20261014/configuration.json#/fixtures/3/1",
+                "configs/noise_qualification_development.json#/truths_opd_nm/2",
+                "configs/sequential_calibration_development.json#/truths_opd_nm/2",
+                "configs/measurement_schedule_development.json#/truths_opd_nm/2"
+              ]
+            }
+          ]
+        },
+        "operating_reserve_bytes": 1073741824
+      },
+      "clusters_sha256": "0bac4e9194c26bd4b27b906e4432767c66cc69fe54341b3c73a2ea69408932c0"
+    },
+    {
+      "configuration": {
+        "specification": {
+          "schema": 1,
+          "cohort_id": "selection_example",
+          "split": "selection",
+          "optics": {
+            "pupil_pixels": 32,
+            "oversampling": 2,
+            "wavelength_nm": 550.0
+          },
+          "strata": [
+            {
+              "id": "low",
+              "rms_min_nm": 10.0,
+              "rms_max_nm": 25.0,
+              "base_count": 4
+            },
+            {
+              "id": "medium",
+              "rms_min_nm": 25.0,
+              "rms_max_nm": 50.0,
+              "base_count": 4
+            },
+            {
+              "id": "high",
+              "rms_min_nm": 50.0,
+              "rms_max_nm": 90.0,
+              "base_count": 4
+            }
+          ],
+          "command_limit_nm": 200.0,
+          "overlap_tolerance_nm": 1e-06
+        },
+        "seed_hex": "a57030d379620c6a3da968751abea6d27e382f928875ce670ae31361100eb748",
+        "exclusions": {
+          "schema": 1,
+          "optics": {
+            "pupil_pixels": 32,
+            "oversampling": 2,
+            "wavelength_nm": 550.0
+          },
+          "wavefronts": [
+            {
+              "id": "development_defocus",
+              "truth_opd_nm": [
+                -45.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "sources": [
+                "results/development-20261014/configuration.json#/fixtures/1/1"
+              ]
+            },
+            {
+              "id": "development_mixed_a",
+              "truth_opd_nm": [
+                -30.0,
+                -12.0,
+                10.0,
+                8.0,
+                -6.0,
+                -15.0
+              ],
+              "sources": [
+                "configs/noise_qualification_development.json#/truths_opd_nm/1",
+                "configs/sequential_calibration_development.json#/truths_opd_nm/1",
+                "configs/measurement_schedule_development.json#/truths_opd_nm/1"
+              ]
+            },
+            {
+              "id": "development_mixed_b",
+              "truth_opd_nm": [
+                -25.0,
+                -8.0,
+                14.0,
+                -10.0,
+                9.0,
+                -12.0
+              ],
+              "sources": [
+                "results/development-20261014/configuration.json#/fixtures/3/1",
+                "configs/noise_qualification_development.json#/truths_opd_nm/2",
+                "configs/sequential_calibration_development.json#/truths_opd_nm/2",
+                "configs/measurement_schedule_development.json#/truths_opd_nm/2"
+              ]
+            }
+          ]
+        },
+        "operating_reserve_bytes": 1073741824
+      },
+      "clusters_sha256": "2dd3f240b6d6f6af91c1c793097cfc10c2ec3127db1bd83fddf5df1a6d3ff810"
+    },
+    {
+      "configuration": {
+        "specification": {
+          "schema": 1,
+          "cohort_id": "rms_development_example",
+          "split": "development",
+          "optics": {
+            "pupil_pixels": 32,
+            "oversampling": 2,
+            "wavelength_nm": 550.0
+          },
+          "strata": [
+            {
+              "id": "low",
+              "rms_min_nm": 10.0,
+              "rms_max_nm": 25.0,
+              "base_count": 4
+            },
+            {
+              "id": "medium",
+              "rms_min_nm": 25.0,
+              "rms_max_nm": 50.0,
+              "base_count": 4
+            },
+            {
+              "id": "high",
+              "rms_min_nm": 50.0,
+              "rms_max_nm": 90.0,
+              "base_count": 4
+            }
+          ],
+          "command_limit_nm": 200.0,
+          "overlap_tolerance_nm": 1e-06
+        },
+        "seed_hex": "0202020202020202020202020202020202020202020202020202020202020202",
+        "exclusions": {
+          "schema": 1,
+          "optics": {
+            "pupil_pixels": 32,
+            "oversampling": 2,
+            "wavelength_nm": 550.0
+          },
+          "wavefronts": [
+            {
+              "id": "development_defocus",
+              "truth_opd_nm": [
+                -45.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "sources": [
+                "results/development-20261014/configuration.json#/fixtures/1/1"
+              ]
+            },
+            {
+              "id": "development_mixed_a",
+              "truth_opd_nm": [
+                -30.0,
+                -12.0,
+                10.0,
+                8.0,
+                -6.0,
+                -15.0
+              ],
+              "sources": [
+                "configs/noise_qualification_development.json#/truths_opd_nm/1",
+                "configs/sequential_calibration_development.json#/truths_opd_nm/1",
+                "configs/measurement_schedule_development.json#/truths_opd_nm/1"
+              ]
+            },
+            {
+              "id": "development_mixed_b",
+              "truth_opd_nm": [
+                -25.0,
+                -8.0,
+                14.0,
+                -10.0,
+                9.0,
+                -12.0
+              ],
+              "sources": [
+                "results/development-20261014/configuration.json#/fixtures/3/1",
+                "configs/noise_qualification_development.json#/truths_opd_nm/2",
+                "configs/sequential_calibration_development.json#/truths_opd_nm/2",
+                "configs/measurement_schedule_development.json#/truths_opd_nm/2"
+              ]
+            }
+          ]
+        },
+        "operating_reserve_bytes": 1073741824
+      },
+      "clusters_sha256": "7c2fad2adcf49af6092ef227772bd89242df9ab3f62ef198c5cfcdbdedfd0271"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "no_action_default",
+      "family": "no_action_v2",
+      "parameters": {}
+    },
+    {
+      "id": "unprobed_default",
+      "family": "unprobed_mle_v1",
+      "parameters": {}
+    },
+    {
+      "id": "random_amp_020",
+      "family": "random_probe_v2",
+      "parameters": {
+        "random_amplitude_nm": 20.0
+      }
+    },
+    {
+      "id": "random_amp_040",
+      "family": "random_probe_v2",
+      "parameters": {
+        "random_amplitude_nm": 40.0
+      }
+    },
+    {
+      "id": "random_amp_080",
+      "family": "random_probe_v2",
+      "parameters": {
+        "random_amplitude_nm": 80.0
+      }
+    },
+    {
+      "id": "coordinate_step_020",
+      "family": "coordinate_search_v2",
+      "parameters": {
+        "coordinate_step_nm": 20.0
+      }
+    },
+    {
+      "id": "coordinate_step_040",
+      "family": "coordinate_search_v2",
+      "parameters": {
+        "coordinate_step_nm": 40.0
+      }
+    },
+    {
+      "id": "coordinate_step_080",
+      "family": "coordinate_search_v2",
+      "parameters": {
+        "coordinate_step_nm": 80.0
+      }
+    },
+    {
+      "id": "fixed_probe_040",
+      "family": "fixed_diversity_mle_v1",
+      "parameters": {
+        "diversity_probe_nm": 40.0
+      }
+    },
+    {
+      "id": "fixed_probe_080",
+      "family": "fixed_diversity_mle_v1",
+      "parameters": {
+        "diversity_probe_nm": 80.0
+      }
+    },
+    {
+      "id": "fixed_probe_120",
+      "family": "fixed_diversity_mle_v1",
+      "parameters": {
+        "diversity_probe_nm": 120.0
+      }
+    },
+    {
+      "id": "adaptive_probe_040",
+      "family": "phase_diversity_mle_v1",
+      "parameters": {
+        "diversity_probe_nm": 40.0
+      }
+    },
+    {
+      "id": "adaptive_probe_080",
+      "family": "phase_diversity_mle_v1",
+      "parameters": {
+        "diversity_probe_nm": 80.0
+      }
+    },
+    {
+      "id": "adaptive_probe_120",
+      "family": "phase_diversity_mle_v1",
+      "parameters": {
+        "diversity_probe_nm": 120.0
+      }
+    }
+  ],
+  "common_policy": {
+    "random_amplitude_nm": 60.0,
+    "coordinate_step_nm": 40.0,
+    "coordinate_step_floor_nm": 5.0,
+    "diversity_probe_nm": 80.0,
+    "max_mle_iterations": 200
+  },
+  "replicates": 2,
+  "photons_per_exposure": [
+    2000,
+    20000
+  ],
+  "exposure_budgets": [
+    3,
+    7,
+    13
+  ],
+  "read_noise_electrons": 1.0,
+  "detector_seed_hex": "56efacc8fe1e326e73882ed4d1ffe05d9b1315a4d64d89a37696bed77d92f7ce",
+  "policy_seed_hex": "160ed88f01a47e477d0ad3b663fc1ba7b50512e74427bdf754e72e8a441c0843",
+  "operating_reserve_bytes": 1073741824
+}
