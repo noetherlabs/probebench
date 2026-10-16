@@ -83,7 +83,7 @@ def action_from_response(transport, model):
     if response.get("done_reason") != "stop":
         raise ValueError("generation_not_stopped_normally")
     message = response.get("message",{})
-    if (message.get("role") != "assistant" or not isinstance(message.get("content"),str)
+    if (not isinstance(message,dict) or message.get("role") != "assistant" or not isinstance(message.get("content"),str)
         or message.get("tool_calls")):
         raise ValueError("unsupported_model_message")
     content = message["content"]

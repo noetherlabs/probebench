@@ -288,6 +288,17 @@ def verify_run(root):
     root = Path(root)
     manifest, study = verify_study(root, PURPOSE)
     cases = cases_for(study["configuration"])
+    expected_records = {f'cases/{case["id"]}.json' for case in cases}
+    expected_frames = {
+        f'frames/{case["id"]}/frame_{index:04d}.npz'
+        for case in cases for index in range(case["exposure_budget"])
+    }
+    # Hash membership alone does not establish that an episode was validated.
+    # Consumers must not discover extra, attacker-supplied cases after verification.
+    actual_records = {name for name in manifest["files"] if name.startswith("cases/")}
+    actual_frames = {name for name in manifest["files"] if name.startswith("frames/")}
+    if actual_records != expected_records or actual_frames != expected_frames:
+        raise ValueError("Unexpected sequential episode or exposure inventory")
     rows = [summary_row(read_episode(root, study, case)) for case in cases]
     if (manifest["episode_count"] != len(cases)
         or manifest["exposure_count"] != sum(c["exposure_budget"] for c in cases)

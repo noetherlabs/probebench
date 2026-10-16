@@ -255,7 +255,9 @@ def test_prepared_but_not_dispatched_generation_can_resume(configs,tmp_path,monk
 
 @pytest.mark.parametrize("change,reason",[
     ("length","generation_not_stopped_normally"),("wrong_model","incomplete_or_wrong_model_response"),
-    ("large","model_action_too_large"),("tool_call","unsupported_model_message")])
+    ("large","model_action_too_large"),("tool_call","unsupported_model_message"),
+    ("null_message","unsupported_model_message"),("list_message","unsupported_model_message"),
+    ("string_message","unsupported_model_message"),("number_message","unsupported_model_message")])
 def test_unusable_responses_are_retained_without_camera_actions(configs,tmp_path,change,reason):
     model,session = configs
     class UnusableAPI(FixtureModel):
@@ -268,6 +270,9 @@ def test_unusable_responses_are_retained_without_camera_actions(configs,tmp_path
                 value["model"] = "another-model"
             elif change == "large":
                 value["message"]["content"] = "x"*17000
+            elif change.endswith("_message"):
+                value["message"] = {"null_message":None,"list_message":[],
+                                    "string_message":"invalid","number_message":1}[change]
             else:
                 value["message"]["tool_calls"] = [{"function":{"name":"unavailable"}}]
             transport["body_base64"] = base64.b64encode(encode_message(value).encode()).decode()
@@ -277,6 +282,8 @@ def test_unusable_responses_are_retained_without_camera_actions(configs,tmp_path
     result = json.loads((root/"result.json").read_text())
     assert result["model_failure"] == reason
     assert result["final_public_response"]["resources"]["exposures_used"] == 1
+    assert result["generation_attempts"] == 1
+    assert adapter.verify(root)["status"] == "failed"
 
 
 def test_optical_observation_rebinding_is_rejected_even_with_updated_hash_chain(configs,tmp_path):
