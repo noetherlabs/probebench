@@ -110,3 +110,7 @@ Reserved evaluation is not implemented. Agent integration tests qualify the inte
 not the performance of a language model.
 
 Built by [Noether Labs](https://www.noether.one/).
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE). See [NOTICE](NOTICE) for attribution.

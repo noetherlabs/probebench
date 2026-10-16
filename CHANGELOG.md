@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- License the project under Apache 2.0 with packaged license and attribution files.
+- Add pinned-action continuous integration for tests, repository-content checks,
+  and verification of the four retained experiments.
 - Retain malformed model-message containers as failed generations instead of crashing
   before the failure record is finalized; reject them without further camera actions.
 - Reject extra sequential episode records and exposure files before export or analysis,

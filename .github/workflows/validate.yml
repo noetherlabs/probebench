@@ -1,0 +1,35 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9 # v7
+        with:
+          python-version: '3.11'
+          enable-cache: false
+      - name: Install locked dependencies
+        run: uv sync --locked --extra dev
+      - name: Check repository content
+        run: uv run --locked python scripts/check_repository.py
+      - name: Run tests
+        run: uv run --locked python -m pytest -q
+      - name: Verify retained experiments
+        run: |
+          uv run --locked python -m probebench.run --verify results/development-20261014
+          uv run --locked python -m probebench.qualification --verify results/noise-qualification-20261014
+          uv run --locked python -m probebench.sequential --verify results/sequential-calibration-20261014
+          uv run --locked python -m probebench.sequential --verify results/measurement-schedule-20261014
