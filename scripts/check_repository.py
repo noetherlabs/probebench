@@ -5,9 +5,17 @@ import re
 import subprocess
 
 
-EXCLUDED_NAMES = {"AGENTS.md", "PLAN.md", "STATUS.md", "DECISIONS.md"}
-EXCLUDED_DIRECTORIES = {".codex", ".gstack", ".venv", "__pycache__", ".pytest_cache", "work"}
+EXCLUDED_NAMES = {
+    "agent.md", "agents.md", "claude.md", "gemini.md", "copilot-instructions.md",
+    "plan.md", "status.md", "decisions.md", ".cursorrules", ".windsurfrules",
+}
+EXCLUDED_DIRECTORIES = {
+    ".codex", ".claude", ".cursor", ".windsurf", ".gstack", ".venv",
+    "__pycache__", ".pytest_cache", "work",
+}
+PROSE_SUFFIXES = {".md", ".markdown", ".mdx", ".rst", ".txt", ".adoc", ".ipynb"}
 HOME_PATH = re.compile("/" + r"(?:Users|home)/[^/\s\"'<>]+")
+WINDOWS_HOME_PATH = re.compile(r"[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s\"'<>]+", re.I)
 # Detection only needs the final alphanumeric character before the suffix.
 # Excluding alphanumerics from the repetition avoids quadratic retries on long
 # encoded measurements while retaining the same existence test.
@@ -20,18 +28,21 @@ def inspect_files(files):
     findings = []
     for name, content in files.items():
         path = PurePosixPath(name)
-        if (path.name in EXCLUDED_NAMES or EXCLUDED_DIRECTORIES.intersection(path.parts)
-            or path.suffix in {".pem", ".key"}
-            or (path.name.startswith(".env") and path.name != ".env.example")
-            or (name.startswith("results/verification-") and path.suffix == ".xml")):
+        lower = path.name.lower()
+        parts = tuple(part.lower() for part in path.parts)
+        suffix = path.suffix.lower()
+        if (lower in EXCLUDED_NAMES or EXCLUDED_DIRECTORIES.intersection(parts)
+            or suffix in {".pem", ".key"}
+            or (lower.startswith(".env") and lower != ".env.example")
+            or (name.lower().startswith("results/verification-") and suffix == ".xml")):
             findings.append(f"{name}: excluded local or sensitive file")
         try:
             text = content.decode("utf-8")
         except UnicodeDecodeError:
             continue
-        if HOME_PATH.search(text) or LOCAL_HOST.search(text):
+        if HOME_PATH.search(text) or WINDOWS_HOME_PATH.search(text) or LOCAL_HOST.search(text):
             findings.append(f"{name}: personal filesystem path or local hostname")
-        if path.suffix.lower() == ".md" and COORDINATION.search(text):
+        if suffix in PROSE_SUFFIXES and COORDINATION.search(text):
             findings.append(f"{name}: internal coordination terminology")
     return findings
 

@@ -1,7 +1,10 @@
 import importlib.util
+import json
+import os
 from pathlib import Path
 import random
 import re
+import shutil
 import subprocess
 
 import pytest
@@ -37,6 +40,32 @@ def test_scientific_configuration_and_binary_measurements_are_allowed():
 
 def test_coordination_prose_is_rejected_in_documents():
     assert len(checks.inspect_files({"README.md": b"A research factory with hourly continuation."})) == 1
+
+
+@pytest.mark.parametrize("name", [
+    "AGENT.md", "docs/agents.MD", "Claude.md", "GEMINI.md", "plan.md",
+    "internal/Status.Md", "decisions.md", ".github/copilot-instructions.md",
+    ".cursorrules", ".windsurfrules", ".Claude/settings.json",
+    ".cursor/rules/model.mdc", ".windsurf/rules/private.md", "secret.KEY",
+])
+def test_private_instruction_variants_are_rejected(name):
+    assert checks.inspect_files({name: b"private"}) == [
+        f"{name}: excluded local or sensitive file"]
+
+
+@pytest.mark.parametrize("suffix", [".txt", ".rst", ".markdown", ".mdx", ".ipynb", ".adoc"])
+def test_coordination_checks_cover_other_document_formats(suffix):
+    assert checks.inspect_files({"notes" + suffix: b"Hourly continuation of a research factory."})
+
+
+@pytest.mark.parametrize("path", [
+    "C:" + "\\" + "Users" + "\\" + "researcher" + "\\" + "private",
+    "C:" + "\\\\" + "Users" + "\\\\" + "researcher",
+    "d:" + "/Users" + "/researcher",
+])
+def test_windows_home_paths_are_rejected(path):
+    assert checks.inspect_files({"trace.json": path.encode()}) == [
+        "trace.json: personal filesystem path or local hostname"]
 
 
 def test_check_reads_the_index_and_commit_not_unstaged_working_files(tmp_path, monkeypatch):
@@ -134,3 +163,100 @@ def test_unmerged_index_fails_before_blob_scan(tmp_path, monkeypatch):
         input=f"100644 {blob} 1\tconflict.txt\n".encode(), check=True)
     with pytest.raises(ValueError, match="unresolved index entry"):
         checks.tracked_files()
+
+
+def hook_repository(tmp_path):
+    root = tmp_path / "repo"
+    root.mkdir()
+    subprocess.run(["git", "init", "-q", str(root)], check=True)
+    (root / "scripts").mkdir()
+    shutil.copyfile(Path(__file__).parents[1] / "scripts/check_repository.py",
+                    root / "scripts/check_repository.py")
+    binary = tmp_path / "bin"
+    binary.mkdir()
+    scanner = binary / "gitleaks"
+    scanner.write_text(
+        "#!/usr/bin/env python3\nimport json,os,sys\n"
+        "with open(os.environ['SCAN_LOG'], 'a') as f:\n"
+        "    f.write(json.dumps(sys.argv[1:]) + '\\n')\n"
+        "sys.exit(int(os.environ.get('SCAN_EXIT', '0')))\n")
+    scanner.chmod(0o755)
+    log = tmp_path / "scan.jsonl"
+    env = {**os.environ, "PATH": str(binary) + os.pathsep + os.environ["PATH"],
+           "SCAN_LOG": str(log)}
+    (root / "README.md").write_text("Scientific methods.\n")
+    subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+    base = fixture_commit(root)
+    return root, base, env, log
+
+
+def fixture_commit(root):
+    subprocess.run(["git", "-c", "user.name=Test Maintainer",
+        "-c", "user.email=test@example.invalid", "-c", "core.hooksPath=/dev/null",
+        "commit", "-qm", "test: retain fixture"], cwd=root, check=True)
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+
+
+def invoke_hook(root, name, env, local=None, remote=None):
+    record = "" if local is None else f"refs/heads/main {local} refs/heads/main {remote}\n"
+    return subprocess.run(["sh", str(Path(__file__).parents[1] / ".githooks" / name)],
+        input=record, cwd=root, env=env, capture_output=True, text=True)
+
+
+def test_commit_hook_checks_staged_snapshot_and_credential_scan(tmp_path):
+    root, _, env, log = hook_repository(tmp_path)
+    readme = root / "README.md"
+    readme.write_text("A research factory with hourly continuation.\n")
+    subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+    readme.write_text("Scientific methods.\n")
+    result = invoke_hook(root, "pre-commit", env)
+    assert result.returncode != 0
+    assert "internal coordination" in result.stderr
+    assert not log.exists()
+    subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+    readme.write_text("A research factory with hourly continuation.\n")
+    result = invoke_hook(root, "pre-commit", env)
+    assert result.returncode == 0, result.stderr
+    assert json.loads(log.read_text()) == [
+        "git", ".", "--pre-commit", "--staged", "--redact", "--no-banner"]
+    assert invoke_hook(root, "pre-commit", {**env, "SCAN_EXIT": "1"}).returncode != 0
+
+
+@pytest.mark.parametrize("new_ref", [False, True])
+def test_push_rejects_removed_private_files_even_if_another_remote_has_commits(tmp_path, new_ref):
+    root, base, env, log = hook_repository(tmp_path)
+    (root / "AGENT.md").write_text("private instructions\n")
+    subprocess.run(["git", "add", "AGENT.md"], cwd=root, check=True)
+    fixture_commit(root)
+    subprocess.run(["git", "rm", "-q", "AGENT.md"], cwd=root, check=True)
+    tip = fixture_commit(root)
+    subprocess.run(["git", "update-ref", "refs/remotes/another/main", tip], cwd=root, check=True)
+    result = invoke_hook(root, "pre-push", env, tip, "0" * 40 if new_ref else base)
+    assert result.returncode != 0
+    assert "AGENT.md: excluded" in result.stderr
+    assert not log.exists()
+
+
+@pytest.mark.parametrize("new_ref", [False, True])
+def test_push_scans_exact_destination_range_and_propagates_scanner_failure(tmp_path, new_ref):
+    root, base, env, log = hook_repository(tmp_path)
+    (root / "README.md").write_text("Updated scientific methods.\n")
+    subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+    tip = fixture_commit(root)
+    remote = "0" * 40 if new_ref else base
+    result = invoke_hook(root, "pre-push", env, tip, remote)
+    assert result.returncode == 0, result.stderr
+    revision = tip if new_ref else f"{base}..{tip}"
+    assert json.loads(log.read_text()) == [
+        "git", ".", "--redact", "--no-banner", "--log-opts=" + revision]
+    assert invoke_hook(root, "pre-push", {**env, "SCAN_EXIT": "1"}, tip, remote).returncode != 0
+
+
+def test_push_refuses_unknown_destination_and_skips_deletion(tmp_path):
+    root, base, env, log = hook_repository(tmp_path)
+    result = invoke_hook(root, "pre-push", env, base, "1" * 40)
+    assert result.returncode != 0
+    assert not log.exists()
+    result = invoke_hook(root, "pre-push", env, "0" * 40, base)
+    assert result.returncode == 0, result.stderr
+    assert not log.exists()

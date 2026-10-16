@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Check staged content and outgoing history before publication, using the destination
+  ref to include commits already present on other remotes; reject additional private
+  instruction-file variants and local paths across supported document formats.
 - Add paired WFE curves with equal RMS-stratum weights, whole-base cluster resampling,
   pointwise percentile intervals, complete outcome accounting and deterministic streams.
 - Preserve small signed cancellation terms and finite extreme values in hierarchical

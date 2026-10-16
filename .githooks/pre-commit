@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+
+if [ -x .venv/bin/python ]; then
+    repository_python=.venv/bin/python
+else
+    repository_python=python3
+fi
+if ! command -v gitleaks >/dev/null 2>&1; then
+    echo 'Commit refused: install Gitleaks to run the credential scan.' >&2
+    exit 1
+fi
+
+"$repository_python" scripts/check_repository.py
+gitleaks git . --pre-commit --staged --redact --no-banner

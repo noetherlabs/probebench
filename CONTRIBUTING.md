@@ -20,14 +20,19 @@ Use focused technical commits describing the changed behavior. Changes to propag
 camera statistics, likelihoods or budget semantics require independent numerical or
 behavioral checks. Report limitations and retain failed or non-winning outcomes.
 
-Enable the repository's local push checks after installing Gitleaks:
+Enable the repository's local commit and push checks after installing Gitleaks:
 
 ```sh
 git config --local core.hooksPath .githooks
 ```
 
-The hook checks pushed snapshots and commits not already present on a remote for
-prohibited metadata, then scans new history for recognized credential patterns.
+The commit hook checks the index for prohibited metadata and staged changes for
+recognized credential patterns. The push hook checks the outgoing snapshot and every
+commit after the destination's advertised tip, including files removed in later commits.
+For a new remote branch, it checks the complete reachable history. Commits present on
+another remote are still checked. Fetch the destination before pushing if its advertised
+tip is not available locally. Local hooks must be enabled in each checkout; they are
+not server-side enforcement and do not remove files from previously published history.
 
 Completed result directories are immutable. Changes to a method require a new source
 snapshot and run identity. Do not regenerate selected cases, alter seeds after inspecting
