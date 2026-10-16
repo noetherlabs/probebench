@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Retain malformed model-message containers as failed generations instead of crashing
+  before the failure record is finalized; reject them without further camera actions.
+- Reject extra sequential episode records and exposure files before export or analysis,
+  including records added to a recomputed manifest; cover path traversal and external
+  file preservation with publication-boundary regression tests.
+- Rewrite the README with a runnable quick start, retained experiment inventory,
+  model assumptions and explicit evaluation limits.
 - Check staged content and outgoing history before publication, using the destination
   ref to include commits already present on other remotes; reject additional private
   instruction-file variants and local paths across supported document formats.

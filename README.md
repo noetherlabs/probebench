@@ -1,146 +1,112 @@
 # ProbeBench
 
-**Photon-budgeted focal-plane calibration under measurement ambiguity.**
+**Sequential optical calibration under a photon budget.**
 
-ProbeBench studies how sequential optical measurements resolve ambiguous wavefronts.
-A controller observes noisy images of a point source, applies bounded optical-path
-corrections, and submits a final command. The evaluator measures residual wavefront
-error and focal intensity using latent phase information unavailable to the controller.
+ProbeBench is a simulation environment for studying how optical controllers choose
+measurements. A controller receives noisy focal-plane images, applies bounded phase
+corrections, and submits a final command. Every exposure consumes photons. The evaluator
+tracks correction quality, measurement cost, and temporary degradation during probing.
 
-For a centrosymmetric pupil, equal positive and negative defocus produce identical
-noiseless focal intensities. A known phase offset can distinguish the two states.
-This provides a controlled test of measurement selection: an informative probe may
-initially degrade the image while enabling a better subsequent correction.
+The starting problem is simple: opposite wavefront errors can produce indistinguishable
+images. A useful probe can make an image worse while revealing how to correct it.
 
-![Measured defocus-diversity trajectories](results/development-20261014/ambiguity.png)
+![Opposite defocus states before probing, after a known phase offset, and after correction](results/development-20261014/ambiguity.png)
 
-## Optical model
+*Recorded synthetic exposures from the four-fixture development demonstration.*
 
-The current implementation uses scalar monochromatic propagation through a circular
-pupil at 550 nm, with six controlled modes: defocus, two astigmatisms, two comas, and
-spherical aberration. For pupil coordinate $\mathbf r$ and command $\mathbf u_k$,
+## Quick start
 
-$$
-I_k = \left|\mathcal F\left\{P(\mathbf r)
-\exp\left[\frac{2\pi i}{\lambda}
-\left(w(\mathbf r)-B(\mathbf r)\mathbf u_k\right)\right]\right\}\right|^2.
-$$
-
-Commands and aberrations are expressed in nanometres of optical path difference (OPD).
-For an ideal reflective actuator at normal incidence, mirror-surface displacement is
-half the applied OPD. The detector combines Poisson photoelectron counts with additive
-Gaussian read noise. Every exposure is charged against the expected incident photon
-budget. Negative read-noise samples are retained.
-
-The [model specification](docs/optical-model.md) defines discretization, normalization,
-units, observation fields and evaluator metrics. The [noise model](docs/noise-likelihood.md)
-derives the Poisson–Gaussian likelihood and its numerical approximation.
-
-## Installation
-
-Python 3.11 or 3.12 and [uv](https://docs.astral.sh/uv/) are required.
+Requires Python 3.11 or 3.12 and [uv](https://docs.astral.sh/uv/).
+The experiment runners use POSIX file locking; use Linux or macOS.
 
 ```sh
+git clone https://github.com/noetherlabs/probebench.git
+cd probebench
 uv sync --locked --extra dev
-uv run --locked python -m pytest -q
-```
 
-## Experiments
+# Verify the retained demonstration.
+uv run --locked python -m probebench.run --verify results/development-20261014
 
-Run the four-policy optical ambiguity demonstration:
-
-```sh
+# Run a new four-policy comparison and verify its artifacts.
 uv run --locked python -m probebench.run --output work/ambiguity
 uv run --locked python -m probebench.run --verify work/ambiguity
 ```
 
-Compare least-squares and Poisson–Gaussian phase estimation using identical exposures:
+Use a new output directory for each experiment. Completed runs are not overwritten.
+For contribution checks, run `uv run --locked python -m pytest -q`.
 
-```sh
-uv run --locked python -m probebench.qualification \
-  --config configs/noise_qualification_development.json --output work/noise-comparison
-uv run --locked python -m probebench.qualification --verify work/noise-comparison
-```
+## What you can study
 
-Output directories are immutable after completion. Add `--resume` to an interrupted
-qualification run with the same source, configuration and numerical environment.
-See [reproducibility](docs/reproducibility.md) for archived-source execution,
-artifact schemas and verification scope.
+- **Measurement selection:** compare unprobed, fixed-diversity, and adaptive acquisition
+  with a shared estimator.
+- **Calibration under noise:** compare least-squares and Poisson-Gaussian estimation
+  using the same acquired images.
+- **Resource tradeoffs:** measure residual wavefront error against photon and exposure
+  allowances, including the cost of probes that temporarily worsen the optical state.
+- **Agent interfaces:** test direct optical actions or tool-assisted estimation through
+  a validated JSON protocol, with separate exposure, request, and solver allowances.
 
-Run sequential calibration with exposure allowances spanning partial and complete
-six-mode coordinate sweeps:
+Runs retain raw signed detector arrays, applied commands, evaluator records, optimizer
+diagnostics, source snapshots, and content hashes. Interrupted sequential experiments
+can resume from saved exposures when source, configuration, and runtime match.
+
+## Retained experiments
+
+| Experiment | Recorded evidence | Question |
+| --- | --- | --- |
+| [Optical ambiguity](results/development-20261014/report.md) | 16 episodes across four policies and four fixtures | Can a known probe distinguish opposite defocus? |
+| [Noise qualification](results/noise-qualification-20261014/report.md) | 24 acquisitions and 48 selected estimates | How does the likelihood affect calibration under detector noise? |
+| [Sequential calibration](docs/sequential-calibration-results.md) | 192 episodes and 1,632 exposures | How does correction change with the exposure allowance? |
+| [Measurement schedules](docs/measurement-schedule-results.md) | 192 episodes and 624 exposures | What changes when acquisition is fixed or adaptive? |
+
+These are public development fixtures. They are not held-out evaluations or evidence of
+hardware performance. Reports retain non-winning outcomes and numerical failures.
+
+## Run sequential calibration
 
 ```sh
 uv run --locked python -m probebench.sequential \
-  --config configs/sequential_calibration_development.json --output work/sequential-calibration
+  --config configs/sequential_calibration_development.json \
+  --output work/sequential-calibration
 uv run --locked python -m probebench.sequential --verify work/sequential-calibration
 ```
 
-The [sequential protocol](docs/sequential-calibration.md) defines all four policies,
-budget pairing, final-command measurement status and exposure-level resumption.
-The [measurement-schedule ablation](docs/measurement-schedule-ablation.md) specifies
-matched-estimator controls for repeated unprobed and fixed-diversity acquisition.
-The [wavefront cohort generator](docs/wavefront-cohorts.md) samples declared physical
-RMS ranges and checks separation from exposed fixtures modulo conjugate ambiguity.
-It supports development and selection cases; reserved evaluation is not implemented.
-See [artifact formats](docs/artifact-formats.md) to generate figures, inspect an offline
-measurement replay or load a local ImageFolder export with Hugging Face Datasets.
+Add `--resume` to the acquisition command to continue an interrupted run. See the
+[sequential protocol](docs/sequential-calibration.md) for policies and accounting, and
+[reproducibility](docs/reproducibility.md) for execution from archived source.
 
-The [global parameter selector](docs/parameter-selection.md) compares 14 settings across
-six classical families on a separate public tuning cohort. It retains every candidate
-and numerical fallback and selects one setting per family with equal cell and RMS-stratum
-weights. The full v1 acquisition has not run, and no v1 winner exists. Inspect its
-whole-study storage requirements before acquisition:
+The [artifact guide](docs/artifact-formats.md) covers figures, an offline measurement
+replay, and ImageFolder exports that preserve raw signed detector values.
 
-```sh
-uv run --locked python -m probebench.selection \
-  --config configs/classical_selection_v1.json --estimate
-```
+## Model and scope
 
-The [paired curve analysis](docs/paired-curve-analysis.md) computes target-minus-reference
-WFE at each photon and exposure allowance. It resamples independent wavefront bases
-within RMS strata while retaining paired methods, conjugate members, detector replicates
-and the complete budget curve. Pointwise percentile intervals are conditional on fixed
-methods and a complete input inventory; the reducer does not select policies or establish
-held-out evaluation provenance.
+The current model uses scalar monochromatic Fourier propagation at 550 nm, a circular
+pupil, and six controlled modes: defocus, two astigmatisms, two comas, and spherical
+aberration. Commands are nanometres of optical path difference. Detector measurements
+combine Poisson photoelectron counts with Gaussian read noise.
 
-| Experiment | Retained evidence | Purpose |
-| --- | --- | --- |
-| [Optical ambiguity](results/development-20261014/report.md) | 16 episodes; four policies and four wavefront fixtures | Observation/action accounting and diagnostic probing |
-| [Noise qualification](results/noise-qualification-20261014/report.md) | 24 acquisitions; 48 selected estimates across three photon budgets | Estimator and convergence qualification |
-| [Sequential calibration](docs/sequential-calibration-results.md) | 192 episodes; 1,632 exposures; six exposure allowances | Complete six-mode search, sequential inference and temporary probe degradation |
-| [Measurement schedules](docs/measurement-schedule-results.md) | 192 episodes; 624 exposures; two photon levels | Fixed versus adaptive acquisition with a common estimator, plus an unprobed ambiguity control |
+Current experiments assume a static wavefront and an exactly matched optical model.
+They do not establish robustness to model mismatch, telescope performance, or
+language-model competence. The original three-exposure coordinate baseline probes
+only defocus; the sequential runner completes a six-mode sweep at 13 exposures.
+A final correction can be scored by the evaluator without a camera exposure at that
+command. Reports distinguish those scores from measured images.
 
-## Scope
+The policy interface separates observations from evaluator state; it is **not a sandbox
+for untrusted Python**. Artifact hashes establish consistency, not authenticity.
+Read [SECURITY.md](SECURITY.md) before executing policies or processing external archives.
 
-This is a research implementation with public development fixtures. These fixtures are
-not a held-out benchmark cohort. The current experiments assume a static wavefront and
-an exactly matched optical model; they do not establish telescope performance, model
-mismatch robustness, or multimodal-agent capability. The three-exposure coordinate
-baseline in the original ambiguity demonstration probes defocus only. The sequential
-runner includes complete six-dimensional sweeps at larger exposure allowances.
+## Documentation
 
-The policy API separates observations from evaluator state but does not sandbox
-untrusted Python. See [security](SECURITY.md) for execution and artifact trust boundaries.
+- **Physics:** [optical model](docs/optical-model.md), [noise likelihood](docs/noise-likelihood.md).
+- **Experiment design:** [measurement schedules](docs/measurement-schedule-ablation.md),
+  [wavefront cohorts](docs/wavefront-cohorts.md), [parameter selection](docs/parameter-selection.md),
+  [paired curve analysis](docs/paired-curve-analysis.md).
+- **Agents:** [JSON protocol](docs/agent-protocol.md), [local vision-model adapter](docs/local-model-adapter.md).
+- **Development:** [contributing](CONTRIBUTING.md), [changelog](CHANGELOG.md).
 
-The [local agent protocol](docs/agent-protocol.md) provides separate direct-action and
-tool-assisted JSON interfaces, strict action validation, charged initial observations
-and resumable message journals. Its scripted process control qualifies the interface;
-it does not represent a language-model result.
+The full v1 parameter-selection study has not run; no selected v1 reference exists.
+Reserved evaluation is not implemented. Agent integration tests qualify the interface,
+not the performance of a language model.
 
-The [local vision-model adapter](docs/local-model-adapter.md) connects an installed
-Ollama model to that protocol, retains exact prompts and raw responses, and verifies
-the correspondence between model decisions and optical measurements. Its integration
-tests use a service fixture; real model evaluations require separate qualification.
-
-## Repository structure
-
-- `src/probebench/`: propagation, detector, policies, likelihood and experiment runners.
-- `tests/`: independent numerical checks and accounting/integrity regressions.
-- `configs/`: explicit experiment configurations.
-- `results/`: retained synthetic measurements, evaluations, source snapshots and manifests.
-- `scripts/`: reproducibility checks and figure generation.
-- `docs/`: scientific specifications and experiment documentation.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for validation requirements and
-[CHANGELOG.md](CHANGELOG.md) for implementation changes.
+Built by [Noether Labs](https://www.noether.one/).

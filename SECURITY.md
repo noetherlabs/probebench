@@ -29,6 +29,19 @@ checks file membership, path containment and content hashes. It does not authent
 archive's author, prevent a malicious party from replacing both data and hashes, or bound
 the resource use of an untrusted compressed file.
 
+Sequential verification requires exactly the episode and exposure inventory derived
+from the study configuration, even when extra files have valid manifest hashes.
+Export and analysis tools use that verification before processing records. Keep input
+archives unchanged during verification and export; these local tools do not defend
+against another process concurrently replacing files. Archived source snapshots retain
+their original behavior and do not inherit fixes in the current package.
+
+## Reporting a vulnerability
+
+Email [crew@noether.one](mailto:crew@noether.one) with the affected revision, impact,
+and a minimal reproduction. Do not post exploitable details in a public issue before
+maintainers have reviewed the report.
+
 ## Repository checks
 
 Use `scripts/check_repository.py` to detect prohibited tracked metadata and local paths,

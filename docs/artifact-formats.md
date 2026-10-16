@@ -4,6 +4,8 @@ All exporters accept a completed sequential experiment and verify its manifest,
 resource accounting and optical metrics before reading measurements. Outputs are
 created in a separate, previously nonexistent directory. The source run is unchanged.
 Each output records the input manifest digest and the generating script's digest.
+Verification rejects additional episode records or exposure files, including files
+listed in a recomputed manifest. Do not modify an input archive while an export runs.
 
 ## Figures and budget-prefix checks
 
