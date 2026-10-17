@@ -77,6 +77,11 @@ new scientific result. Local export does not publish a Hugging Face repository.
 
 ## Classical-selection measurement replay
 
+The [v1 portable replay](https://github.com/noetherlabs/probebench/releases/tag/classical-selection-replay-v1-20261017)
+is available as `classical-selection-replay-v1-20261017.tar.gz`. Verify the download against
+SHA-256 `3768f63e59f0db14ce3676603a905c4a3ea47fc53d208581ccfa33767e24c1d3`,
+extract it, and open the enclosed `index.html` with its adjacent `images/` directory.
+
 The replay generator consumes the verified ImageFolder export above. It copies the
 recorded PNGs into a portable directory and embeds the trajectory data in `index.html`;
 it does not copy the raw detector arrays or synthesize additional observations.
