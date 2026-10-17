@@ -28,6 +28,8 @@ while read -r local_ref local_oid remote_ref remote_oid; do
     outgoing=$(git rev-list "$revisions")
     for revision in $outgoing; do
         "$repository_python" scripts/check_repository.py --ref "$revision"
+        commit_message=$(git log -1 --format=%B "$revision")
+        printf '%s\n' "$commit_message" | gitleaks stdin --redact --no-banner
     done
     gitleaks git . --redact --no-banner --log-opts="$revisions"
 done

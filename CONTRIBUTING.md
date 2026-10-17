@@ -26,13 +26,20 @@ Enable the repository's local commit and push checks after installing Gitleaks:
 git config --local core.hooksPath .githooks
 ```
 
-The commit hook checks the index for prohibited metadata and staged changes for
-recognized credential patterns. The push hook checks the outgoing snapshot and every
-commit after the destination's advertised tip, including files removed in later commits.
+The pre-commit hook checks the index for prohibited metadata and staged changes for
+recognized credential patterns. The commit-message hook checks subjects and bodies for
+personal paths, local hostnames, coordination terminology and recognized credential
+patterns, without requiring a commit title format. The push hook checks the outgoing
+snapshot and every commit's files and message after the destination's advertised tip,
+including files removed in later commits. Message and patch credential scans are separate.
 For a new remote branch, it checks the complete reachable history. Commits present on
 another remote are still checked. Fetch the destination before pushing if its advertised
 tip is not available locally. Local hooks must be enabled in each checkout; they are
 not server-side enforcement and do not remove files from previously published history.
+CI checks the current file snapshot only; it does not repeat the outgoing-history or
+commit-message checks. The content guard rejects assistant instruction directories and
+private coordination filenames across supported document formats. Content checks are
+pattern-based and still require a publication review.
 
 Completed result directories are immutable. Changes to a method require a new source
 snapshot and run identity. Do not regenerate selected cases, alter seeds after inspecting

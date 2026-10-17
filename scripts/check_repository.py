@@ -1,6 +1,6 @@
 """Check staged files or a commit for material unsuitable for distribution."""
 import argparse
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 import re
 import subprocess
 
@@ -10,10 +10,15 @@ EXCLUDED_NAMES = {
     "plan.md", "status.md", "decisions.md", ".cursorrules", ".windsurfrules",
 }
 EXCLUDED_DIRECTORIES = {
-    ".codex", ".claude", ".cursor", ".windsurf", ".gstack", ".venv",
+    ".agents", ".codex", ".claude", ".cursor", ".windsurf", ".gstack", ".venv",
     "__pycache__", ".pytest_cache", "work",
 }
 PROSE_SUFFIXES = {".md", ".markdown", ".mdx", ".rst", ".txt", ".adoc", ".ipynb"}
+EXCLUDED_PROSE_STEMS = {
+    "agent", "agents", "claude", "gemini", "copilot-instructions",
+    "plan", "plans", "status", "decision", "decisions", "private-notes",
+    "internal-notes", "assistant-notes", "coordination",
+}
 HOME_PATH = re.compile("/" + r"(?:Users|home)/[^/\s\"'<>]+")
 WINDOWS_HOME_PATH = re.compile(r"[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s\"'<>]+", re.I)
 # Detection only needs the final alphanumeric character before the suffix.
@@ -24,6 +29,20 @@ COORDINATION = re.compile(
     r"\b(?:Codex|Claude|gstack|workspace-credit|hourly continuation|research factory)\b", re.I)
 
 
+def inspect_text(name, text, prose):
+    findings = []
+    if HOME_PATH.search(text) or WINDOWS_HOME_PATH.search(text) or LOCAL_HOST.search(text):
+        findings.append(f"{name}: personal filesystem path or local hostname")
+    if prose and COORDINATION.search(text):
+        findings.append(f"{name}: internal coordination terminology")
+    return findings
+
+
+def inspect_message(content):
+    """Check the full subject and body without imposing message formatting."""
+    return inspect_text("commit message", content.decode("utf-8", errors="replace"), True)
+
+
 def inspect_files(files):
     findings = []
     for name, content in files.items():
@@ -32,6 +51,8 @@ def inspect_files(files):
         parts = tuple(part.lower() for part in path.parts)
         suffix = path.suffix.lower()
         if (lower in EXCLUDED_NAMES or EXCLUDED_DIRECTORIES.intersection(parts)
+            or (suffix in PROSE_SUFFIXES
+                and re.sub(r"[ _]+", "-", path.stem.lower()) in EXCLUDED_PROSE_STEMS)
             or suffix in {".pem", ".key"}
             or (lower.startswith(".env") and lower != ".env.example")
             or (name.lower().startswith("results/verification-") and suffix == ".xml")):
@@ -40,10 +61,7 @@ def inspect_files(files):
             text = content.decode("utf-8")
         except UnicodeDecodeError:
             continue
-        if HOME_PATH.search(text) or WINDOWS_HOME_PATH.search(text) or LOCAL_HOST.search(text):
-            findings.append(f"{name}: personal filesystem path or local hostname")
-        if suffix in PROSE_SUFFIXES and COORDINATION.search(text):
-            findings.append(f"{name}: internal coordination terminology")
+        findings.extend(inspect_text(name, text, suffix in PROSE_SUFFIXES))
     return findings
 
 
@@ -72,12 +90,25 @@ def read_blobs(object_ids):
     return blobs
 
 
+def resolve_commit(ref):
+    return subprocess.check_output(
+        ["git", "rev-parse", "--verify", "--end-of-options", ref + "^{commit}"], text=True).strip()
+
+
+def commit_message(ref):
+    revision = resolve_commit(ref)
+    raw = subprocess.check_output(["git", "cat-file", "commit", revision])
+    _, separator, message = raw.partition(b"\n\n")
+    if not separator:
+        raise ValueError("Commit has no message separator")
+    return message
+
+
 def tracked_files(ref=None):
     if ref is None:
         raw = subprocess.check_output(["git", "ls-files", "--stage", "-z"])
     else:
-        revision = subprocess.check_output(
-            ["git", "rev-parse", "--verify", "--end-of-options", ref + "^{commit}"], text=True).strip()
+        revision = resolve_commit(ref)
         raw = subprocess.check_output(["git", "ls-tree", "-r", "-z", revision])
     entries = {}
     for entry in raw.split(b"\0"):
@@ -98,13 +129,23 @@ def tracked_files(ref=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--ref", help="Check this commit instead of the index")
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument("--ref", help="Check this commit's files and message instead of the index")
+    source.add_argument("--message-file", type=Path, help="Check only this proposed commit message")
     args = parser.parse_args()
-    files = tracked_files(args.ref)
-    findings = inspect_files(files)
+    if args.message_file is not None:
+        findings = inspect_message(args.message_file.read_bytes())
+        success = "Commit message check passed."
+    else:
+        revision = resolve_commit(args.ref) if args.ref is not None else None
+        files = tracked_files(revision)
+        findings = inspect_files(files)
+        if revision is not None:
+            findings.extend(inspect_message(commit_message(revision)))
+        success = f"Repository content check passed: {len(files)} tracked files."
     if findings:
         parser.exit(1, "\n".join(findings) + "\n")
-    print(f"Repository content check passed: {len(files)} tracked files.")
+    print(success)
 
 
 if __name__ == "__main__":

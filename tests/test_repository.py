@@ -6,6 +6,7 @@ import random
 import re
 import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -35,6 +36,10 @@ def test_scientific_configuration_and_binary_measurements_are_allowed():
         "results/data.npz": b"\x80\x81\x82",
         "configs/experiment.json": b'{"photons": 20000}',
         ".env.example": b"EXAMPLE_OPTION=",
+        "docs/agent-protocol.md": b"Public optical action schema.",
+        "docs/parameter-selection.md": b"Fixed parameter selection protocol.",
+        "docs/solver-status.rst": b"Numerical convergence fields.",
+        "results/run/source/src/probebench/agent_protocol.py": b"# Frozen optical protocol\n",
     }) == []
 
 
@@ -47,10 +52,41 @@ def test_coordination_prose_is_rejected_in_documents():
     "internal/Status.Md", "decisions.md", ".github/copilot-instructions.md",
     ".cursorrules", ".windsurfrules", ".Claude/settings.json",
     ".cursor/rules/model.mdc", ".windsurf/rules/private.md", "secret.KEY",
+    ".agents/instructions.md", ".AGENTS/skills/research/SKILL.md",
+    "PLAN.txt", "STATUS.rst", "docs/DECISIONS.txt", "docs/private-notes.md",
+    "docs/Private_Notes.TXT", "docs/Private Notes.markdown", "internal-notes.adoc",
 ])
 def test_private_instruction_variants_are_rejected(name):
     assert checks.inspect_files({name: b"private"}) == [
         f"{name}: excluded local or sensitive file"]
+
+
+@pytest.mark.parametrize("stem", ["AGENT", "AGENTS", "private-notes"])
+@pytest.mark.parametrize("suffix", sorted(checks.PROSE_SUFFIXES))
+def test_private_names_are_rejected_across_document_formats(stem, suffix):
+    name = "docs/" + stem + suffix
+    assert checks.inspect_files({name: b"instructions"}) == [
+        f"{name}: excluded local or sensitive file"]
+
+
+@pytest.mark.parametrize("message", [
+    b"Codex continuation\n\nUpdate optical measurements.\n",
+    b"Update optical measurements\n\nContinue the research factory.\n",
+    ("Update optics\n\nLocal output: /" + "Users" + "/example/run\n").encode(),
+    ("Update optics\n\nLocal output: C:" + "\\" + "Users" + "\\example\\run\n").encode(),
+    ("Update optics\n\nHost: optical-node." + "local\n").encode(),
+    b"Update optics\n\n\xff Codex continuation\n",
+])
+def test_commit_subject_and_body_metadata_are_rejected(message):
+    findings = checks.inspect_message(message)
+    assert findings
+    assert all(item.startswith("commit message:") for item in findings)
+    assert all(message.decode("utf-8", errors="replace") not in item for item in findings)
+
+
+def test_technical_commit_messages_need_no_cosmetic_prefix():
+    assert checks.inspect_message(
+        b"Preserve optical exposure accounting\n\nRetain every numerical outcome.\n") == []
 
 
 @pytest.mark.parametrize("suffix", [".txt", ".rst", ".markdown", ".mdx", ".ipynb", ".adoc"])
@@ -179,21 +215,24 @@ def hook_repository(tmp_path):
         "#!/usr/bin/env python3\nimport json,os,sys\n"
         "with open(os.environ['SCAN_LOG'], 'a') as f:\n"
         "    f.write(json.dumps(sys.argv[1:]) + '\\n')\n"
+        "if sys.argv[1] == 'stdin':\n"
+        "    with open(os.environ['MESSAGE_SCAN_LOG'], 'a') as f:\n"
+        "        f.write(json.dumps(sys.stdin.read()) + '\\n')\n"
         "sys.exit(int(os.environ.get('SCAN_EXIT', '0')))\n")
     scanner.chmod(0o755)
     log = tmp_path / "scan.jsonl"
     env = {**os.environ, "PATH": str(binary) + os.pathsep + os.environ["PATH"],
-           "SCAN_LOG": str(log)}
+           "SCAN_LOG": str(log), "MESSAGE_SCAN_LOG": str(tmp_path / "messages.jsonl")}
     (root / "README.md").write_text("Scientific methods.\n")
     subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
     base = fixture_commit(root)
     return root, base, env, log
 
 
-def fixture_commit(root):
+def fixture_commit(root, message="test: retain fixture"):
     subprocess.run(["git", "-c", "user.name=Test Maintainer",
         "-c", "user.email=test@example.invalid", "-c", "core.hooksPath=/dev/null",
-        "commit", "-qm", "test: retain fixture"], cwd=root, check=True)
+        "commit", "-qm", message], cwd=root, check=True)
     return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
 
 
@@ -234,7 +273,8 @@ def test_push_rejects_removed_private_files_even_if_another_remote_has_commits(t
     result = invoke_hook(root, "pre-push", env, tip, "0" * 40 if new_ref else base)
     assert result.returncode != 0
     assert "AGENT.md: excluded" in result.stderr
-    assert not log.exists()
+    assert [json.loads(line) for line in log.read_text().splitlines()] == [
+        ["stdin", "--redact", "--no-banner"]]
 
 
 @pytest.mark.parametrize("new_ref", [False, True])
@@ -242,14 +282,21 @@ def test_push_scans_exact_destination_range_and_propagates_scanner_failure(tmp_p
     root, base, env, log = hook_repository(tmp_path)
     (root / "README.md").write_text("Updated scientific methods.\n")
     subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
-    tip = fixture_commit(root)
+    message = "Retain optical measurements\n\nPreserve signed arrays.\nSecond body line."
+    tip = fixture_commit(root, message)
     remote = "0" * 40 if new_ref else base
     result = invoke_hook(root, "pre-push", env, tip, remote)
     assert result.returncode == 0, result.stderr
     revision = tip if new_ref else f"{base}..{tip}"
-    assert json.loads(log.read_text()) == [
-        "git", ".", "--redact", "--no-banner", "--log-opts=" + revision]
+    calls = [json.loads(line) for line in log.read_text().splitlines()]
+    message_calls = 2 if new_ref else 1
+    assert calls == [["stdin", "--redact", "--no-banner"]] * message_calls + [[
+        "git", ".", "--redact", "--no-banner", "--log-opts=" + revision]]
+    messages = [json.loads(line) for line in Path(env["MESSAGE_SCAN_LOG"]).read_text().splitlines()]
+    assert messages == [message + "\n"] + (["test: retain fixture\n"] if new_ref else [])
     assert invoke_hook(root, "pre-push", {**env, "SCAN_EXIT": "1"}, tip, remote).returncode != 0
+    failed_calls = [json.loads(line) for line in log.read_text().splitlines()][len(calls):]
+    assert failed_calls == [["stdin", "--redact", "--no-banner"]]
 
 
 def test_push_refuses_unknown_destination_and_skips_deletion(tmp_path):
@@ -260,3 +307,72 @@ def test_push_refuses_unknown_destination_and_skips_deletion(tmp_path):
     result = invoke_hook(root, "pre-push", env, "0" * 40, base)
     assert result.returncode == 0, result.stderr
     assert not log.exists()
+
+
+def test_ref_and_push_check_message_metadata_in_intermediate_commits(tmp_path):
+    root, base, env, log = hook_repository(tmp_path)
+    (root / "README.md").write_text("Updated scientific methods.\n")
+    subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+    private = fixture_commit(root, "Retain optical evidence\n\nHourly continuation record.")
+    result = subprocess.run([sys.executable, "-B", "scripts/check_repository.py", "--ref", private],
+        cwd=root, env=env, capture_output=True, text=True)
+    assert result.returncode != 0
+    assert "commit message: internal coordination" in result.stderr
+    assert "Hourly continuation record" not in result.stderr
+    (root / "README.md").write_text("Final scientific methods.\n")
+    subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+    tip = fixture_commit(root)
+    result = invoke_hook(root, "pre-push", env, tip, base)
+    assert result.returncode != 0
+    assert "commit message: internal coordination" in result.stderr
+    assert [json.loads(line) for line in log.read_text().splitlines()] == [
+        ["stdin", "--redact", "--no-banner"]]
+
+
+@pytest.mark.parametrize("failure", ["metadata", "scanner"])
+def test_git_commit_message_hook_blocks_without_creating_commit(tmp_path, failure):
+    root, base, env, log = hook_repository(tmp_path)
+    hooks = root / "hooks"
+    hooks.mkdir()
+    shutil.copy2(Path(__file__).parents[1] / ".githooks/commit-msg", hooks / "commit-msg")
+    (root / "README.md").write_text("Updated scientific methods.\n")
+    subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+    index_before = subprocess.check_output(["git", "write-tree"], cwd=root)
+    message = tmp_path / "commit message.txt"
+    text = "Preserve optical accounting\n\nRetain every measurement.\n"
+    if failure == "metadata":
+        text += "Hourly continuation record.\n"
+    else:
+        env["SCAN_EXIT"] = "1"
+    message.write_text(text)
+    command = ["git", "-c", "user.name=Test Maintainer", "-c", "user.email=test@example.invalid",
+               "-c", "core.hooksPath=" + str(hooks), "commit", "-q", "--file", str(message)]
+    result = subprocess.run(command, cwd=root, env=env, capture_output=True, text=True)
+    assert result.returncode != 0
+    assert subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip() == base
+    assert subprocess.check_output(["git", "write-tree"], cwd=root) == index_before
+    assert message.read_text() == text
+    if failure == "metadata":
+        assert "commit message: internal coordination" in result.stderr
+        assert not log.exists()
+    else:
+        assert json.loads(log.read_text()) == ["stdin", "--redact", "--no-banner"]
+        assert json.loads(Path(env["MESSAGE_SCAN_LOG"]).read_text()) == text
+    message.write_text("Preserve optical accounting\n\nRetain every measurement.\n")
+    result = subprocess.run(command, cwd=root, env={**env, "SCAN_EXIT": "0"},
+                            capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    assert subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip() != base
+
+
+def test_commit_message_hook_requires_credential_scanner(tmp_path):
+    root, base, _, log = hook_repository(tmp_path)
+    message = tmp_path / "message.txt"
+    message.write_text("Preserve optical accounting\n")
+    result = subprocess.run(["/bin/sh", str(Path(__file__).parents[1] / ".githooks/commit-msg"),
+                             str(message)], cwd=root, env={**os.environ, "PATH": ""},
+                            capture_output=True, text=True)
+    assert result.returncode != 0
+    assert "install Gitleaks" in result.stderr
+    assert not log.exists()
+    assert subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip() == base
