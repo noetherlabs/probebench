@@ -137,6 +137,9 @@ def prepare(config):
         other = generate_cohort(excluded)
         if canonical_hash(other["clusters"]) != source["clusters_sha256"]:
             raise ValueError("Previously exposed cohort fingerprint changed")
+        excluded_ids = {base["base_wavefront_id"] for base in other["clusters"]}
+        if any(base["base_wavefront_id"] in excluded_ids for base in cohort["clusters"]):
+            raise ValueError("Selection cohort reuses a previously exposed base identity")
         vectors = [r["members"][0]["truth_opd_nm"] for r in other["clusters"]]
         tolerance = max(spec["overlap_tolerance_nm"],
                         excluded["specification"]["overlap_tolerance_nm"])

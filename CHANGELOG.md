@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject selection cohorts that reuse previously exposed base-wavefront identities,
+  including changed-seed configurations whose physical wavefronts differ.
 - Add a portable classical-selection replay with complete cohort selectors, measured
   trajectories, and explicit last-measured, earlier-measured and unmeasured final commands.
 - Export the complete classical-selection archive as a local ImageFolder dataset,

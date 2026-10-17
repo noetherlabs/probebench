@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from probebench import selection, sequential, study as storage
+from probebench import cohorts, selection, sequential, study as storage
 from probebench.cohorts import generate_cohort
 from probebench.qualification import canonical_hash
 from probebench.run import digest
@@ -229,8 +229,81 @@ def test_composite_exclusions_reject_overlap_and_allow_repeated_exclusion_ids(co
     assert prepared["exclusion_cohorts"][0]["cohort_sha256"] != prepared["exclusion_cohorts"][1]["cohort_sha256"]
     config["excluded_cohorts"].append({"configuration":deepcopy(config["cohort"]),
         "clusters_sha256":canonical_hash(generate_cohort(config["cohort"])["clusters"])})
-    with pytest.raises(ValueError, match="overlaps previously exposed"):
+    with pytest.raises(ValueError, match="reuses a previously exposed base identity"):
         selection.prepare(config)
+
+
+@pytest.fixture
+def forbid_selection_admission(monkeypatch):
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Selection admission or acquisition must not start")
+    monkeypatch.setattr(selection, "study_directory", forbidden)
+    monkeypatch.setattr(selection, "run_episode", forbidden)
+
+
+@pytest.mark.parametrize("changed_field", ["seed", "split"])
+def test_selection_rejects_reused_base_identity_before_admission(
+        config, tmp_path, forbid_selection_admission, changed_field):
+    excluded = deepcopy(config["cohort"])
+    if changed_field == "seed":
+        excluded["seed_hex"] = "22" * 32
+    else:
+        excluded["specification"]["split"] = "development"
+    current = generate_cohort(config["cohort"])
+    previous = generate_cohort(excluded)
+    current_base, previous_base = current["clusters"][0], previous["clusters"][0]
+    assert current_base["base_wavefront_id"] == previous_base["base_wavefront_id"]
+    distance = cohorts.orbit_distances(
+        current_base["members"][0]["truth_opd_nm"],
+        [previous_base["members"][0]["truth_opd_nm"]],
+        np.asarray(current["gram_nm2_per_nm2"]))[0]
+    assert distance > config["cohort"]["specification"]["overlap_tolerance_nm"]
+    config["excluded_cohorts"] = [{"configuration": excluded,
+        "clusters_sha256": canonical_hash(previous["clusters"])}]
+    output = tmp_path / "study"
+    with pytest.raises(ValueError, match="reuses a previously exposed base identity"):
+        selection.run(output, write_config(tmp_path, config))
+    assert not output.exists()
+
+
+@pytest.mark.parametrize("conjugated", [False, True], ids=["direct", "conjugate"])
+def test_selection_rejects_relabelled_orbit_overlap_before_admission(
+        config, tmp_path, monkeypatch, forbid_selection_admission, conjugated):
+    current = generate_cohort(config["cohort"])
+    excluded = deepcopy(config["cohort"])
+    excluded["specification"].update(cohort_id="previous_source", split="development")
+    previous = deepcopy(current)
+    previous["configuration_sha256"] = canonical_hash(excluded)
+    previous_base = previous["clusters"][0]
+    previous_base["base_wavefront_id"] = "previous_source:low:000000"
+    if conjugated:
+        vector = cohorts.conjugate(previous_base["members"][0]["truth_opd_nm"])
+        previous_base["members"] = cohorts.cluster_members(
+            vector, np.asarray(current["gram_nm2_per_nm2"]),
+            excluded["specification"]["overlap_tolerance_nm"])
+    assert previous_base["base_wavefront_id"] != current["clusters"][0]["base_wavefront_id"]
+    config["excluded_cohorts"] = [{"configuration": excluded,
+        "clusters_sha256": canonical_hash(previous["clusters"])}]
+
+    def generated(configuration):
+        if configuration == excluded:
+            return deepcopy(previous)
+        return generate_cohort(configuration)
+
+    monkeypatch.setattr(selection, "generate_cohort", generated)
+    output = tmp_path / "study"
+    with pytest.raises(ValueError, match="overlaps previously exposed wavefronts"):
+        selection.run(output, write_config(tmp_path, config))
+    assert not output.exists()
+
+
+def test_selection_reserved_split_refused_before_admission(
+        config, tmp_path, forbid_selection_admission):
+    config["cohort"]["specification"]["split"] = "reserved"
+    output = tmp_path / "study"
+    with pytest.raises(ValueError, match="requires an explicit selection cohort"):
+        selection.run(output, write_config(tmp_path, config))
+    assert not output.exists()
 
 
 @pytest.mark.parametrize("mutate", [

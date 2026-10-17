@@ -72,8 +72,11 @@ used in a changed-seed resumption test. These describe 4,132 prior generated bas
 before any deduplication. The explicit registry also records analytic and protocol-test
 fixture vectors.
 
-Preparation regenerates the listed cohorts, checks their declared cluster fingerprints,
-and compares the new bases against their full-precision coefficients modulo conjugacy,
+Preparation regenerates the listed cohorts and checks their declared cluster fingerprints.
+Every selection base must have an identity distinct from the supplied exclusion cohorts;
+changing a seed or split label cannot reuse an exposed base identity. Multiple historical
+cohorts may share identities, since each remains an independently checked exclusion record.
+Preparation also compares the new bases against their full-precision coefficients modulo conjugacy,
 using the larger tolerance of each pair of configurations. The v1 tolerance is
 $10^{-6}$ nm. An overlap aborts preparation; the sampler does not silently replace a
 case. Configuration and regenerated-cohort
