@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'sha256-%%SCRIPT_HASH%%'; base-uri 'none'; form-action 'none'">
+<title>ProbeBench — classical reference replay</title>
+<style>
+:root{color-scheme:light;--paper:#f6f4ef;--ink:#24312e;--muted:#57615a;--line:#c9ccc2;--accent:#246c70;--warm:#92552c;--wash:#e9ece4}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 Optima,Candara,"Segoe UI",sans-serif}
+main{max-width:1280px;margin:auto;padding:25px clamp(20px,4vw,54px) 40px}header{border-top:2px solid var(--ink);padding-top:13px}
+.eyebrow{display:flex;justify-content:space-between;gap:14px;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+h1{font:400 clamp(30px,3.5vw,44px)/1.15 "Iowan Old Style","Palatino Linotype",Palatino,serif;letter-spacing:-.025em;margin:22px 0 10px}
+.intro{max-width:850px;margin:0;color:var(--muted);font-size:15px}.inventory{margin:10px 0 23px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.filters{border:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:17px 0 19px;margin:0 0 22px;display:grid;grid-template-columns:1.25fr 1.65fr 1fr 1fr;gap:14px 18px}
+.filters legend{padding:0 10px 0 0;font-size:12px;color:var(--muted)}label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);min-width:0}
+select,button{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:0;min-height:42px;padding:7px 10px}select{width:100%;font-size:14px;min-width:0}button{cursor:pointer;touch-action:manipulation}button:hover:not(:disabled){border-color:var(--ink);background:var(--wash)}button:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}button:focus-visible,select:focus-visible,input:focus-visible{position:relative;z-index:2}[hidden]{display:none!important}
+.selection-line{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 15px;font-size:13px}.candidate-name{font-size:16px;overflow-wrap:anywhere}.reference-label{white-space:nowrap;color:var(--accent);font-size:12px}.reference-label[data-selected="false"]{color:var(--muted)}
+.workspace{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:34px;align-items:start}.frame-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:12px}.muted{color:var(--muted)}
+.viewport{position:relative;overflow:hidden;aspect-ratio:1;background:#100f1b;touch-action:pan-y;isolation:isolate}.viewport.zoomed{touch-action:none;cursor:grab}.viewport.dragging{cursor:grabbing}
+.viewport img{position:absolute;inset:0;display:block;width:100%;height:100%;image-rendering:pixelated;user-select:none;-webkit-user-drag:none;transform-origin:center}.viewport .image-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;gap:14px;text-align:center;color:#e0ded8;font-size:14px;cursor:default}.image-state p{max-width:32ch;margin:0}.image-state button{color:#e0ded8;border-color:#746f7b;font-size:13px}.image-state button:hover{background:#28242f;color:#f6f4ef}.image-state.error{color:#edc5a3}
+.controls{display:flex;gap:8px;margin-top:12px;align-items:end}.controls button{min-width:44px}.controls #play{min-width:73px;background:var(--ink);color:var(--paper);border-color:var(--ink)}.controls label{flex:1;margin-left:4px;gap:7px}.controls input{min-height:22px}
+input[type=range]{accent-color:var(--accent);width:100%;min-width:0;cursor:pointer}.zoom{display:flex;align-items:center;gap:12px;margin-top:11px;font-size:12px}.zoom label{display:flex;flex-direction:row;align-items:center;flex:1;gap:9px}.zoom input{max-width:160px}.zoom output{min-width:32px;font-variant-numeric:tabular-nums}.zoom button{font-size:12px;min-height:36px}.image-note{margin:11px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+.panel{padding:18px 0;border-top:1px solid var(--line)}.panel:first-child{padding-top:0;border-top:0}h2{margin:0 0 13px;font-size:18px;font-weight:500}.kicker{margin:0 0 7px;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase}dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 18px;font-size:13px}dt{color:var(--muted)}dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}.number{font-size:21px;color:var(--ink)}.command{margin:13px 0 0;color:var(--muted);font-size:12px;line-height:1.6;overflow-wrap:anywhere}.command span{color:var(--ink);font-variant-numeric:tabular-nums}.metric-note{font-size:12px;color:var(--muted);margin:10px 0 0}
+svg{display:block;width:100%;height:auto;margin-top:14px}svg text{font-family:Optima,Candara,"Segoe UI",sans-serif;font-size:12px;fill:var(--muted)}.chart-point{cursor:pointer;outline:none}.chart-point .hit{fill:transparent;stroke:transparent;stroke-width:1.5}.chart-point:focus-visible .hit{stroke:var(--accent)}.chart-point:hover .mark{stroke:var(--ink);stroke-width:1.5}.chart-note{margin:3px 0 0;font-size:12px;color:var(--muted)}
+.status{margin:0 0 9px;font-size:14px}.status[data-state="unmeasured"]{color:var(--warm)}.status-description{font-size:12px;color:var(--muted);margin:0 0 14px;line-height:1.5}.final-action{margin:13px 0 0;font-size:12px;min-height:36px}.fits{font-size:12px;color:var(--muted);margin:15px 0 0}
+.identity{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 16px;margin-top:20px;padding-top:12px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}.identity span:nth-child(even){overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+details{border-top:1px solid var(--line);margin-top:27px;padding-top:13px;font-size:13px}summary{cursor:pointer;font-size:14px}details p{max-width:930px}code{font-size:11px;overflow-wrap:anywhere}footer{border-top:1px solid var(--line);margin-top:24px;padding-top:12px;font-size:11px;color:var(--muted)}.fatal{padding:16px 0;border-bottom:1px solid var(--line);color:var(--warm)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:820px){.workspace{gap:24px}.filters{grid-template-columns:1fr 1.3fr;gap:13px 16px}.filters label:nth-of-type(2){grid-column:2}.selection-line{align-items:start}.reference-label{white-space:normal;text-align:right}}
+@media(max-width:650px){main{padding:19px 20px 30px}.eyebrow{font-size:10px;letter-spacing:.08em}h1{margin-top:21px}.intro{font-size:14px}.inventory{line-height:1.65;margin-bottom:18px}.workspace{grid-template-columns:1fr;gap:23px}.panel:first-child{border-top:1px solid var(--line);padding-top:17px}.filters{grid-template-columns:1fr 1fr;gap:12px}.filters label:nth-of-type(1),.filters label:nth-of-type(2){grid-column:1/-1}.candidate-name{font-size:14px}.frame-head{font-size:11px}.controls{gap:6px}.controls button{padding:7px 9px;min-width:40px}.controls #play{min-width:66px}.zoom{gap:9px}.zoom input{max-width:130px}.identity{gap:5px 10px}dl{gap:7px 12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body><main>
+<header>
+  <div class="eyebrow"><span>Noether Labs / ProbeBench</span><span>Public tuning · replay</span></div>
+  <h1>Classical reference replay</h1>
+  <p class="intro">Inspect the retained camera measurements for every candidate, photon level and wavefront. Final evaluator scores remain separate from measured exposures.</p>
+  <p class="inventory" id="inventory">Reading the verified experiment record…</p>
+</header>
+<p id="fatal" class="fatal" role="alert" hidden></p>
+<fieldset class="filters" id="filters">
+  <legend>Select an episode</legend>
+  <label for="family">Policy family<select id="family"></select></label>
+  <label for="candidate">Candidate setting<select id="candidate"></select></label>
+  <label for="photons">Photons per exposure<select id="photons"></select></label>
+  <label for="budget">Exposure allowance<select id="budget"></select></label>
+  <label for="stratum">Wavefront RMS stratum<select id="stratum"></select></label>
+  <label for="base">Independent base wavefront<select id="base"></select></label>
+  <label for="member">Conjugate member<select id="member"></select></label>
+  <label for="replicate">Detector replicate<select id="replicate"></select></label>
+</fieldset>
+<p class="sr-only" id="selection-announcement" aria-live="polite"></p>
+<div class="selection-line"><span id="candidate-name" class="candidate-name"></span><span id="reference-label" class="reference-label"></span></div>
+<section class="workspace" aria-label="Selected episode replay">
+  <div>
+    <div class="frame-head"><span id="frame-heading" aria-live="polite"></span><span class="muted" id="photon-heading"></span></div>
+    <div class="viewport" id="viewport" tabindex="0" role="group" aria-label="Recorded detector image" aria-describedby="view-help" aria-busy="true">
+      <div id="image-state" class="image-state" role="status" aria-live="polite"><p id="image-message">Loading a recorded exposure…</p><button id="retry" type="button" hidden>Retry this image</button></div>
+    </div>
+    <div class="controls">
+      <button id="previous" type="button" aria-label="Previous exposure">←</button>
+      <button id="play" type="button" aria-pressed="false">Play</button>
+      <button id="next" type="button" aria-label="Next exposure">→</button>
+      <label for="frame">Measured exposure<input id="frame" type="range" min="0" max="0" step="1" value="0"></label>
+    </div>
+    <div class="zoom"><label for="zoom">Zoom<input id="zoom" type="range" min="1" max="6" step=".25" value="1"></label><output id="zoom-label" for="zoom">1×</output><button id="reset" type="button">Reset view</button></div>
+    <p class="image-note" id="view-help">Zoom to inspect pixels; drag to pan. With the image focused, +/− zoom, arrow keys pan when zoomed or change exposure at 1×, and 0 resets the view. Space plays or pauses.</p>
+    <p class="image-note">Fixed display range, normalized by this exposure’s photon level. Signed detector values remain in the source dataset.</p>
+    <div class="identity"><span>Episode</span><span id="case-id"></span><span>Base wavefront</span><span id="base-id"></span></div>
+  </div>
+  <div>
+    <section class="panel">
+      <p class="kicker">At the selected measured command</p><h2>Exposure and evaluator record</h2>
+      <dl><dt>Evaluator wavefront error</dt><dd class="number" id="wfe"></dd><dt>Evaluator peak Strehl</dt><dd id="strehl"></dd><dt>Expected photons used / allowed</dt><dd id="photons-used"></dd><dt>Photoelectrons realized</dt><dd id="electrons"></dd></dl>
+      <p class="command">Applied OPD, nm · defocus, astigmatism ×2, coma ×2, spherical<br><span id="command"></span></p>
+      <svg id="trajectory" viewBox="0 0 440 155" role="group" aria-label="Evaluator wavefront error at each recorded exposure"></svg>
+      <p class="chart-note">Evaluator WFE (nm) at measured commands. Select a point to view its recorded exposure; no final submission is added to this curve.</p>
+    </section>
+    <section class="panel" aria-labelledby="final-heading">
+      <h2 id="final-heading">Final submitted correction</h2>
+      <p class="status" id="final-status"></p><p class="status-description" id="final-description"></p>
+      <dl><dt>Final evaluator wavefront error</dt><dd id="final-wfe"></dd><dt>Final evaluator peak Strehl</dt><dd id="final-strehl"></dd></dl>
+      <p class="command">Final OPD command, nm<br><span id="final-command"></span></p>
+      <button class="final-action" id="final-jump" type="button" disabled>No recorded final exposure</button>
+      <p class="fits">Recorded fits / failed / unconverged: <span id="fit-status"></span></p>
+      <p class="metric-note">WFE and Strehl are computed from latent simulator state. They are evaluator labels, not camera observations or controller inputs.</p>
+    </section>
+  </div>
+</section>
+<details>
+  <summary>Model, display and source evidence</summary>
+  <p id="design"></p>
+  <p>This is a public parameter-selection cohort. Every candidate is retained, including settings not selected as references. Related conjugates, detector replicates and shared budget prefixes do not add independent wavefronts. These data do not establish held-out rankings, hardware performance or language-model capability.</p>
+  <p>The model is static, monochromatic scalar Fourier optics with a circular pupil, six OPD modes, and Poisson–Gaussian detector noise. The estimator assumes exactly matched calibration. Commands are optical path difference; ideal reflective surface displacement is half that value.</p>
+  <p>Display: log1p(max(measured electrons, 0)) / log1p(photons per exposure), magma colour map, fixed limits 0–1, image origin lower. Display clipping leaves the original signed float64 measurements unchanged. A submitted final command can match an earlier exposure, the last exposure, or no exposure at all.</p>
+  <p>This portable replay reads copied PNG files beside this page and requires no external service. Its generator checks the derived export against a trusted manifest fingerprint; it does not rerun the native physics. A checksum establishes file consistency, not authorship.</p>
+  <p>Input ImageFolder manifest SHA-256<br><code id="manifest"></code></p>
+  <p>Native experiment manifest SHA-256<br><code id="native-manifest"></code></p>
+</details>
+<footer>ProbeBench · classical reference selection v1 · Noether Labs</footer>
+</main>
+<script type="application/json" id="experiment">%%DATA%%</script>
+<script id="replay-script">
+"use strict";
+(() => {
+  const get = id => document.getElementById(id);
+  const ns = "http://www.w3.org/2000/svg";
+  const familyLabels = {
+    no_action_v2: "No action",
+    unprobed_mle_v1: "Unprobed MLE",
+    random_probe_v2: "Random probes",
+    coordinate_search_v2: "Coordinate search",
+    fixed_diversity_mle_v1: "Fixed phase diversity",
+    phase_diversity_mle_v1: "Adaptive phase diversity"
+  };
+  const fields = [
+    ["family", "family"], ["candidate", "candidate_id"],
+    ["stratum", "stratum_id"], ["base", "base_wavefront_id"],
+    ["photons", "photons_per_exposure"], ["budget", "exposure_budget"],
+    ["member", "member"], ["replicate", "replicate"]
+  ];
+  const keys = Object.fromEntries(fields);
+  const numericFields = new Set(["photons", "budget", "replicate"]);
+  const viewport = get("viewport");
+  const number = value => Number(value).toLocaleString(undefined, {maximumFractionDigits: 0});
+  const vector = values => values.map(value => (value >= 0 ? "+" : "") + value.toFixed(2)).join("   ");
+  let data;
+  let episode;
+  let index = 0;
+  let playing = false;
+  let timer = null;
+  let imageToken = 0;
+  let camera = null;
+  let imageState = "loading";
+  let finalIndex = null;
+  let panX = 0;
+  let panY = 0;
+  let drag = null;
+  let points = [];
+  let replayFailed = false;
+
+  function stop() {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+    playing = false;
+    get("play").textContent = "Play";
+    get("play").setAttribute("aria-pressed", "false");
+  }
+
+  function clearImage(message, failed = false) {
+    imageToken += 1;
+    if (camera) {
+      camera.onload = camera.onerror = null;
+      camera.remove();
+      camera = null;
+    }
+    imageState = failed ? "error" : "loading";
+    get("image-state").hidden = false;
+    get("image-state").classList.toggle("error", failed);
+    get("image-message").textContent = message;
+    get("retry").hidden = !failed;
+    viewport.setAttribute("aria-busy", failed ? "false" : "true");
+  }
+
+  function fatal() {
+    replayFailed = true;
+    stop();
+    clearImage("No image is displayed because this replay could not be read.", true);
+    get("retry").hidden = true;
+    get("fatal").hidden = false;
+    get("fatal").textContent = "This replay could not be read. Check the generated files against their manifest and reopen the complete replay directory.";
+    get("filters").disabled = true;
+    for (const id of ["previous", "play", "next", "frame", "zoom", "reset", "final-jump"]) {
+      get(id).disabled = true;
+    }
+    viewport.removeAttribute("tabindex");
+  }
+
+  const safely = action => (...args) => {
+    if (replayFailed) return;
+    try {
+      action(...args);
+    } catch (_) {
+      fatal();
+    }
+  };
+
+  function valuesFor(pool, id) {
+    const values = [...new Set(pool.map(item => String(item.case[keys[id]])))];
+    if (numericFields.has(id)) return values.sort((a, b) => Number(a) - Number(b));
+    if (id === "stratum") {
+      const order = {low: 0, medium: 1, high: 2};
+      return values.sort((a, b) => (order[a] ?? 3) - (order[b] ?? 3) || a.localeCompare(b));
+    }
+    if (id === "member") return values.sort((a, b) => (a === "primary" ? -1 : b === "primary" ? 1 : a.localeCompare(b)));
+    return values.sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+  }
+
+  function optionLabel(id, value) {
+    if (id === "family") return familyLabels[value] || value;
+    if (id === "photons") return number(value) + " photons";
+    if (id === "budget") return value + (Number(value) === 1 ? " exposure" : " exposures");
+    if (id === "stratum") return ({low: "Low", medium: "Medium", high: "High"})[value] || value;
+    if (id === "member") return ({primary: "Primary", conjugate: "Conjugate"})[value] || value;
+    if (id === "replicate") return "Replicate " + value;
+    if (id === "base") {
+      const parts = value.split(":");
+      return parts.length > 2 && /^\d+$/.test(parts.at(-1))
+        ? "Base " + (Number(parts.at(-1)) + 1) + " · " + parts.at(-2) : value;
+    }
+    return value;
+  }
+
+  function chooseEpisode(changed = null) {
+    stop();
+    const desired = Object.fromEntries(fields.map(([id]) => [id, get(id).value]));
+    const fieldIds = fields.map(([id]) => id);
+    const order = changed ? [changed, ...fieldIds.filter(id => id !== changed)] : fieldIds;
+    const chosen = {};
+    let pool = data.episodes;
+    for (const id of order) {
+      const values = valuesFor(pool, id);
+      if (!values.length) throw new Error("No matching episode");
+      let value = values.includes(desired[id]) ? desired[id] : values[0];
+      if (id === "candidate" && !values.includes(desired[id])) {
+        const reference = pool.find(item => item.selected_reference);
+        if (reference) value = String(reference.case.candidate_id);
+      }
+      chosen[id] = value;
+      pool = pool.filter(item => String(item.case[keys[id]]) === value);
+    }
+    if (pool.length !== 1) throw new Error("Episode identity is not unique");
+    episode = pool[0];
+    for (const [position, [id]] of fields.entries()) {
+      // Constrain options by their parents only, so sparse cohorts remain navigable.
+      const parents = fields.slice(0, position);
+      const available = data.episodes.filter(item => parents.every(
+        ([other, key]) => String(item.case[key]) === chosen[other]
+      ));
+      const options = valuesFor(available, id).map(value => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = optionLabel(id, value);
+        return option;
+      });
+      get(id).replaceChildren(...options);
+      get(id).value = chosen[id];
+    }
+    index = 0;
+    get("frame").max = episode.frames.length - 1;
+    get("candidate-name").textContent = episode.case.candidate_id;
+    get("reference-label").textContent = episode.selected_reference ? "Selected reference setting" : "Nonselected candidate · retained";
+    get("reference-label").dataset.selected = String(episode.selected_reference);
+    get("case-id").textContent = episode.case.id;
+    get("base-id").textContent = episode.case.base_wavefront_id;
+    get("selection-announcement").textContent = `${episode.case.candidate_id}, ${episode.case.exposure_budget} exposures, ${number(episode.case.photons_per_exposure)} photons per exposure, ${episode.case.member}, replicate ${episode.case.replicate}.`;
+    resetView();
+    buildChart();
+    renderFinal();
+    renderExposure();
+  }
+
+  function transform() {
+    const zoom = Number(get("zoom").value);
+    const boundX = viewport.clientWidth * (zoom - 1) / 2;
+    const boundY = viewport.clientHeight * (zoom - 1) / 2;
+    panX = Math.max(-boundX, Math.min(boundX, panX));
+    panY = Math.max(-boundY, Math.min(boundY, panY));
+    if (camera) camera.style.transform = `translate(${panX}px,${panY}px) scale(${zoom})`;
+    viewport.classList.toggle("zoomed", zoom > 1);
+    get("zoom-label").textContent = zoom + "×";
+  }
+
+  function endDrag() {
+    const previousDrag = drag;
+    drag = null;
+    viewport.classList.remove("dragging");
+    if (previousDrag && viewport.hasPointerCapture(previousDrag.id)) {
+      viewport.releasePointerCapture(previousDrag.id);
+    }
+  }
+
+  function resetView() {
+    endDrag();
+    get("zoom").value = "1";
+    panX = panY = 0;
+    transform();
+  }
+
+  function updateControls() {
+    get("previous").disabled = index === 0;
+    get("next").disabled = index === episode.frames.length - 1;
+    get("play").disabled = episode.frames.length < 2 || imageState === "error";
+    get("frame").disabled = episode.frames.length < 2;
+  }
+
+  function scheduleNext() {
+    if (!playing || imageState !== "ready") return;
+    if (index === episode.frames.length - 1) {
+      stop();
+      return;
+    }
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(safely(() => {
+      timer = null;
+      index += 1;
+      renderExposure();
+    }), 850);
+  }
+
+  function loadImage(frame) {
+    clearImage(`Loading recorded exposure ${index + 1}…`);
+    const token = imageToken;
+    const image = document.createElement("img");
+    camera = image;
+    image.id = "camera";
+    image.hidden = true;
+    image.draggable = false;
+    image.alt = `Recorded exposure ${index + 1} of ${episode.frames.length}; ${episode.case.candidate_id}; ${number(episode.case.photons_per_exposure)} photons per exposure.`;
+    image.onload = safely(() => {
+      if (token !== imageToken || camera !== image) return;
+      if (!image.naturalWidth || !image.naturalHeight) {
+        image.onerror();
+        return;
+      }
+      imageState = "ready";
+      image.hidden = false;
+      get("image-state").hidden = true;
+      viewport.setAttribute("aria-busy", "false");
+      transform();
+      updateControls();
+      scheduleNext();
+    });
+    image.onerror = () => {
+      if (token !== imageToken || camera !== image) return;
+      stop();
+      image.hidden = true;
+      imageState = "error";
+      get("image-state").hidden = false;
+      get("image-state").classList.add("error");
+      get("image-message").textContent = `Recorded exposure ${index + 1} could not be loaded. Keep the images folder beside index.html, then retry. No previous image is shown.`;
+      get("retry").hidden = false;
+      viewport.setAttribute("aria-busy", "false");
+      updateControls();
+    };
+    viewport.prepend(image);
+    transform();
+    if (!/^images\/[A-Za-z0-9_-]+\.png$/.test(frame.image)) {
+      image.onerror();
+    } else {
+      image.src = frame.image;
+    }
+  }
+
+  function renderExposure() {
+    const frame = episode.frames[index];
+    const measured = frame.measurement;
+    get("frame-heading").textContent = `Measured exposure ${index + 1} / ${episode.frames.length}`;
+    get("photon-heading").textContent = number(episode.case.photons_per_exposure) + " photons / exposure";
+    get("frame").value = index;
+    get("frame").setAttribute("aria-valuetext", `Measured exposure ${index + 1} of ${episode.frames.length}`);
+    get("wfe").textContent = measured.residual_wfe_nm.toFixed(3) + " nm";
+    get("strehl").textContent = measured.strehl_peak_ratio.toFixed(6);
+    get("photons-used").textContent = number(measured.cumulative_expected_photons) + " / " + number(episode.case.exposure_budget * episode.case.photons_per_exposure);
+    get("electrons").textContent = number(measured.realized_photoelectrons);
+    get("command").textContent = vector(measured.applied_opd_nm);
+    points.forEach((point, position) => {
+      point.setAttribute("aria-pressed", String(position === index));
+      const mark = point.querySelector(".mark");
+      mark.setAttribute("r", position === index ? "5" : "3.5");
+      mark.setAttribute("fill", position === index ? "#92552c" : "#246c70");
+    });
+    loadImage(frame);
+    updateControls();
+  }
+
+  function goFrame(position) {
+    stop();
+    index = Math.max(0, Math.min(episode.frames.length - 1, position));
+    renderExposure();
+  }
+
+  function playPause() {
+    if (playing) {
+      stop();
+      return;
+    }
+    if (episode.frames.length < 2 || imageState === "error") return;
+    playing = true;
+    get("play").textContent = "Pause";
+    get("play").setAttribute("aria-pressed", "true");
+    if (index === episode.frames.length - 1) {
+      index = 0;
+      renderExposure();
+    } else {
+      scheduleNext();
+    }
+  }
+
+  function svg(name, attributes, text) {
+    const element = document.createElementNS(ns, name);
+    for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, value);
+    if (text !== undefined) element.textContent = text;
+    return element;
+  }
+
+  function buildChart() {
+    const target = get("trajectory");
+    target.replaceChildren();
+    points = [];
+    const values = episode.frames.map(frame => frame.measurement.residual_wfe_nm);
+    const upper = Math.max(...values) * 1.12 || 1;
+    const x = position => 46 + (values.length > 1 ? position / (values.length - 1) : .5) * 375;
+    const y = value => 120 - value / upper * 98;
+    target.append(svg("title", {}, "Evaluator wavefront error at recorded exposures"));
+    for (const value of [0, upper / 2, upper]) {
+      target.append(svg("line", {x1: 46, x2: 421, y1: y(value), y2: y(value), stroke: "#c9ccc2", "stroke-width": .7}));
+      target.append(svg("text", {x: 36, y: y(value) + 4, "text-anchor": "end"}, value.toFixed(1)));
+    }
+    target.append(svg("polyline", {points: values.map((value, position) => x(position) + "," + y(value)).join(" "), fill: "none", stroke: "#246c70", "stroke-width": 1.5}));
+    values.forEach((value, position) => {
+      const point = svg("g", {class: "chart-point", tabindex: 0, role: "button", "aria-label": `View exposure ${position + 1}; evaluator WFE ${value.toFixed(3)} nanometres`, "aria-pressed": "false"});
+      point.append(svg("circle", {class: "hit", cx: x(position), cy: y(value), r: 11}));
+      point.append(svg("circle", {class: "mark", cx: x(position), cy: y(value), r: 3.5, fill: "#246c70"}));
+      point.append(svg("title", {}, `Exposure ${position + 1}: ${value.toFixed(3)} nm (evaluator)`));
+      point.addEventListener("click", safely(() => goFrame(position)));
+      point.addEventListener("keydown", safely(event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          goFrame(position);
+        } else if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+          event.preventDefault();
+          let next = position;
+          if (event.key === "Home") next = 0;
+          else if (event.key === "End") next = values.length - 1;
+          else next += event.key === "ArrowRight" ? 1 : -1;
+          next = Math.max(0, Math.min(values.length - 1, next));
+          goFrame(next);
+          points[next].focus();
+        }
+      }));
+      points.push(point);
+      target.append(point);
+    });
+    target.append(svg("text", {x: values.length === 1 ? 233.5 : 46, y: 147, "text-anchor": values.length === 1 ? "middle" : "start"}, "Exposure 1"));
+    if (values.length > 1) target.append(svg("text", {x: 421, y: 147, "text-anchor": "end"}, "Exposure " + values.length));
+  }
+
+  function renderFinal() {
+    const indices = episode.measured_indices;
+    if (!Array.isArray(indices) || indices.some(value =>
+      !Number.isInteger(value) || value < 0 || value >= episode.frames.length
+    )) {
+      throw new Error("Invalid final observation index");
+    }
+    const last = episode.frames.length - 1;
+    const state = indices.length === 0 ? "unmeasured" : indices.includes(last) ? "last" : "earlier";
+    get("final-status").dataset.state = state;
+    const finalLabels = {
+      unmeasured: "Unmeasured final command",
+      last: "Measured at the last exposure",
+      earlier: "Measured earlier, not at the last exposure"
+    };
+    get("final-status").textContent = finalLabels[state];
+    get("final-description").textContent = state === "unmeasured"
+      ? "No camera exposure was acquired at this final command. The final scores below are evaluator computations; there is no final camera image."
+      : `This command matches recorded exposure${indices.length === 1 ? "" : "s"} ${indices.map(value => value + 1).join(", ")}. ${state === "earlier" ? "The last acquired image was measured at a different command." : "The last acquired image is a measurement at this command."}`;
+    finalIndex = indices.length ? Math.max(...indices) : null;
+    get("final-jump").disabled = finalIndex === null;
+    get("final-jump").textContent = finalIndex === null ? "No recorded final exposure" : `View recorded exposure ${finalIndex + 1}`;
+    get("final-jump").setAttribute("aria-label", finalIndex === null ? "No camera exposure exists for the final command" : `View recorded exposure ${finalIndex + 1} at the final command`);
+    get("final-wfe").textContent = episode.final.residual_wfe_nm.toFixed(3) + " nm";
+    get("final-strehl").textContent = episode.final.strehl_peak_ratio.toFixed(6);
+    get("final-command").textContent = vector(episode.final_command);
+    get("fit-status").textContent = [episode.fit_count, episode.failed_fits, episode.unconverged_fits].map(number).join(" / ");
+  }
+
+  function start() {
+    data = JSON.parse(get("experiment").textContent);
+    if (data.schema !== 1 || data.split !== "public_tuning"
+      || !Array.isArray(data.episodes) || !data.episodes.length
+      || data.episodes.some(item => !item.case || !Array.isArray(item.frames) || !item.frames.length)) {
+      throw new Error("Invalid replay data");
+    }
+    get("inventory").textContent = `${number(data.episodes.length)} episodes · ${number(data.exposure_count)} recorded exposures · ${number(data.candidate_count)} candidates · ${number(data.independent_base_count)} independent bases`;
+    get("design").textContent = `The selectors expose all ${number(data.episodes.length)} retained episodes and all ${number(data.exposure_count)} measured exposures. A selected reference is the single global candidate chosen for its policy family; it is not a held-out winner.`;
+    get("manifest").textContent = data.manifest_sha256;
+    get("native-manifest").textContent = data.native_manifest_sha256;
+    for (const [id] of fields) {
+      get(id).addEventListener("change", safely(() => chooseEpisode(id)));
+    }
+    get("previous").addEventListener("click", safely(() => goFrame(index - 1)));
+    get("next").addEventListener("click", safely(() => goFrame(index + 1)));
+    get("frame").addEventListener("input", safely(() => goFrame(Number(get("frame").value))));
+    get("play").addEventListener("click", safely(playPause));
+    get("final-jump").addEventListener("click", safely(() => {
+      if (finalIndex !== null) goFrame(finalIndex);
+    }));
+    get("retry").addEventListener("click", safely(() => {
+      stop();
+      renderExposure();
+    }));
+    get("zoom").addEventListener("input", safely(transform));
+    get("reset").addEventListener("click", safely(resetView));
+    viewport.addEventListener("dblclick", safely(event => {
+      if (!event.target.closest("button")) resetView();
+    }));
+    viewport.addEventListener("keydown", safely(event => {
+      if (event.target !== viewport) return;
+      const zoom = Number(get("zoom").value);
+      const viewKeys = ["+", "=", "-", "_", "0", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", " "];
+      if (viewKeys.includes(event.key)) event.preventDefault();
+      if (event.key === "+" || event.key === "=") {
+        get("zoom").value = Math.min(6, zoom + .25);
+        transform();
+      } else if (event.key === "-" || event.key === "_") {
+        get("zoom").value = Math.max(1, zoom - .25);
+        transform();
+      } else if (event.key === "0") {
+        resetView();
+      } else if (event.key === " ") {
+        playPause();
+      } else if (event.key === "Home") {
+        goFrame(0);
+      } else if (event.key === "End") {
+        goFrame(episode.frames.length - 1);
+      } else if (zoom > 1 && event.key.startsWith("Arrow")) {
+        if (event.key === "ArrowLeft") panX -= 32;
+        if (event.key === "ArrowRight") panX += 32;
+        if (event.key === "ArrowUp") panY -= 32;
+        if (event.key === "ArrowDown") panY += 32;
+        transform();
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+        goFrame(index - 1);
+      } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+        goFrame(index + 1);
+      }
+    }));
+    viewport.addEventListener("pointerdown", safely(event => {
+      if (Number(get("zoom").value) <= 1 || imageState !== "ready" || drag
+        || event.target.closest("button") || (event.pointerType === "mouse" && event.button !== 0)) return;
+      drag = {id: event.pointerId, x: event.clientX, y: event.clientY, panX, panY};
+      viewport.setPointerCapture(event.pointerId);
+      viewport.classList.add("dragging");
+    }));
+    viewport.addEventListener("pointermove", safely(event => {
+      if (!drag || drag.id !== event.pointerId) return;
+      panX = drag.panX + event.clientX - drag.x;
+      panY = drag.panY + event.clientY - drag.y;
+      transform();
+    }));
+    for (const type of ["pointerup", "pointercancel", "lostpointercapture"]) {
+      viewport.addEventListener(type, safely(event => {
+        if (drag && drag.id === event.pointerId) endDrag();
+      }));
+    }
+    window.addEventListener("resize", safely(transform));
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+    });
+    window.addEventListener("pagehide", stop);
+    chooseEpisode();
+  }
+  safely(start)();
+})();
+</script>
+</body>
+</html>

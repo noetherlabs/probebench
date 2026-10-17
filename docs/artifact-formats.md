@@ -9,9 +9,8 @@ listed in a recomputed manifest. Do not modify an input archive while an export 
 
 Classical parameter selection has additional candidate, photon-level and base/member
 dimensions. Its [reference packet and native archive](../results/classical-selection-v1-20261016/README.md)
-use a separate verifier, figure generator and ImageFolder exporter. The sequential
-commands below do not support that archive. Selection-specific HTML replay is not yet
-available.
+use a separate verifier, figure generator, ImageFolder exporter and measurement replay.
+The sequential commands below do not support that archive.
 
 ## Classical-selection ImageFolder
 
@@ -75,6 +74,55 @@ The export includes a dataset card, configuration, selected settings, rendering 
 verification provenance, an independent file manifest, and the existing LICENSE and
 NOTICE. It contains public tuning data; it does not introduce a held-out split or a
 new scientific result. Local export does not publish a Hugging Face repository.
+
+## Classical-selection measurement replay
+
+The replay generator consumes the verified ImageFolder export above. It copies the
+recorded PNGs into a portable directory and embeds the trajectory data in `index.html`;
+it does not copy the raw detector arrays or synthesize additional observations.
+
+For an export just produced locally by the verified exporter, capture the manifest
+fingerprint and build the replay:
+
+```sh
+imagefolder_digest=$(python3 -c 'import hashlib; from pathlib import Path; print(hashlib.sha256(Path("work/selection-imagefolder/manifest.json").read_bytes()).hexdigest())')
+uv run --locked python scripts/generate_selection_replay.py \
+  work/selection-imagefolder \
+  --manifest-sha256 "$imagefolder_digest" \
+  --output work/selection-replay
+```
+
+For a downloaded export, obtain that fingerprint from a trusted record instead of
+computing it from the download itself. The generator checks the supplied fingerprint,
+exact inventory, every file hash and the correspondence between episode and exposure
+metadata. This establishes consistency with the trusted derived export; it does not
+repeat native optical replay or authenticate the source of an arbitrary fingerprint.
+
+Open `work/selection-replay/index.html` in a browser and retain the adjacent `images/`
+directory. The replay requires no external services, fonts or scripts. Select any
+candidate, photon allowance, exposure budget, base wavefront, conjugate member and
+replicate; family and RMS-stratum controls narrow the available choices. Nonselected
+candidates remain accessible. Scrub recorded exposures, inspect the evaluator WFE
+curve, and zoom or pan the detector image.
+
+The final correction is explicitly classified as measured at the last exposure,
+measured earlier, or unmeasured. A recorded-final shortcut is available only when an
+actual camera observation exists. Evaluator WFE and Strehl describe latent simulation
+state and are not observations supplied to the controller. The display normalization
+is fixed within each photon level; raw signed arrays remain in the ImageFolder export.
+
+Input and output directories must be disjoint and output must be new. Admission accounts
+for file allocation and preserves the 1.25 GiB operating reserve. Interrupted output
+has no completion manifest and must not be treated as a complete replay.
+
+The v1 replay retains all 4,032 episodes and 30,912 exposures. Its final commands comprise
+2,016 unmeasured submissions, 1,577 submissions measured earlier, and 439 measured at the
+last exposure. Every embedded trajectory and final record was checked against the native
+archive, and every copied PNG against the verified ImageFolder. Chromium 145 reached all
+4,032 selector combinations and decoded each last exposure plus all 2,016 recorded-final
+shortcuts. These browser checks cover endpoints; the generator checks every PNG against
+its signed raw array. The replay manifest SHA-256 is
+`b0b47b29345e4d42508916c249cdcc06d97f1b0148e0182ad5e9b547d8028f34`.
 
 ## Figures and budget-prefix checks
 

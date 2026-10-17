@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a portable classical-selection replay with complete cohort selectors, measured
+  trajectories, and explicit last-measured, earlier-measured and unmeasured final commands.
 - Export the complete classical-selection archive as a local ImageFolder dataset,
   preserving every candidate and signed detector array under an explicit public-tuning
   split, with pinned replay verification and bounded storage admission.

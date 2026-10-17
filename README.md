@@ -78,7 +78,8 @@ Add `--resume` to the acquisition command to continue an interrupted run. See th
 
 The [artifact guide](docs/artifact-formats.md) covers figures, an offline measurement
 replay, and ImageFolder exports that preserve raw signed detector values. The separate
-classical-selection exporter retains every candidate in a `public_tuning` split.
+classical-selection exporter retains every candidate in a `public_tuning` split, with
+a portable replay for inspecting its measured trajectories and final-command status.
 
 ## Model and scope
 
