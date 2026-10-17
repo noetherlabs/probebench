@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Retain the complete classical tuning reduction for 4,032 episodes and 30,912
+  exposures, freeze six reference settings, and report all candidates and optimizer
+  starts with separate compact-packet and native-archive verification.
 - License the project under Apache 2.0 with packaged license and attribution files.
 - Add pinned-action continuous integration for tests, repository-content checks,
   and verification of the four retained experiments.

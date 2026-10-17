@@ -1,0 +1,68 @@
+{
+  "families": {
+    "coordinate_search_v2": {
+      "candidate_id": "coordinate_step_040",
+      "policy": {
+        "coordinate_step_floor_nm": 5.0,
+        "coordinate_step_nm": 40.0,
+        "diversity_probe_nm": 80.0,
+        "max_mle_iterations": 200,
+        "random_amplitude_nm": 60.0
+      }
+    },
+    "fixed_diversity_mle_v1": {
+      "candidate_id": "fixed_probe_080",
+      "policy": {
+        "coordinate_step_floor_nm": 5.0,
+        "coordinate_step_nm": 40.0,
+        "diversity_probe_nm": 80.0,
+        "max_mle_iterations": 200,
+        "random_amplitude_nm": 60.0
+      }
+    },
+    "no_action_v2": {
+      "candidate_id": "no_action_default",
+      "policy": {
+        "coordinate_step_floor_nm": 5.0,
+        "coordinate_step_nm": 40.0,
+        "diversity_probe_nm": 80.0,
+        "max_mle_iterations": 200,
+        "random_amplitude_nm": 60.0
+      }
+    },
+    "phase_diversity_mle_v1": {
+      "candidate_id": "adaptive_probe_080",
+      "policy": {
+        "coordinate_step_floor_nm": 5.0,
+        "coordinate_step_nm": 40.0,
+        "diversity_probe_nm": 80.0,
+        "max_mle_iterations": 200,
+        "random_amplitude_nm": 60.0
+      }
+    },
+    "random_probe_v2": {
+      "candidate_id": "random_amp_020",
+      "policy": {
+        "coordinate_step_floor_nm": 5.0,
+        "coordinate_step_nm": 40.0,
+        "diversity_probe_nm": 80.0,
+        "max_mle_iterations": 200,
+        "random_amplitude_nm": 20.0
+      }
+    },
+    "unprobed_mle_v1": {
+      "candidate_id": "unprobed_default",
+      "policy": {
+        "coordinate_step_floor_nm": 5.0,
+        "coordinate_step_nm": 40.0,
+        "diversity_probe_nm": 80.0,
+        "max_mle_iterations": 200,
+        "random_amplitude_nm": 60.0
+      }
+    }
+  },
+  "purpose": "classical_parameter_selection_v1",
+  "schema": 1,
+  "selection_sha256": "03e63c3f3b98b8169de50c0473727110218486f30f0d885199d4f6ed1f1777d2",
+  "study_sha256": "ef9d4511cbed4dad803bbfd27d63cb86446354d28b9fdb81fb9145df92ee9e3f"
+}

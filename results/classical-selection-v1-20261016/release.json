@@ -1,0 +1,104 @@
+{
+  "analysis": {
+    "files_sha256": {
+      "scripts/plot_parameter_selection.py": "f48a0b92ac971a60d7c728766aa9d4d90f37bbff8f4be1bbe588ecdbdadedc16",
+      "scripts/summarize_selection_fits.py": "a2ca60a9c7f9cdaaf7ed9c7ecd3f1ae2106814e6645c3510765e038f70032255",
+      "scripts/verify_selection_release.py": "843c06b00da67f64446531c6ce3dd83f9fdba76c420b584ea771a7f7bab2e7e0"
+    }
+  },
+  "archive": {
+    "bytes": 1033518705,
+    "filename": "classical-selection-v1-20261016.tar.gz",
+    "github_asset_id": 649235775,
+    "github_release_id": 415523853,
+    "license_members": [
+      "LICENSE",
+      "NOTICE"
+    ],
+    "native_files": 34972,
+    "native_logical_bytes": 1080829970,
+    "native_root": "classical-selection-v1-20261016",
+    "package_files": 34974,
+    "package_logical_bytes": 1080841380,
+    "release_tag": "classical-selection-v1-20261016",
+    "sha256": "68a9e16dd5144c24bcd8242cc4c4b05483a7b144c94418a50bce17e2f4444226",
+    "url": "https://api.github.com/repos/noetherlabs/probebench/releases/assets/649235775",
+    "url_accept_header": "application/octet-stream"
+  },
+  "archive_manifest_sha256": "95130d4d9bf5d534aa3bfc88bdaef5934b5862769061df2bb26c03cf72806ef0",
+  "configuration_sha256": "5c604249fd55fbe713c54ebf9f1e693e968f4b657821316ccfbca065ad44c402",
+  "counts": {
+    "candidates": 14,
+    "episodes": 4032,
+    "exposure_budgets": [
+      3,
+      7,
+      13
+    ],
+    "exposures": 30912,
+    "families": 6,
+    "independent_bases": 12,
+    "members": 24,
+    "photons_per_exposure": [
+      2000,
+      20000
+    ],
+    "replicates": 2,
+    "strata": [
+      {
+        "base_count": 4,
+        "id": "low",
+        "rms_max_nm": 25.0,
+        "rms_min_nm": 10.0
+      },
+      {
+        "base_count": 4,
+        "id": "medium",
+        "rms_max_nm": 50.0,
+        "rms_min_nm": 25.0
+      },
+      {
+        "base_count": 4,
+        "id": "high",
+        "rms_max_nm": 90.0,
+        "rms_min_nm": 50.0
+      }
+    ]
+  },
+  "distribution_verification": {
+    "all_packaged_file_hashes_verified": true,
+    "archive_sha256": "68a9e16dd5144c24bcd8242cc4c4b05483a7b144c94418a50bce17e2f4444226",
+    "completed_at_utc": "2026-10-17T02:09:04.152669+00:00",
+    "full_camera_replay_verified": true,
+    "github_asset_id": 649235775,
+    "native_manifest_sha256": "95130d4d9bf5d534aa3bfc88bdaef5934b5862769061df2bb26c03cf72806ef0",
+    "normalized_headers_verified": true,
+    "optimizer_rerun": false,
+    "source_inventory_sha256": "9dc4c5901e54b73e129f93e94b977df7e02bf8e32cddecd47014d51c09e8aff0"
+  },
+  "purpose": "classical_parameter_selection_release_v1",
+  "release_id": "classical-selection-v1-20261016",
+  "schema": 1,
+  "scope": "public_tuning_only",
+  "selection_sha256": "03e63c3f3b98b8169de50c0473727110218486f30f0d885199d4f6ed1f1777d2",
+  "source": {
+    "git_tree": "0c65dcd9654c3423187fddbddecd050b0687780e",
+    "inventory_sha256": "9dc4c5901e54b73e129f93e94b977df7e02bf8e32cddecd47014d51c09e8aff0",
+    "public_revision": "705e31e00325d5c0648cdc6161ed2ba2c338c666",
+    "runtime": {
+      "machine": "arm64",
+      "numpy": "2.4.6",
+      "platform": "macOS-14.6-arm64-arm-64bit",
+      "python": "3.11.15",
+      "scipy": "1.17.1"
+    }
+  },
+  "source_inventory_sha256": "9dc4c5901e54b73e129f93e94b977df7e02bf8e32cddecd47014d51c09e8aff0",
+  "study_sha256": "ef9d4511cbed4dad803bbfd27d63cb86446354d28b9fdb81fb9145df92ee9e3f",
+  "verification": {
+    "completed_at_utc": "2026-10-17T01:46:52.777041+00:00",
+    "passed": true,
+    "scope": "Complete native inventory and detector/policy replay using saved fits; no optimizer rerun.",
+    "verifier": "probebench.selection.verify_run"
+  }
+}

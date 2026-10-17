@@ -3,8 +3,9 @@
 `probebench.selection` selects one setting per classical controller family using a
 separate wavefront cohort and a declared global loss. The
 [v1 configuration](../configs/classical_selection_v1.json) specifies a coarse parameter
-search on the static, monochromatic, six-mode simulated plant. The full acquisition
-has not been completed and no selected winner exists for this configuration.
+search on the static, monochromatic, six-mode simulated plant. The
+[completed v1 study](parameter-selection-results.md) retains 4,032 episodes and
+30,912 exposures and freezes one global setting per family.
 
 This cohort is public tuning data. Its selection scores are not reserved performance
 estimates, and selecting a candidate does not establish superiority or equivalence.
@@ -59,8 +60,8 @@ episodes  = 14 candidates × 24 members × 2 replicates × 2 photon levels × 3 
 exposures = 14 candidates × 24 members × 2 replicates × 2 photon levels × (3 + 7 + 13)
 ```
 
-These are planned counts, not completed acquisitions. Preparation records the actual
-member count and derives the case inventory from it.
+Preparation records the actual member count and derives the case inventory from it.
+The completed v1 archive contains all 24 members and exactly these counts.
 
 ## Exclusions and paired streams
 

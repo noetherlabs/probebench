@@ -99,8 +99,9 @@ cohort and reports whole-study storage requirements without acquiring observatio
 Limited acquisition chunks remain incomplete until every expected episode is retained.
 Incomplete resumes verify retained evidence before granting storage credit; completed
 archive verification replays camera draws and policy commands using saved fits,
-without rerunning the optimizer. The full v1 selection has not been completed and
-supplies no selected reference yet.
+without rerunning the optimizer. The [completed v1 selection](parameter-selection-results.md)
+freezes six reference settings. Its [reference packet](../results/classical-selection-v1-20261016/README.md)
+distinguishes compact consistency checks from complete native-archive replay.
 
 The [paired curve reducer](paired-curve-analysis.md) is a Python API; it does not
 write an archive or provide a command-line verification mode. For reproducible

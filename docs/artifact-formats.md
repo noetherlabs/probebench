@@ -1,11 +1,16 @@
 # Figures, measurement replays and ImageFolder exports
 
-All exporters accept a completed sequential experiment and verify its manifest,
+The sequential exporters below accept a completed sequential experiment and verify its manifest,
 resource accounting and optical metrics before reading measurements. Outputs are
 created in a separate, previously nonexistent directory. The source run is unchanged.
 Each output records the input manifest digest and the generating script's digest.
 Verification rejects additional episode records or exposure files, including files
 listed in a recomputed manifest. Do not modify an input archive while an export runs.
+
+Classical parameter selection has additional candidate, photon-level and base/member
+dimensions. Its [reference packet and native archive](../results/classical-selection-v1-20261016/README.md)
+use a separate verifier and figure generator. The sequential HTML replay and ImageFolder
+commands below do not support that archive.
 
 ## Figures and budget-prefix checks
 

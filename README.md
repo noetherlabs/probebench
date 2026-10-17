@@ -58,8 +58,9 @@ can resume from saved exposures when source, configuration, and runtime match.
 | [Noise qualification](results/noise-qualification-20261014/report.md) | 24 acquisitions and 48 selected estimates | How does the likelihood affect calibration under detector noise? |
 | [Sequential calibration](docs/sequential-calibration-results.md) | 192 episodes and 1,632 exposures | How does correction change with the exposure allowance? |
 | [Measurement schedules](docs/measurement-schedule-results.md) | 192 episodes and 624 exposures | What changes when acquisition is fixed or adaptive? |
+| [Classical reference selection](docs/parameter-selection-results.md) | 4,032 episodes and 30,912 exposures across 12 independent bases | Which single setting should each classical family use across the declared tuning cells? |
 
-These are public development fixtures. They are not held-out evaluations or evidence of
+These are public development and tuning data. They are not held-out evaluations or evidence of
 hardware performance. Reports retain non-winning outcomes and numerical failures.
 
 ## Run sequential calibration
@@ -105,7 +106,8 @@ Read [SECURITY.md](SECURITY.md) before executing policies or processing external
 - **Agents:** [JSON protocol](docs/agent-protocol.md), [local vision-model adapter](docs/local-model-adapter.md).
 - **Development:** [contributing](CONTRIBUTING.md), [changelog](CHANGELOG.md).
 
-The full v1 parameter-selection study has not run; no selected v1 reference exists.
+The completed v1 tuning study freezes six classical reference settings; its
+[results](docs/parameter-selection-results.md) retain every candidate and numerical outcome.
 Reserved evaluation is not implemented. Agent integration tests qualify the interface,
 not the performance of a language model.
 

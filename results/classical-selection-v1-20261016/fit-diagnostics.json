@@ -1,0 +1,388 @@
+{
+  "candidates": [
+    {
+      "attempted_starts": 5760,
+      "candidate_id": "adaptive_probe_040",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "phase_diversity_mle_v1",
+      "finite_converged_fit_calls": 1920,
+      "finite_successful_starts": 5760,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 1920,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": [
+        {
+          "category": "finite_successful_starts",
+          "count": 1242,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+        },
+        {
+          "category": "finite_successful_starts",
+          "count": 4518,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+        }
+      ]
+    },
+    {
+      "attempted_starts": 5760,
+      "candidate_id": "adaptive_probe_080",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "phase_diversity_mle_v1",
+      "finite_converged_fit_calls": 1920,
+      "finite_successful_starts": 5760,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 1920,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": [
+        {
+          "category": "finite_successful_starts",
+          "count": 1055,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+        },
+        {
+          "category": "finite_successful_starts",
+          "count": 4705,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+        }
+      ]
+    },
+    {
+      "attempted_starts": 5760,
+      "candidate_id": "adaptive_probe_120",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "phase_diversity_mle_v1",
+      "finite_converged_fit_calls": 1920,
+      "finite_successful_starts": 5760,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 1920,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": [
+        {
+          "category": "finite_successful_starts",
+          "count": 759,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+        },
+        {
+          "category": "finite_successful_starts",
+          "count": 5001,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+        }
+      ]
+    },
+    {
+      "attempted_starts": 0,
+      "candidate_id": "coordinate_step_020",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "coordinate_search_v2",
+      "finite_converged_fit_calls": 0,
+      "finite_successful_starts": 0,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 0,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": []
+    },
+    {
+      "attempted_starts": 0,
+      "candidate_id": "coordinate_step_040",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "coordinate_search_v2",
+      "finite_converged_fit_calls": 0,
+      "finite_successful_starts": 0,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 0,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": []
+    },
+    {
+      "attempted_starts": 0,
+      "candidate_id": "coordinate_step_080",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "coordinate_search_v2",
+      "finite_converged_fit_calls": 0,
+      "finite_successful_starts": 0,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 0,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": []
+    },
+    {
+      "attempted_starts": 864,
+      "candidate_id": "fixed_probe_040",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "fixed_diversity_mle_v1",
+      "finite_converged_fit_calls": 288,
+      "finite_successful_starts": 864,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 288,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": [
+        {
+          "category": "finite_successful_starts",
+          "count": 188,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+        },
+        {
+          "category": "finite_successful_starts",
+          "count": 676,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+        }
+      ]
+    },
+    {
+      "attempted_starts": 864,
+      "candidate_id": "fixed_probe_080",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "fixed_diversity_mle_v1",
+      "finite_converged_fit_calls": 288,
+      "finite_successful_starts": 864,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 288,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": [
+        {
+          "category": "finite_successful_starts",
+          "count": 153,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+        },
+        {
+          "category": "finite_successful_starts",
+          "count": 711,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+        }
+      ]
+    },
+    {
+      "attempted_starts": 864,
+      "candidate_id": "fixed_probe_120",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "fixed_diversity_mle_v1",
+      "finite_converged_fit_calls": 288,
+      "finite_successful_starts": 864,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 288,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": [
+        {
+          "category": "finite_successful_starts",
+          "count": 102,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+        },
+        {
+          "category": "finite_successful_starts",
+          "count": 762,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+        }
+      ]
+    },
+    {
+      "attempted_starts": 0,
+      "candidate_id": "no_action_default",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "no_action_v2",
+      "finite_converged_fit_calls": 0,
+      "finite_successful_starts": 0,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 0,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": []
+    },
+    {
+      "attempted_starts": 0,
+      "candidate_id": "random_amp_020",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "random_probe_v2",
+      "finite_converged_fit_calls": 0,
+      "finite_successful_starts": 0,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 0,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": []
+    },
+    {
+      "attempted_starts": 0,
+      "candidate_id": "random_amp_040",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "random_probe_v2",
+      "finite_converged_fit_calls": 0,
+      "finite_successful_starts": 0,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 0,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": []
+    },
+    {
+      "attempted_starts": 0,
+      "candidate_id": "random_amp_080",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "random_probe_v2",
+      "finite_converged_fit_calls": 0,
+      "finite_successful_starts": 0,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 0,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": []
+    },
+    {
+      "attempted_starts": 864,
+      "candidate_id": "unprobed_default",
+      "episodes": 288,
+      "episodes_with_unsuccessful_starts": 0,
+      "exposures": 2208,
+      "family": "unprobed_mle_v1",
+      "finite_converged_fit_calls": 288,
+      "finite_successful_starts": 864,
+      "finite_unconverged_fit_calls": 0,
+      "finite_unconverged_starts": 0,
+      "fit_calls_with_unsuccessful_starts": 0,
+      "multistart_fit_calls": 288,
+      "nonfinite_starts": 0,
+      "numerical_failure_fit_calls": 0,
+      "start_statuses": [
+        {
+          "category": "finite_successful_starts",
+          "count": 282,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+        },
+        {
+          "category": "finite_successful_starts",
+          "count": 582,
+          "reported_success": true,
+          "status": 0,
+          "stopping_reason": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+        }
+      ]
+    }
+  ],
+  "independent_base_wavefronts": 12,
+  "interpretation": [
+    "Fit calls and individual optimizer starts have different denominators.",
+    "Counts include all parameter candidates and every unchosen start.",
+    "Optimizer success records a stopping condition, not global optimality or identifiability.",
+    "Episodes reuse base wavefronts and are not independent wavefront samples."
+  ],
+  "native_manifest_sha256": "95130d4d9bf5d534aa3bfc88bdaef5934b5862769061df2bb26c03cf72806ef0",
+  "schema": "probebench_selection_fit_diagnostics_v1",
+  "scope": "Manifest-bound descriptive optimizer diagnostics; no optical replay or optimizer rerun.",
+  "total": {
+    "attempted_starts": 20736,
+    "episodes": 4032,
+    "episodes_with_unsuccessful_starts": 0,
+    "exposures": 30912,
+    "finite_converged_fit_calls": 6912,
+    "finite_successful_starts": 20736,
+    "finite_unconverged_fit_calls": 0,
+    "finite_unconverged_starts": 0,
+    "fit_calls_with_unsuccessful_starts": 0,
+    "multistart_fit_calls": 6912,
+    "nonfinite_starts": 0,
+    "numerical_failure_fit_calls": 0,
+    "start_statuses": [
+      {
+        "category": "finite_successful_starts",
+        "count": 3781,
+        "reported_success": true,
+        "status": 0,
+        "stopping_reason": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+      },
+      {
+        "category": "finite_successful_starts",
+        "count": 16955,
+        "reported_success": true,
+        "status": 0,
+        "stopping_reason": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+      }
+    ]
+  },
+  "unsuccessful_starts": []
+}
