@@ -77,7 +77,8 @@ Add `--resume` to the acquisition command to continue an interrupted run. See th
 [reproducibility](docs/reproducibility.md) for execution from archived source.
 
 The [artifact guide](docs/artifact-formats.md) covers figures, an offline measurement
-replay, and ImageFolder exports that preserve raw signed detector values.
+replay, and ImageFolder exports that preserve raw signed detector values. The separate
+classical-selection exporter retains every candidate in a `public_tuning` split.
 
 ## Model and scope
 

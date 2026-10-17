@@ -9,8 +9,72 @@ listed in a recomputed manifest. Do not modify an input archive while an export 
 
 Classical parameter selection has additional candidate, photon-level and base/member
 dimensions. Its [reference packet and native archive](../results/classical-selection-v1-20261016/README.md)
-use a separate verifier and figure generator. The sequential HTML replay and ImageFolder
-commands below do not support that archive.
+use a separate verifier, figure generator and ImageFolder exporter. The sequential
+commands below do not support that archive. Selection-specific HTML replay is not yet
+available.
+
+## Classical-selection ImageFolder
+
+The release-specific exporter accepts the compact v1 reference packet and the complete
+native archive. Follow the reference packet's download and checksum instructions first:
+
+```sh
+mkdir -p work
+uv run --locked python scripts/export_selection_imagefolder.py \
+  results/classical-selection-v1-20261016 \
+  --archive downloads/selection-native/classical-selection-v1-20261016 \
+  --output work/selection-imagefolder
+```
+
+It verifies the full archive through the independently pinned source snapshot before
+creating output. A read-only shared lock excludes cooperating archive writers. Each
+case and frame is hash-checked again at consumption. Input and output directories must
+be disjoint; output must not already exist. Storage admission includes file-allocation
+overhead and preserves a 1.25 GiB free-space reserve. The exporter checks remaining
+space during writing and publishes its completion manifest only after all files exist.
+Interrupted outputs are incomplete and are not resumed or overwritten.
+
+The `public_tuning` split retains every candidate, including nonselected settings, and
+every acquired exposure. Image metadata preserves candidate, family, photon allowance,
+exposure budget, independent base, conjugate member, RMS stratum and replicate. The
+`selected_reference` field identifies the global choice for each family. These cohort
+identities and selection flags are analysis labels, not additional controller inputs.
+
+`raw/*.npy` contains the unchanged signed float64 electron arrays. PNGs use the display
+transform described below, normalized by each exposure's declared photon level. They
+do not replace detector values for inference. No image is synthesized for an unmeasured
+final command. Full native case records are preserved under `record` in `episodes.jsonl`,
+including latent states, seeds, all optimizer starts and final-command observation
+indices. This file is outside the ImageFolder data-file mapping. Columns prefixed
+`evaluator_`, complete episode records and configuration state must not be passed to a
+controller as observations.
+
+Use the separately pinned Hugging Face environment described below. Streaming loads
+avoid building another full image cache:
+
+```python
+from datasets import load_dataset
+from pathlib import Path
+import numpy as np
+
+root = Path("work/selection-imagefolder")
+frames = load_dataset("imagefolder",
+    data_files={"public_tuning": str(root / "images" / "**")},
+    split="public_tuning", streaming=True)
+first = next(iter(frames))
+electrons = np.load(root / first["raw_array"], allow_pickle=False)
+```
+
+The complete v1 export was validated offline with Datasets 5.1.0: all 30,912 PNGs
+decoded, every signed array matched the native float64 values, and all 4,032 complete
+episode records matched their originals. The metadata retained 13,248 exposures from
+selected settings and 17,664 from nonselected candidates. All 55,560,735 negative
+detector samples were preserved in the raw arrays.
+
+The export includes a dataset card, configuration, selected settings, rendering and
+verification provenance, an independent file manifest, and the existing LICENSE and
+NOTICE. It contains public tuning data; it does not introduce a held-out split or a
+new scientific result. Local export does not publish a Hugging Face repository.
 
 ## Figures and budget-prefix checks
 

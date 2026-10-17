@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Export the complete classical-selection archive as a local ImageFolder dataset,
+  preserving every candidate and signed detector array under an explicit public-tuning
+  split, with pinned replay verification and bounded storage admission.
 - Retain the complete classical tuning reduction for 4,032 episodes and 30,912
   exposures, freeze six reference settings, and report all candidates and optimizer
   starts with separate compact-packet and native-archive verification.
