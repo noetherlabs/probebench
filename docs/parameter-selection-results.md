@@ -146,9 +146,10 @@ uv run --locked python scripts/plot_parameter_selection.py \
 ```
 
 The [packet instructions](../results/classical-selection-v1-20261016/README.md) distinguish
-compact consistency checks from full camera replay. Existing sequential ImageFolder
-and HTML replay commands do not accept selection archives. This release does not claim
-a working selection-specific dataset viewer or Hugging Face loader.
+compact consistency checks from full camera replay. Selection archives now have
+separate [ImageFolder export and replay tools](artifact-formats.md), and a complete
+[portable measurement replay](https://github.com/noetherlabs/probebench/releases/tag/classical-selection-replay-v1-20261017)
+is available. Hugging Face Hub publication remains pending.
 
 Twelve independent bases define the scope of this coarse tuning procedure. Conjugates,
 noise replicates and shared budget prefixes add measurements, not independent
