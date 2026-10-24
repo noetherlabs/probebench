@@ -149,7 +149,11 @@ The [packet instructions](../results/classical-selection-v1-20261016/README.md) 
 compact consistency checks from full camera replay. Selection archives now have
 separate [ImageFolder export and replay tools](artifact-formats.md), and a complete
 [portable measurement replay](https://github.com/noetherlabs/probebench/releases/tag/classical-selection-replay-v1-20261017)
-is available. Hugging Face Hub publication remains pending.
+is available. The [Hugging Face dataset](https://huggingface.co/datasets/noetherlabs/probebench)
+provides the same 30,912 exposures as streaming image tables, with exact signed detector
+arrays in paired ZIP shards. Use revision `classical-selection-v1`; the dataset card
+includes loading and checksum-verification examples. This is the existing public tuning
+cohort, with no additional acquisitions or held-out results.
 
 Twelve independent bases define the scope of this coarse tuning procedure. Conjugates,
 noise replicates and shared budget prefixes add measurements, not independent

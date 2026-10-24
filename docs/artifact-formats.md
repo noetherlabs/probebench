@@ -75,6 +75,31 @@ verification provenance, an independent file manifest, and the existing LICENSE 
 NOTICE. It contains public tuning data; it does not introduce a held-out split or a
 new scientific result. Local export does not publish a Hugging Face repository.
 
+## Classical-selection Hub dataset
+
+The [published dataset](https://huggingface.co/datasets/noetherlabs/probebench)
+packages the same ImageFolder export into 32 Parquet shards and 32 paired ZIP shards.
+Parquet embeds the original PNG bytes and retains every original metadata field;
+`image_sha256` and `raw_archive` identify the image digest and corresponding array archive.
+`raw_array` is a member path inside that ZIP, rather than a loose file in the Hub repository.
+
+```python
+from datasets import load_dataset
+
+frames = load_dataset("noetherlabs/probebench", split="public_tuning",
+                      revision="classical-selection-v1", streaming=True)
+frame = next(iter(frames))
+```
+
+The [dataset card](https://huggingface.co/datasets/noetherlabs/probebench#read-the-detector-values)
+shows how to download one raw shard, verify a member's SHA-256 and read its signed
+float64 array without extracting the archive. The Hub publication manifest inventories
+all files. The original export manifest, metadata, episode records and configuration
+are retained alongside the packaged data. All 30,912 metadata rows, embedded images
+and raw arrays were checked against the original export after conversion.
+
+This packaging adds no exposures, parameter choices or held-out evaluation outcomes.
+
 ## Classical-selection measurement replay
 
 The [v1 portable replay](https://github.com/noetherlabs/probebench/releases/tag/classical-selection-replay-v1-20261017)

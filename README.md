@@ -22,6 +22,8 @@ Each experiment records the exposures, applied phase commands, solver diagnostic
 
 In the classical tuning study, fixed 80 nm phase diversity achieved 1.119 nm aggregate residual WFE, versus 1.347 nm for the tested adaptive schedule. These are development/tuning results on a static, matched optical model; reserved held-out evaluation is still pending.
 
+Browse all 30,912 acquired exposures on [Hugging Face](https://huggingface.co/datasets/noetherlabs/probebench). The `public_tuning` release includes exact signed detector arrays, complete episode records and source manifests.
+
 ## Run
 
 Python 3.11 or 3.12, [uv](https://docs.astral.sh/uv/), Linux or macOS.
