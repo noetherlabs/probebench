@@ -42,6 +42,10 @@ intensity, residual WFE and Strehl belong to the evaluator.
 This is an API-level separation in a trusted local simulation. It does not constrain
 arbitrary Python code executing in the same process or with access to evaluator files.
 
+The opt-in [nominal calibration adapter](nominal-calibration.md) separates requested
+commands from actual response when simulating a constant scalar command-gain error.
+Its versioned observation contract leaves the original known-OPD schema unchanged.
+
 ## Evaluation
 
 - **Residual WFE:** piston-removed RMS of the sampled residual wavefront over the pupil.
