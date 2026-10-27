@@ -7,6 +7,13 @@ fixtures; they are not reserved evaluation cohorts.
 
 ## Archived-source reproduction
 
+The commands below use the maintained root environment with the archived Python
+source. Historical dependency locks are retained evidence, not supported install
+instructions: they include vulnerable Pillow versions. See
+[dependency support](../SECURITY.md#maintained-dependencies-and-acquisition-snapshots).
+Current dependency fixes may change encoded image bytes; the earlier exact-match
+result below applies only to its recorded runtime.
+
 Run the original ambiguity experiment from its retained source without writing Python
 bytecode into the immutable snapshot:
 

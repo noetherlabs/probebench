@@ -40,6 +40,8 @@ uv run --locked python -m pytest -q
 
 Separate runs keep their source, configuration, observations and hashes. See [reproducibility](docs/reproducibility.md) and [artifact formats](docs/artifact-formats.md) for replay and verification.
 
+Use the maintained root environment above. Historical acquisition locks retain vulnerable dependency versions; see [dependency support](SECURITY.md#maintained-dependencies-and-acquisition-snapshots).
+
 ## Next questions
 
 Calibration under gain drift, misregistration and defective pixels; epoch-aware calibration updates; measurement selection with information-matrix conditioning; held-out comparisons against the frozen classical baselines.

@@ -36,6 +36,23 @@ archives unchanged during verification and export; these local tools do not defe
 against another process concurrently replacing files. Archived source snapshots retain
 their original behavior and do not inherit fixes in the current package.
 
+## Maintained dependencies and acquisition snapshots
+
+Use the root `uv.lock` for the simulator and
+`requirements/huggingface-validation.txt` for the optional dataset loader.
+These environments use Pillow 13.0.0; the dataset loader also uses filelock 4.2.4,
+which address the corresponding upstream security advisories. See the
+[Pillow release notes](https://pillow.readthedocs.io/en/stable/releasenotes/13.0.0.html)
+and [filelock release](https://github.com/tox-dev/filelock/releases/tag/4.2.4).
+
+The five `results/*/source/uv.lock` files retain Pillow 12.3.0 and its known
+vulnerabilities. Their bytes are part of immutable acquisition manifests, not
+supported runtime recommendations. Do not install those historical locks to
+process untrusted inputs. Run verification and new work in the maintained root
+environment. Dependency updates do not retroactively change recorded results or
+establish byte-identical reproduction of historical image encodings. The
+historical dependency alerts remain an explicit limitation.
+
 ## Reporting a vulnerability
 
 Email [crew@noether.one](mailto:crew@noether.one) with the affected revision, impact,
