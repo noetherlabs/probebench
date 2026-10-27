@@ -101,3 +101,6 @@ arbitrary Python code. Policies must not receive the driver, private evaluation
 or underlying physical camera configuration. See [the execution trust
 model](../SECURITY.md). The new schema is not accepted by existing agent,
 archive-export or replay formats without an explicit adapter.
+
+The separate [scalar-gain development runner](scalar-gain-study.md) supplies a
+fixed study design, source-bound retention and verification around this adapter.
