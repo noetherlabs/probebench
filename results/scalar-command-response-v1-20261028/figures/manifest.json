@@ -1,0 +1,8 @@
+{
+  "analysis_sha256": "2b6d1cae3fe723bba236167cb0943f24296f8ab2d56007612e081fa5451e5867",
+  "matplotlib_version": "3.11.2",
+  "files": {
+    "paired-contrasts.png": "9dea71a0c0045fa30af4b30c712665eb4cc50439f0f4662c63b9b3d05435f696",
+    "paired-contrasts.svg": "6ed1e5a8c08ac867f39709d3383ce953c38a4ce52d523a5d442aae93edc89fab"
+  }
+}

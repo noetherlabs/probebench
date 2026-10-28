@@ -1,0 +1,12 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Frozen scientific bootstrap seed SHA-256 commitment, not an API credential"
+condition = "AND"
+paths = ['''(^|/)results/scalar-command-response-v1-20261028/analysis\.json$''']
+regexTarget = "line"
+regexes = ['''^\s*"bootstrap_key_commitment": "e887a2c5196614e6720ddf5cc3f28e53a943c0a4ee522bceda446344bcfc2ee7",?\s*$''']

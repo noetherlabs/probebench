@@ -128,5 +128,7 @@ python -m probebench.scalar_gain_study --config study-config.json \
 python -m probebench.scalar_gain_study --verify study-output
 ```
 
-Configuration and admission files are study-specific inputs. The repository does
-not ship an admitted new cohort or claim a completed result for this protocol.
+Configuration and admission files are study-specific inputs. The completed
+[scalar command-response study](scalar-command-response-results.md) retains all
+288 episodes, its frozen admission and full verification artifacts. Its public
+development cohort must not be reused as reserved evaluation evidence.

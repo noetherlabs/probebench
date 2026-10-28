@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "archive_name": "scalar-command-response-v1-20261028.tar.gz",
+  "archive_sha256": "3c08df9e04c4b5110893ba758f13f251c36f59b6f6a4372c224d2045371b7e38",
+  "archive_bytes": 64958900,
+  "archive_members": 348,
+  "retained_bytes": 71766984,
+  "raw_manifest_sha256": "ee56441561fa50aeb80f1e33e516cf9151248445f75d997e0d46e9b5002c3322",
+  "source_revision": "99e5e883c9e064fdf778d8cbea7e439e7f09e91b",
+  "release_url": "https://github.com/noetherlabs/probebench/releases/tag/scalar-command-response-v1-20261028",
+  "asset_url": "https://github.com/noetherlabs/probebench/releases/download/scalar-command-response-v1-20261028/scalar-command-response-v1-20261028.tar.gz",
+  "full_archive_roundtrip": "exact bytes verified",
+  "content_hygiene": "text and NPZ metadata checked",
+  "license_files": {
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "NOTICE": "87a599a8d6becab975cc208b56646fb2c29963b45162d92027cc7f8f6a97e6aa"
+  }
+}

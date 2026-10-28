@@ -1,0 +1,186 @@
+{
+  "analysis_status": "descriptive_complete",
+  "audit_script_sha256": "837635195049a827e6b432ff3f153f974ee24927ee18458f668f964c3d108bb2",
+  "audit_status": "PASS",
+  "comparison_absolute_tolerance_nm": 1e-09,
+  "comparison_relative_tolerance": 2e-12,
+  "configuration_sha256": "47145e03b9c96bc75256cd56d27ed55400ee5131c525fe57410fd76eaad5c5e8",
+  "conjugate_member_count": 48,
+  "episode_count": 288,
+  "episodes_per_arm": {
+    "fixed_diversity_mle_v1": 144,
+    "phase_diversity_mle_v1": 144
+  },
+  "episodes_per_gain": {
+    "0.9": 96,
+    "1.0": 96,
+    "1.1": 96
+  },
+  "episodes_per_stratum": {
+    "high": 96,
+    "low": 96,
+    "medium": 96
+  },
+  "expected_photons_consumed": 4032000,
+  "exposure_count": 2016,
+  "finite_pupil_samples": 812,
+  "fit_count": 1008,
+  "independent_base_count": 24,
+  "independent_equal_stratum": [
+    {
+      "adaptive_degradation_from_unit_gain": {
+        "interval_nm": [
+          1.3136135547395587,
+          1.7192457715711065
+        ],
+        "mean_nm": 1.522419032989212
+      },
+      "adaptive_minus_fixed": {
+        "interval_nm": [
+          -1.8189714430646906,
+          -1.278721472818067
+        ],
+        "mean_nm": -1.55074560762564
+      },
+      "adaptive_wfe": {
+        "interval_nm": [
+          3.213444608115795,
+          3.6651899060663897
+        ],
+        "mean_nm": 3.442440445645404
+      },
+      "difference_in_differences": {
+        "interval_nm": [
+          -2.092563932960526,
+          -1.4794698315352484
+        ],
+        "mean_nm": -1.7832676489099264
+      },
+      "fixed_degradation_from_unit_gain": {
+        "interval_nm": [
+          2.9705174372007637,
+          3.613093650746145
+        ],
+        "mean_nm": 3.3056866818991386
+      },
+      "fixed_wfe": {
+        "interval_nm": [
+          4.667534368354682,
+          5.2628575816044485
+        ],
+        "mean_nm": 4.993186053271044
+      },
+      "gain": 0.9
+    },
+    {
+      "adaptive_degradation_from_unit_gain": {
+        "interval_nm": [
+          0.0,
+          0.0
+        ],
+        "mean_nm": 0.0
+      },
+      "adaptive_minus_fixed": {
+        "interval_nm": [
+          0.08074465945170094,
+          0.3874601118471224
+        ],
+        "mean_nm": 0.23252204128428633
+      },
+      "adaptive_wfe": {
+        "interval_nm": [
+          1.7835004091989584,
+          2.065120421936588
+        ],
+        "mean_nm": 1.920021412656192
+      },
+      "difference_in_differences": {
+        "interval_nm": [
+          0.0,
+          0.0
+        ],
+        "mean_nm": 0.0
+      },
+      "fixed_degradation_from_unit_gain": {
+        "interval_nm": [
+          0.0,
+          0.0
+        ],
+        "mean_nm": 0.0
+      },
+      "fixed_wfe": {
+        "interval_nm": [
+          1.5595626518064658,
+          1.8294460291404844
+        ],
+        "mean_nm": 1.6874993713719058
+      },
+      "gain": 1.0
+    },
+    {
+      "adaptive_degradation_from_unit_gain": {
+        "interval_nm": [
+          1.3486270613345457,
+          1.803441406255112
+        ],
+        "mean_nm": 1.5769551510110635
+      },
+      "adaptive_minus_fixed": {
+        "interval_nm": [
+          -1.9323857695407582,
+          -1.190148344464757
+        ],
+        "mean_nm": -1.5809304181704484
+      },
+      "adaptive_wfe": {
+        "interval_nm": [
+          3.274887963924902,
+          3.715468329386261
+        ],
+        "mean_nm": 3.4969765636672556
+      },
+      "difference_in_differences": {
+        "interval_nm": [
+          -2.2029702201473684,
+          -1.3797946183205525
+        ],
+        "mean_nm": -1.8134524594547348
+      },
+      "fixed_degradation_from_unit_gain": {
+        "interval_nm": [
+          3.031488316999819,
+          3.7456144868697248
+        ],
+        "mean_nm": 3.3904076104657985
+      },
+      "fixed_wfe": {
+        "interval_nm": [
+          4.725470038194004,
+          5.419871098855219
+        ],
+        "mean_nm": 5.077906981837704
+      },
+      "gain": 1.1
+    }
+  ],
+  "limits": [
+    "Development-only descriptive result; no controller, hardware or safety qualification.",
+    "WFE reconstructed from simulator truth and retained physical commands, not inferred from camera pixels.",
+    "No estimator refitting or optimality claim; retained fit estimates determine the checked policy path.",
+    "No independent Poisson/Gaussian camera replay, Strehl reconstruction or historical exclusion regeneration.",
+    "Bootstrap preserves full base curves; pointwise percentile intervals are not simultaneous or confirmatory.",
+    "Hash checks do not protect against a malicious concurrent filesystem writer."
+  ],
+  "manifest_sha256": "ee56441561fa50aeb80f1e33e516cf9151248445f75d997e0d46e9b5002c3322",
+  "max_report_absolute_difference_nm": 2.6645352591003757e-15,
+  "max_wfe_absolute_difference_nm": 4.263256414560601e-14,
+  "numerical_fit_failures": 0,
+  "numpy_version": "2.4.6",
+  "optimizer_unsuccessful_fits": 0,
+  "purpose": "scalar_gain_development_v1",
+  "schema": 1,
+  "source_revision": "99e5e883c9e064fdf778d8cbea7e439e7f09e91b",
+  "terminal_statuses": {
+    "submitted": 288
+  }
+}

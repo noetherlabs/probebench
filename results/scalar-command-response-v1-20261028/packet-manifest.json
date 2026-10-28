@@ -1,0 +1,22 @@
+{
+  "files": {
+    "README.md": "62939e2eec827bb4083f80b4f54ac1098cef400556d2a4c86b2b7858e93e5be1",
+    "analysis.json": "2b6d1cae3fe723bba236167cb0943f24296f8ab2d56007612e081fa5451e5867",
+    "archive.json": "625b26bb7771e631641780a01d3dd366c277585ff7b28d7f596d2183c3679a2c",
+    "figures/manifest.json": "e670fdde567e2e671464170506c0141732b1b873c80cba66966501f40df28e79",
+    "figures/paired-contrasts.png": "9dea71a0c0045fa30af4b30c712665eb4cc50439f0f4662c63b9b3d05435f696",
+    "figures/paired-contrasts.svg": "6ed1e5a8c08ac867f39709d3383ce953c38a4ce52d523a5d442aae93edc89fab",
+    "independent-audit.json": "00e8260c7e8e5b483fe1698a6219128c0c5cf5e854b620b589977adfb10b3094",
+    "preparation.json": "a9c0f28daa1c79ce291a011d690146baaf0e814aae36d5daf75aff024784f5f7",
+    "raw-manifest.json": "ee56441561fa50aeb80f1e33e516cf9151248445f75d997e0d46e9b5002c3322",
+    "study.json": "b08528adf844ef292db62956e6291be894f2a8454df52f5ba2619528692ecf7e",
+    "summary.json": "a65960470dc2ac46a399fe4f078d6f8ef70d21becafc207a9b8695033bc56489"
+  },
+  "kind": "compact_scalar_command_response_packet",
+  "raw_manifest_sha256": "ee56441561fa50aeb80f1e33e516cf9151248445f75d997e0d46e9b5002c3322",
+  "schema": 1,
+  "tools": {
+    "scripts/audit_scalar_gain.py": "837635195049a827e6b432ff3f153f974ee24927ee18458f668f964c3d108bb2",
+    "scripts/plot_scalar_gain.py": "0b42187513abfb31d2a65f6fa8bb3d07c89c320efca7c805247a28f8821a0372"
+  }
+}
