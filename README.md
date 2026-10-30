@@ -27,6 +27,8 @@ With ±10% command-response error, adaptive probing reduced pooled WFE but perfo
 
 The [Hugging Face dataset](https://huggingface.co/datasets/noetherlabs/probebench) contains all 30,912 acquired exposures. The `public_tuning` release includes exact signed detector arrays, complete episode records and source manifests. Use the [streaming loader](docs/artifact-formats.md#classical-selection-hub-dataset) to access the complete release.
 
+The separate [scalar command-response export](docs/scalar-command-response-export.md) preserves nominal commands and evaluator-only physical labels for all 2,016 exposures in that study.
+
 ## Run
 
 Python 3.11 or 3.12, [uv](https://docs.astral.sh/uv/), Linux or macOS.
