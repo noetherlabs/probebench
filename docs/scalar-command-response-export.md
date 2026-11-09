@@ -1,5 +1,39 @@
 # Scalar command-response measurement export
 
+## Stream published exposures
+
+The [Hugging Face dataset](https://huggingface.co/datasets/noetherlabs/probebench)
+contains all 2,016 acquired exposures in the separate `scalar_command_response_v1`
+configuration. Pin the release tag when loading it:
+
+```python
+from datasets import load_dataset
+
+frames = load_dataset(
+    "noetherlabs/probebench",
+    name="scalar_command_response_v1",
+    split="development",
+    revision="scalar-command-response-v1",
+    streaming=True,
+)
+frame = next(iter(frames))
+```
+
+Two Parquet shards embed the original display PNGs. Two ZIP shards contain the
+unchanged signed float64 detector arrays. `raw_archive` is a repository-relative
+archive path; `raw_array` is the exact NPY member within that archive. The
+[detector-loading example](https://huggingface.co/datasets/noetherlabs/probebench#read-the-detector-values)
+verifies the member digest before loading it; use revision
+`scalar-command-response-v1` for these rows.
+
+The `scalar_command_response_v1/publication-manifest.json` file binds the packaged
+files and original export. All 2,016 rows, PNGs and signed arrays were compared
+with the source export and all 288 native episode records. Packaging adds no
+measurements or held-out results. The existing classical-selection configuration,
+data and release tag remain unchanged.
+
+## Local ImageFolder export
+
 `scripts/export_scalar_gain_imagefolder.py` converts the complete
 [scalar command-response release](../results/scalar-command-response-v1-20261028/README.md)
 to a local ImageFolder dataset. It accepts only the released raw manifest
@@ -41,10 +75,9 @@ not support this format. Full episode records, configuration and evaluator field
 are reproduction material, not controller observations. Cohort identities and
 truth-derived RMS strata are also analysis labels.
 
-The generated dataset card uses configuration `scalar_command_response_v1`, split
-`development`, and an explicit `images/**` data-file mapping. Future Hub packaging
-must preserve this separate configuration; it must not append rows to the existing
-classical-selection `default/public_tuning` schema or move that release's tag.
+The local export's dataset card uses configuration `scalar_command_response_v1`,
+split `development`, and an explicit `images/**` data-file mapping. The Hub release
+packages those rows separately from classical-selection `default/public_tuning`.
 The exporter itself performs no upload or remote mutation.
 
 For local streaming, use `load_dataset("imagefolder", data_files={"development":

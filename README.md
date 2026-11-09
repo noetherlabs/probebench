@@ -25,9 +25,10 @@ In the classical tuning study, fixed 80 nm phase diversity achieved 1.119 nm agg
 
 With ±10% command-response error, adaptive probing reduced pooled WFE but performed worse at low initial aberration. Fixed diversity retained the pooled advantage under correct calibration. The [paired study](docs/scalar-command-response-results.md) reports this reversal with all outcomes and uncertainty intervals.
 
-The [Hugging Face dataset](https://huggingface.co/datasets/noetherlabs/probebench) contains all 30,912 acquired exposures. The `public_tuning` release includes exact signed detector arrays, complete episode records and source manifests. Use the [streaming loader](docs/artifact-formats.md#classical-selection-hub-dataset) to access the complete release.
+The [Hugging Face dataset](https://huggingface.co/datasets/noetherlabs/probebench) provides two separately versioned configurations, each with original images, signed detector arrays and complete episode records:
 
-The separate [scalar command-response export](docs/scalar-command-response-export.md) preserves nominal commands and evaluator-only physical labels for all 2,016 exposures in that study.
+- [Classical selection](docs/artifact-formats.md#classical-selection-hub-dataset): 30,912 exposures in `default/public_tuning`.
+- [Command-response mismatch](docs/scalar-command-response-export.md#stream-published-exposures): 2,016 exposures in `scalar_command_response_v1/development`, with nominal commands separated from evaluator-only physical labels.
 
 ## Run
 

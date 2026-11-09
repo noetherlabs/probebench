@@ -100,6 +100,9 @@ and raw arrays were checked against the original export after conversion.
 
 This packaging adds no exposures, parameter choices or held-out evaluation outcomes.
 
+The separate [scalar command-response configuration](scalar-command-response-export.md#stream-published-exposures)
+provides 2,016 exposures with nominal-command metadata and evaluator-only physical labels.
+
 ## Classical-selection measurement replay
 
 The [v1 portable replay](https://github.com/noetherlabs/probebench/releases/tag/classical-selection-replay-v1-20261017)
