@@ -21,7 +21,7 @@ Each experiment records the exposures, applied phase commands, solver diagnostic
 | [Classical parameter selection](docs/parameter-selection-results.md) | 4,032 episodes, 30,912 exposures |
 | [Command calibration mismatch](docs/scalar-command-response-results.md) | 288 episodes, 2,016 exposures; paired gain-response curves |
 
-In the classical tuning study, fixed 80 nm phase diversity achieved 1.119 nm aggregate residual WFE, versus 1.347 nm for the tested adaptive schedule. These are development/tuning results on a static, matched optical model; reserved held-out evaluation is still pending.
+In the classical tuning study, fixed 80 nm phase diversity achieved 1.119 nm aggregate residual WFE, versus 1.347 nm for the tested adaptive schedule. These are development/tuning results on a static, matched optical model; [reserved held-out evaluation is still pending](docs/reserved-comparison.md).
 
 With ±10% command-response error, adaptive probing reduced pooled WFE but performed worse at low initial aberration. Fixed diversity retained the pooled advantage under correct calibration. The [paired study](docs/scalar-command-response-results.md) reports this reversal with all outcomes and uncertainty intervals.
 
