@@ -44,6 +44,8 @@ These environments use Pillow 13.0.0; the dataset loader also uses filelock 4.2.
 which address the corresponding upstream security advisories. See the
 [Pillow release notes](https://pillow.readthedocs.io/en/stable/releasenotes/13.0.0.html)
 and [filelock release](https://github.com/tox-dev/filelock/releases/tag/4.2.4).
+The package also declares Pillow 13.0.0 as a runtime requirement, so ordinary
+installers do not depend on the lockfile to reject an older installed Pillow.
 
 The five `results/*/source/uv.lock` files retain Pillow 12.3.0 and its known
 vulnerabilities. Their bytes are part of immutable acquisition manifests, not

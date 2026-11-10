@@ -214,6 +214,7 @@ source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },
+    { name = "pillow" },
     { name = "scipy" },
 ]
 
@@ -226,6 +227,7 @@ dev = [
 requires-dist = [
     { name = "matplotlib", specifier = "==3.11.2" },
     { name = "numpy", specifier = "==2.4.6" },
+    { name = "pillow", specifier = "==13.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==9.1.1" },
     { name = "scipy", specifier = "==1.17.1" },
 ]
