@@ -100,36 +100,40 @@ def _fit_snapshot(path, records):
     _json(path, _plain(records, retain_nonfinite=True))
 
 
-def _episode(root, method, settings, model, config):
+def _episode(root, method, settings, model, config, *, truth_opd_nm=None,
+             detector_seed=DETECTOR_SEED, policy_seed=POLICY_SEED, identity=None):
     """Persist intent before each callback; return only after terminal evidence."""
     root.mkdir()
     episode = policy = None
     stage, index, camera_calls = "initialization", 0, 0
     started = time.monotonic()
-    _json(root / "identity.json", {"method": method, "fixture": "mixed_a",
-                                  "policy": asdict(settings)})
+    if truth_opd_nm is None:
+        truth_opd_nm = dict(FIXTURES)["mixed_a"]
+    if identity is None:
+        identity = {"method": method, "fixture": "mixed_a", "policy": asdict(settings)}
+    _json(root / "identity.json", identity)
     try:
         # Hidden state and detector randomness remain in the driver. The policy
         # receives only calibration, bounds, selected settings and its RNG seed.
-        episode = GainEpisode(model, config, dict(FIXTURES)["mixed_a"], DETECTOR_SEED,
+        episode = GainEpisode(model, config, truth_opd_nm, detector_seed,
                               command_gain=1.0)
-        policy = ClassicalPolicy(method, model, config, settings, POLICY_SEED)
-        for index in range(EXPOSURES + 1):
-            stage = "final_command" if index == EXPOSURES else "command"
+        policy = ClassicalPolicy(method, model, config, settings, policy_seed)
+        for index in range(config.max_exposures + 1):
+            stage = "final_command" if index == config.max_exposures else "command"
             stem = f"{index:02d}"
             _json(root / f"{stem}-policy-intent.json", {"stage": stage,
                   "observations_available": len(episode.observations)})
             command_started = time.monotonic()
-            callback = policy.final_command if index == EXPOSURES else policy.command
+            callback = policy.final_command if index == config.max_exposures else policy.command
             command = callback(episode._policy_history())
             command_artifact = _array(root / f"{stem}-command.npy", command)
             _fit_snapshot(root / f"{stem}-fits.json", policy.fit_records)
             _json(root / f"{stem}-policy-result.json", {"command": command_artifact,
                   "wall_seconds": time.monotonic() - command_started})
-            stage = "submit" if index == EXPOSURES else "exposure"
+            stage = "submit" if index == config.max_exposures else "exposure"
             _json(root / f"{stem}-camera-intent.json", {"stage": stage,
                   "command_sha256": command_artifact["sha256"]})
-            if index == EXPOSURES:
+            if index == config.max_exposures:
                 evaluation = episode.submit(command)
                 _fit_snapshot(root / "evaluation.json", evaluation)
                 # This refusal is after retaining all commands, images and fits.
@@ -272,116 +276,156 @@ def verify_pilot(output):
                                        f"{method}/{index:02d}-observation.json"))
     if set(manifest["files"]) != expected_files:
         raise ValueError("Unexpected or missing pilot artifact")
-    def read_json(path):
-        if path.stat().st_size > MAX_FILE_BYTES:
-            raise ValueError("Pilot JSON exceeds its byte allowance")
-        return parse_json(path.read_bytes())
-    def read_array(path, shape):
-        if path.stat().st_size > MAX_FILE_BYTES:
-            raise ValueError("Pilot array exceeds its byte allowance")
-        with path.open("rb") as stream:
-            if np.lib.format.read_magic(stream) != (1, 0):
-                raise ValueError("Unexpected pilot NPY format")
-            actual_shape, fortran, dtype = np.lib.format.read_array_header_1_0(stream, max_header_size=4096)
-            if (actual_shape != shape or fortran or dtype != np.dtype("float64")
-                    or path.stat().st_size != stream.tell() + math.prod(shape)*8):
-                raise ValueError("Invalid pilot NPY header or length")
-        array = np.load(path, allow_pickle=False, max_header_size=4096)
-        if array.shape != shape or array.dtype != np.float64 or not np.isfinite(array).all():
-            raise ValueError("Invalid retained pilot array")
-        return array
-    summary = read_json(root / "summary.json")
+    summary = _read_json(root / "summary.json")
     if summary["purpose"] != PURPOSE or summary["inference"] != expected["inference"]:
         raise ValueError("Changed pilot interpretation")
     if [row["method"] for row in summary["episodes"]] != list(expected["families"]):
         raise ValueError("Pilot method inventory mismatch")
     for row in summary["episodes"]:
         method = row["method"]
-        terminal = read_json(root / method / "terminal.json")
-        if (terminal != row or row["status"] != "complete" or row["camera_calls_started"] != EXPOSURES
-                or row["observations_retained"] != EXPOSURES
-                or row["expected_photons_used"] != EXPOSURES*PHOTONS):
-            raise ValueError("Incomplete pilot episode")
-        identity = read_json(root / method / "identity.json")
-        if identity != {"method": method, "fixture": "mixed_a", "policy": expected["families"][method]["policy"]}:
-            raise ValueError("Changed pilot policy identity")
-        previous_fits, observations = [], []
-        for index in range(EXPOSURES + 1):
-            folder, stem = root / method, f"{index:02d}"
-            command = read_array(folder / f"{stem}-command.npy", (6,))
-            if np.any(np.abs(command) > expected["episode"]["command_limit_nm"]):
-                raise ValueError("Retained command exceeds the instrument envelope")
-            policy_intent = read_json(folder / f"{stem}-policy-intent.json")
-            if policy_intent != {"stage": "final_command" if index == EXPOSURES else "command",
-                                 "observations_available": index}:
-                raise ValueError("Invalid pilot policy dispatch")
-            camera_intent = read_json(folder / f"{stem}-camera-intent.json")
-            if camera_intent != {"stage": "submit" if index == EXPOSURES else "exposure",
-                                 "command_sha256": digest(folder / f"{stem}-command.npy")}:
-                raise ValueError("Invalid pilot camera dispatch")
-            policy_result = read_json(folder / f"{stem}-policy-result.json")
-            if (policy_result["command"] != {"file": f"{stem}-command.npy",
-                    "sha256": digest(folder / f"{stem}-command.npy"), "shape": [6], "dtype": "<f8"}
-                    or type(policy_result["wall_seconds"]) not in (int, float)
-                    or policy_result["wall_seconds"] < 0):
-                raise ValueError("Invalid pilot command artifact binding")
-            fits = read_json(folder / f"{stem}-fits.json")
-            if type(fits) is not list or fits[:len(previous_fits)] != previous_fits:
-                raise ValueError("Retained fit history changed")
-            previous_fits = fits
-            if index < EXPOSURES:
-                observation = read_json(folder / f"{stem}-observation.json")
-                image = read_array(folder / f"{stem}-image.npy", (64, 64))
-                public = observation["public"]
-                if observation["image"] != {"file": f"{stem}-image.npy",
-                        "sha256": digest(folder / f"{stem}-image.npy"), "shape": [64, 64], "dtype": "<f8"}:
-                    raise ValueError("Invalid pilot image artifact binding")
-                reconstructed = NominalObservation(index, tuple(command), PHOTONS,
-                                                    (index+1)*PHOTONS, image)
-                if canonical_bytes(public) != canonical_bytes(_plain(reconstructed.metadata())):
-                    raise ValueError("Invalid retained pilot observation")
-                observations.append(public)
-        evaluation = read_json(root / method / "evaluation.json")
-        if (evaluation["status"] != "submitted" or evaluation["command_gain"] != 1.0
-                or evaluation["nominal_observations"] != observations
-                or evaluation["final_commanded_opd_nm"] != command.tolist()
-                or evaluation["physical"]["hidden_opd_nm"] != expected["truth_opd_nm"]
-                or evaluation["physical"]["exposures"] != EXPOSURES
-                or evaluation["physical"]["expected_photons_used"] != EXPOSURES*PHOTONS
-                or row["fit_count"] != len(previous_fits)):
-            raise ValueError("Invalid retained pilot evaluation")
-        physical = evaluation["physical"]
-        metric_keys = {"residual_wfe_nm", "strehl_peak_ratio"}
-        for metrics in (physical.get("initial"), physical.get("final")):
-            if (type(metrics) is not dict or set(metrics) != metric_keys
-                    or any(type(value) not in (int, float) or value < 0 for value in metrics.values())):
-                raise ValueError("Missing or invalid finite physical metrics")
-        final_indices = [o["index"] for o in observations if o["commanded_opd_nm"] == command.tolist()]
-        if (physical.get("final_applied_opd_nm") != command.tolist()
-                or physical.get("final_mirror_surface_coefficients_nm") != (command/2).tolist()
-                or physical.get("final_command_observation_indices") != final_indices
-                or physical.get("final_command_has_camera_observation") is not bool(final_indices)
-                or physical.get("final_command_is_last_observation") is not (EXPOSURES-1 in final_indices)):
-            raise ValueError("Physical final command disagrees with retained observations")
-        trajectory = physical.get("trajectory")
-        if type(trajectory) is not list or len(trajectory) != EXPOSURES:
-            raise ValueError("Incomplete physical observation trajectory")
-        for public, produced in zip(observations, trajectory):
-            fields = {"index": public["index"], "applied_opd_nm": public["commanded_opd_nm"],
-                      "expected_photons": PHOTONS,
-                      "cumulative_expected_photons": public["cumulative_expected_photons"]}
-            if type(produced) is not dict or any(produced.get(key) != value for key, value in fields.items()):
-                raise ValueError("Physical trajectory disagrees with retained observations")
-            if (not metric_keys <= set(produced)
-                    or any(type(produced[key]) not in (int, float) or produced[key] < 0 for key in metric_keys)
-                    or type(produced.get("realized_photoelectrons")) is not int
-                    or produced["realized_photoelectrons"] < 0):
-                raise ValueError("Missing or invalid produced-frame metrics")
-        expected_peak = max(0.0, max(item["residual_wfe_nm"] for item in trajectory)
-                            - physical["initial"]["residual_wfe_nm"])
-        if physical.get("peak_probe_wfe_increase_nm") != expected_peak:
-            raise ValueError("Physical peak probe summary disagrees with trajectory")
+        checked = verify_episode(root / method, method=method,
+            policy=expected["families"][method]["policy"],
+            truth_opd_nm=expected["truth_opd_nm"], episode_config=EpisodeConfig(**expected["episode"]))
+        if checked["terminal"] != row:
+            raise ValueError("Pilot summary disagrees with terminal evidence")
     return manifest
+
+
+
+def episode_files(exposures):
+    """Exact successful native episode inventory, independent of a root manifest."""
+    names = {"identity.json", "terminal.json", "evaluation.json"}
+    for index in range(exposures + 1):
+        names.update(f"{index:02d}-{suffix}" for suffix in
+                     ("policy-intent.json", "command.npy", "fits.json",
+                      "policy-result.json", "camera-intent.json"))
+        if index < exposures:
+            names.update((f"{index:02d}-image.npy", f"{index:02d}-observation.json"))
+    return names
+
+
+def _read_json(path):
+    if path.stat().st_size > MAX_FILE_BYTES:
+        raise ValueError("Pilot JSON exceeds its byte allowance")
+    return parse_json(path.read_bytes())
+def _read_array(path, shape):
+    if path.stat().st_size > MAX_FILE_BYTES:
+        raise ValueError("Pilot array exceeds its byte allowance")
+    with path.open("rb") as stream:
+        if np.lib.format.read_magic(stream) != (1, 0):
+            raise ValueError("Unexpected pilot NPY format")
+        actual_shape, fortran, dtype = np.lib.format.read_array_header_1_0(stream, max_header_size=4096)
+        if (actual_shape != shape or fortran or dtype != np.dtype("float64")
+                or path.stat().st_size != stream.tell() + math.prod(shape)*8):
+            raise ValueError("Invalid pilot NPY header or length")
+    array = np.load(path, allow_pickle=False, max_header_size=4096)
+    if array.shape != shape or array.dtype != np.float64 or not np.isfinite(array).all():
+        raise ValueError("Invalid retained pilot array")
+    return array
+
+
+def verify_episode(folder, *, method, policy, truth_opd_nm, episode_config, identity=None):
+    """Check retained episode consistency without optics, noise replay or refitting.
+
+    Physical metrics remain evaluator computations, not independent camera
+    measurements. This verifier establishes artifact/command consistency only.
+    """
+    folder = Path(folder)
+    _preflight_packet(folder)
+    exposures, photons = episode_config.max_exposures, episode_config.photons_per_exposure
+    if {path.name for path in folder.iterdir()} != episode_files(exposures):
+        raise ValueError("Unexpected or missing episode artifact")
+    if identity is None:
+        identity = {"method": method, "fixture": "mixed_a", "policy": policy}
+    terminal = _read_json(folder / "terminal.json")
+    if (terminal["method"] != method or terminal["status"] != "complete"
+            or type(terminal["wall_seconds"]) not in (int, float) or terminal["wall_seconds"] < 0
+            or terminal["camera_calls_started"] != exposures
+            or terminal["observations_retained"] != exposures
+            or terminal["expected_photons_used"] != exposures*photons):
+        raise ValueError("Incomplete pilot episode")
+    retained_identity = _read_json(folder / "identity.json")
+    if retained_identity != identity:
+        raise ValueError("Changed pilot policy identity")
+    previous_fits, observations = [], []
+    for index in range(exposures + 1):
+        stem = f"{index:02d}"
+        command = _read_array(folder / f"{stem}-command.npy", (6,))
+        if np.any(np.abs(command) > episode_config.command_limit_nm):
+            raise ValueError("Retained command exceeds the instrument envelope")
+        if index == 0 and np.any(command != 0):
+            raise ValueError("The charged initial exposure requires the zero command")
+        policy_intent = _read_json(folder / f"{stem}-policy-intent.json")
+        if policy_intent != {"stage": "final_command" if index == exposures else "command",
+                             "observations_available": index}:
+            raise ValueError("Invalid pilot policy dispatch")
+        camera_intent = _read_json(folder / f"{stem}-camera-intent.json")
+        if camera_intent != {"stage": "submit" if index == exposures else "exposure",
+                             "command_sha256": digest(folder / f"{stem}-command.npy")}:
+            raise ValueError("Invalid pilot camera dispatch")
+        policy_result = _read_json(folder / f"{stem}-policy-result.json")
+        if (policy_result["command"] != {"file": f"{stem}-command.npy",
+                "sha256": digest(folder / f"{stem}-command.npy"), "shape": [6], "dtype": "<f8"}
+                or type(policy_result["wall_seconds"]) not in (int, float)
+                or policy_result["wall_seconds"] < 0):
+            raise ValueError("Invalid pilot command artifact binding")
+        fits = _read_json(folder / f"{stem}-fits.json")
+        if type(fits) is not list or fits[:len(previous_fits)] != previous_fits:
+            raise ValueError("Retained fit history changed")
+        previous_fits = fits
+        if index < exposures:
+            observation = _read_json(folder / f"{stem}-observation.json")
+            image = _read_array(folder / f"{stem}-image.npy", (64, 64))
+            public = observation["public"]
+            if observation["image"] != {"file": f"{stem}-image.npy",
+                    "sha256": digest(folder / f"{stem}-image.npy"), "shape": [64, 64], "dtype": "<f8"}:
+                raise ValueError("Invalid pilot image artifact binding")
+            reconstructed = NominalObservation(index, tuple(command), photons,
+                                                (index+1)*photons, image)
+            if canonical_bytes(public) != canonical_bytes(_plain(reconstructed.metadata())):
+                raise ValueError("Invalid retained pilot observation")
+            observations.append(public)
+    evaluation = _read_json(folder / "evaluation.json")
+    if (evaluation["status"] != "submitted" or evaluation["command_gain"] != 1.0
+            or evaluation["nominal_observations"] != observations
+            or evaluation["final_commanded_opd_nm"] != command.tolist()
+            or evaluation["physical"]["hidden_opd_nm"] != list(truth_opd_nm)
+            or evaluation["physical"]["exposures"] != exposures
+            or evaluation["physical"]["expected_photons_used"] != exposures*photons
+            or terminal["fit_count"] != len(previous_fits)):
+        raise ValueError("Invalid retained pilot evaluation")
+    physical = evaluation["physical"]
+    metric_keys = {"residual_wfe_nm", "strehl_peak_ratio"}
+    for metrics in (physical.get("initial"), physical.get("final")):
+        if (type(metrics) is not dict or set(metrics) != metric_keys
+                or any(type(value) not in (int, float) or value < 0 for value in metrics.values())):
+            raise ValueError("Missing or invalid finite physical metrics")
+    final_indices = [o["index"] for o in observations if o["commanded_opd_nm"] == command.tolist()]
+    if (physical.get("final_applied_opd_nm") != command.tolist()
+            or physical.get("final_mirror_surface_coefficients_nm") != (command/2).tolist()
+            or physical.get("final_command_observation_indices") != final_indices
+            or physical.get("final_command_has_camera_observation") is not bool(final_indices)
+            or physical.get("final_command_is_last_observation") is not (exposures-1 in final_indices)):
+        raise ValueError("Physical final command disagrees with retained observations")
+    trajectory = physical.get("trajectory")
+    if type(trajectory) is not list or len(trajectory) != exposures:
+        raise ValueError("Incomplete physical observation trajectory")
+    for public, produced in zip(observations, trajectory):
+        fields = {"index": public["index"], "applied_opd_nm": public["commanded_opd_nm"],
+                  "expected_photons": photons,
+                  "cumulative_expected_photons": public["cumulative_expected_photons"]}
+        if type(produced) is not dict or any(produced.get(key) != value for key, value in fields.items()):
+            raise ValueError("Physical trajectory disagrees with retained observations")
+        if (not metric_keys <= set(produced)
+                or any(type(produced[key]) not in (int, float) or produced[key] < 0 for key in metric_keys)
+                or type(produced.get("realized_photoelectrons")) is not int
+                or produced["realized_photoelectrons"] < 0):
+            raise ValueError("Missing or invalid produced-frame metrics")
+    expected_peak = max(0.0, max(item["residual_wfe_nm"] for item in trajectory)
+                        - physical["initial"]["residual_wfe_nm"])
+    if physical.get("peak_probe_wfe_increase_nm") != expected_peak:
+        raise ValueError("Physical peak probe summary disagrees with trajectory")
+    return {"terminal": terminal, "evaluation": evaluation, "fits": previous_fits}
 
 
 def main():
