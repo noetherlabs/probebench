@@ -1,5 +1,4 @@
 """Historical reconstruction uses published configurations and exposed fixtures."""
-from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
@@ -172,31 +171,174 @@ def reconstruct(config, cluster_hash, **kwargs):
         expected_configuration_sha256=digest(payload), expected_clusters_sha256=cluster_hash, **kwargs)
 
 
-def test_public_cohort_reconstruction_matches_retained_fingerprint_and_chunks(public_configuration, monkeypatch):
-    config, cluster_hash = public_configuration
-    assert cluster_hash == "769bb018ea2f3eb7f7d8ea650f84e6764bb103d5467779bca7d13754051863f2"
-    assert digest(encode(config)) == "839fdb57bbc251fd50e2388589869f08af86ae9c9c2bc1866a91b82aee28a2d7"
+@pytest.fixture
+def retained_selection():
+    root = ROOT / "results/classical-selection-v1-20261016"
+    config = json.loads((root / "study.json").read_text())["configuration"]["cohort"]
+    clusters = json.loads((root / "preparation.json").read_text())["cohort"]["clusters"]
+    assert digest(encode(config)) == "60582e33e010d701c51f47a620ec710472cd7177d6c4520421ec8e76fa893439"
+    assert digest(encode(clusters)) == "a4bbd6ba53379d308b88a2fda890fa8617725a0c71e06c6564a513c5c6929647"
+    return config, clusters
+
+
+def package(config, clusters):
+    return history.package_public_cohort(encode(config), encode(clusters), history_id="public_original",
+        expected_configuration_sha256=digest(encode(config)),
+        expected_clusters_sha256=digest(encode(clusters)))
+
+
+def test_retained_public_cohort_preserves_fingerprint_and_chunks(retained_selection, monkeypatch):
+    config, original_clusters = retained_selection
+    cluster_hash = digest(encode(original_clusters))
     monkeypatch.setattr(history, "CHUNK_ROWS", 3)
-    result = reconstruct(config, cluster_hash)
+    monkeypatch.setattr(history, "generate_cohort", lambda _: pytest.fail("Retained bytes reached sampler"))
+    monkeypatch.setattr(registry, "OpticalModel", lambda _: pytest.fail("Packaging constructed optics"))
+    result = package(config, original_clusters)
     assert result["base_occurrences"] == 12 and len(result["batches"]) == 4
+    assert result["clusters_bytes_sha256"] == cluster_hash
     resolved = history.compile_exposure_history(result["inventory_bytes"], batches=result["batches"])
     assert resolved["declared_history_resolved"] and resolved["resolved_occurrences"] == 12
     assert not resolved["historical_closure_established"] and not result["execution_admitted"]
-    original_clusters = []
+    packaged_clusters = []
     for content in result["batches"].values():
-        original_clusters.extend(json.loads(content["source_files"]["clusters"])["clusters"])
+        packaged_clusters.extend(json.loads(content["source_files"]["clusters"])["clusters"])
         compiled = registry.compile_exposure_batch(**content)
         assert all(row["source_optics"] == OPTICS for row in compiled["resolved"])
-    assert digest(encode(original_clusters)) == cluster_hash
-    # Bad retained fingerprint cannot produce a usable batch result.
-    replayed = {"clusters": original_clusters, "base_count": 12,
-                "configuration_sha256": digest(encode(config))}
-    monkeypatch.setattr(history, "generate_cohort", lambda _: deepcopy(replayed))
-    with pytest.raises(ValueError, match="cluster fingerprint"):
-        reconstruct(config, "0" * 64)
+    assert packaged_clusters == original_clusters
+    assert digest(encode(packaged_clusters)) == cluster_hash
     config["specification"]["optics"]["pupil_pixels"] = 12
+    original_clusters[0]["members"][0]["truth_opd_nm"][0] = 0
     assert all(registry.compile_exposure_batch(**content)["resolved"][0]["source_optics"] == OPTICS
                for content in result["batches"].values())
+    assert digest(encode(packaged_clusters)) == cluster_hash
+
+
+def first_difference(expected, actual, path=""):
+    """Exact diagnostic only; never a tolerance or acceptance decision."""
+    if type(expected) is not type(actual):
+        return {"path": path, "expected_type": type(expected).__name__, "actual_type": type(actual).__name__}
+    if isinstance(expected, dict):
+        if expected.keys() != actual.keys():
+            return {"path": path, "expected_keys": sorted(expected), "actual_keys": sorted(actual)}
+        pairs = ((str(key), expected[key], actual[key]) for key in sorted(expected))
+    elif isinstance(expected, list):
+        if len(expected) != len(actual):
+            return {"path": path, "expected_length": len(expected), "actual_length": len(actual)}
+        pairs = ((str(index), left, right) for index, (left, right) in enumerate(zip(expected, actual)))
+    elif encode(expected) != encode(actual):
+        result = {"path": path, "expected": expected, "actual": actual}
+        if isinstance(expected, float):
+            result.update(expected_hex=expected.hex(), actual_hex=actual.hex())
+        return result
+    else:
+        return None
+    for token, left, right in pairs:
+        result = first_difference(left, right, path + "/" + token)
+        if result is not None:
+            return result
+    return None
+
+
+@pytest.mark.parametrize("source", ["original_exclusion", "retained_selection"])
+def test_native_replay_requires_exact_retained_fingerprint(public_configuration, retained_selection, capsys, source):
+    if source == "original_exclusion":
+        config, expected_hash = public_configuration
+        retained = None
+        assert expected_hash == "769bb018ea2f3eb7f7d8ea650f84e6764bb103d5467779bca7d13754051863f2"
+        assert digest(encode(config)) == "839fdb57bbc251fd50e2388589869f08af86ae9c9c2bc1866a91b82aee28a2d7"
+    else:
+        config, retained = retained_selection
+        expected_hash = digest(encode(retained))
+    native = history.generate_cohort(config)
+    actual_hash = digest(encode(native["clusters"]))
+    if actual_hash == expected_hash:
+        result = reconstruct(config, expected_hash)
+        assert result["clusters_sha256"] == expected_hash
+        assert result["base_occurrences"] == 12
+        assert not result["historical_closure_established"] and not result["execution_admitted"]
+    else:
+        with pytest.raises(ValueError, match=f"expected {expected_hash}, actual {actual_hash}"):
+            reconstruct(config, expected_hash)
+    # Keep cross-platform byte mismatches visible in hosted logs even when the
+    # required refusal succeeds. A passed contract test is not a replay success.
+    diagnostic = {"historical_replay": source, "expected_sha256": expected_hash,
+                  "actual_sha256": actual_hash, "exact_replay": actual_hash == expected_hash,
+                  "first_difference": None if retained is None else first_difference(retained, native["clusters"])}
+    with capsys.disabled():
+        print(json.dumps(diagnostic, sort_keys=True))
+
+
+def test_regeneration_mismatch_never_packages(retained_selection, monkeypatch):
+    config, clusters = retained_selection
+    native = {"clusters": clusters, "base_count": 12,
+              "configuration_sha256": digest(encode(config))}
+    monkeypatch.setattr(history, "generate_cohort", lambda _: native)
+    monkeypatch.setattr(history, "compile_exposure_history", lambda *a, **k: pytest.fail("Mismatch produced batches"))
+    with pytest.raises(ValueError, match=f"expected {'0' * 64}, actual {digest(encode(clusters))}"):
+        reconstruct(config, "0" * 64)
+
+
+def test_one_ulp_change_is_refused_before_batch_packaging(retained_selection, monkeypatch):
+    import math
+    config, clusters = retained_selection
+    expected_hash = digest(encode(clusters))
+    vector = clusters[0]["members"][0]["truth_opd_nm"]
+    vector[0] = math.nextafter(vector[0], math.inf)
+    monkeypatch.setattr(history, "compile_exposure_history", lambda *a, **k: pytest.fail("Mismatch produced batches"))
+    with pytest.raises(ValueError, match=f"expected {expected_hash}, actual {digest(encode(clusters))}"):
+        history.package_public_cohort(encode(config), encode(clusters), history_id="public_original",
+            expected_configuration_sha256=digest(encode(config)), expected_clusters_sha256=expected_hash)
+
+
+@pytest.mark.parametrize("change", ["empty", "object", "no_identity", "no_primary", "no_vector", "nonfinite"])
+def test_invalid_retained_records_are_refused(retained_selection, change):
+    config, clusters = retained_selection
+    if change == "empty":
+        clusters = []
+    elif change == "object":
+        clusters = {}
+    elif change == "no_identity":
+        del clusters[0]["base_wavefront_id"]
+    elif change == "no_primary":
+        clusters[0]["members"] = []
+    elif change == "no_vector":
+        del clusters[0]["members"][0]["truth_opd_nm"]
+    else:
+        clusters[0]["members"][0]["truth_opd_nm"][0] = "NaN"
+    with pytest.raises(ValueError):
+        package(config, clusters)
+
+
+def test_authentic_cohorts_cannot_be_cross_paired(public_configuration, retained_selection):
+    development_config, _ = public_configuration
+    _, selection_clusters = retained_selection
+    with pytest.raises(ValueError, match="cluster identity differs from configuration"):
+        package(development_config, selection_clusters)
+
+
+@pytest.mark.parametrize("change", ["missing", "duplicate", "index_bool", "stratum", "base_label"])
+def test_retained_cluster_inventory_matches_configuration(retained_selection, change):
+    config, clusters = retained_selection
+    if change == "missing":
+        clusters.pop()
+    elif change == "duplicate":
+        clusters[-1] = clusters[0]
+    elif change == "index_bool":
+        clusters[0]["base_index"] = False
+    elif change == "stratum":
+        clusters[0]["stratum_id"] = "unrecorded"
+    else:
+        clusters[0]["base_wavefront_id"] = "another_cohort:high:000000"
+    with pytest.raises(ValueError, match="cluster (count|identity) differs from configuration"):
+        package(config, clusters)
+
+
+def test_retained_cluster_input_uses_existing_json_bound(retained_selection, monkeypatch):
+    config, clusters = retained_selection
+    monkeypatch.setattr(history, "generate_cohort", lambda _: pytest.fail("Oversize source reached sampler"))
+    with pytest.raises(ValueError):
+        history.package_public_cohort(encode(config), b" " * 1_048_577, history_id="public_original",
+            expected_configuration_sha256=digest(encode(config)), expected_clusters_sha256=digest(encode(clusters)))
 
 
 @pytest.mark.parametrize("kind", ["reserved", "bad_split", "configuration_digest", "oversize"])

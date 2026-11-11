@@ -127,28 +127,48 @@ currently admit public development execution only.
 input to historical exclusion review, not a declaration that the full past
 exposure history is known or that a future cohort is independent.
 
-For a previously published development or selection cohort, reconstruct its
-full-precision records using independently retained fingerprints:
+For a previously published development or selection cohort, prefer the original
+full-precision cluster records and independently retained fingerprints:
 
 ```python
-from probebench.exposure_history import reconstruct_public_cohort
+from probebench.exposure_history import package_public_cohort
 
-reconstructed = reconstruct_public_cohort(
+packaged = package_public_cohort(
     public_configuration_bytes,
+    original_clusters_json_bytes,
     history_id="published_cohort",
     expected_configuration_sha256=retained_configuration_fingerprint,
     expected_clusters_sha256=retained_clusters_fingerprint,
 )
 ```
 
-The configuration fingerprint uses the existing canonical cohort convention.
-The original configuration bytes are also hashed and retained in each returned
-batch. The helper invokes the existing deterministic sampler, then requires the
-exact retained cluster fingerprint before returning usable batches. Reserved
-splits and changed configuration fingerprints are refused before sampling.
-It draws no new key, simulates no camera and writes no file. Reconstruction is
-numerical work and needs external duration, memory and storage supervision.
-Caller-supplied hashes are not authentication or proof of earlier publication.
+`original_clusters_json_bytes` is the retained JSON cluster array. The helper
+checks both canonical fingerprints before packaging; it constructs no optics and
+invokes no sampler. Each input retains the existing 1 MiB JSON byte and structural
+bounds. Larger retained histories use the exposure-batch interface directly.
+The original configuration bytes and supplied cluster bytes receive separate
+byte hashes; all cluster values are preserved when partitioned into batches.
+Declared stratum counts and every cohort/stratum/index identity must match.
+Independent provenance must also establish that these records used this optical
+configuration: matching labels alone cannot authenticate physical normalization.
+
+When the original records are unavailable, `reconstruct_public_cohort` accepts the
+same arguments except `original_clusters_json_bytes` and invokes the existing
+sampler. It returns batches **only** if the regenerated cluster fingerprint matches
+exactly. Source, seeds and package versions alone do not ensure bitwise replay:
+floating-point linear algebra can differ across platforms and numerical libraries.
+A changed final bit is refused, even if the difference is physically negligible.
+The error reports the expected and actual hashes. Do not replace a historical
+fingerprint with the current machine's hash or round coefficients to make it pass.
+Use the original records or reproduce the original numerical environment; until
+then that historical source remains unresolved.
+
+Reserved splits and changed configuration fingerprints are refused before
+sampling. Neither helper draws a new key, simulates a camera or writes a file.
+Reconstruction is numerical work and needs external duration, memory and storage
+supervision. Caller-supplied hashes are not authentication or proof of earlier
+publication. Portable tests package retained records and check strict rejection;
+a passing runtime-contract test does not mean a historical replay succeeded.
 
 Each primary base occurrence retains its identity, full cluster record and source
 pupil normalization. Checking its direct and conjugate orbit also excludes its
@@ -172,7 +192,7 @@ Before checking a candidate, independently declare **all** required batches:
 ```
 
 The digest placeholder is illustrative and is rejected by the API. The returned
-`inventory_bytes` from reconstruction covers that one cohort only. It must not be
+`inventory_bytes` from either helper covers that one cohort only. It must not be
 mistaken for the independently reviewed whole history. Include fixture and alias
 batches, other cohorts, and known occurrences from failed or partial prior runs.
 A base ID alone cannot supply missing coefficients or physical normalization.

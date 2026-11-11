@@ -9,7 +9,7 @@ from __future__ import annotations
 import hashlib
 
 from . import exposure_registry as registry
-from .cohorts import MAX_BASES, generate_cohort
+from .cohorts import MAX_BASES, _identifier, generate_cohort
 from .comparison_contract import _digest, canonical_bytes, parse_json
 from .qualification import canonical_hash
 
@@ -30,16 +30,8 @@ def _tolerance(value):
     return value
 
 
-def reconstruct_public_cohort(configuration_bytes, *, history_id,
-                              expected_configuration_sha256, expected_clusters_sha256):
-    """Replay an already-public configuration into full-precision exposure batches.
-
-    Expected digests must come from independently reviewed retained provenance;
-    caller-supplied hashes alone do not prove that a cohort was previously public.
-    Configuration fingerprints use the existing canonical cohort convention.
-    This has numerical cost and requires external resource admission. No keys,
-    files, detector frames, prospective cohorts or execution tokens are created.
-    """
+def _configuration(configuration_bytes, history_id, expected_configuration_sha256,
+                   expected_clusters_sha256):
     registry._label(history_id)
     if len(history_id) > 64:
         raise ValueError("Historical source label exceeds its bound")
@@ -53,14 +45,95 @@ def reconstruct_public_cohort(configuration_bytes, *, history_id,
         raise ValueError("Only previously exposed development or selection cohorts can be reconstructed")
     if canonical_hash(config) != expected_configuration_sha256:
         raise ValueError("Historical configuration fingerprint differs")
-    tolerance = _tolerance(spec.get("overlap_tolerance_nm"))
+    _tolerance(spec.get("overlap_tolerance_nm"))
+    return config
+
+
+def reconstruct_public_cohort(configuration_bytes, *, history_id,
+                              expected_configuration_sha256, expected_clusters_sha256):
+    """Regenerate public records only when their retained fingerprint matches exactly.
+
+    Floating-point linear algebra is runtime dependent. Equal source, seeds and
+    package versions do not guarantee bitwise replay across platforms. Any hash
+    mismatch refuses all batches; no numerical tolerance or replacement applies.
+    Use package_public_cohort when the original full-precision records survive.
+    Reconstruction requires external numerical resource admission.
+    """
+    config = _configuration(configuration_bytes, history_id, expected_configuration_sha256,
+                            expected_clusters_sha256)
     cohort = generate_cohort(config)
     clusters = cohort["clusters"]
     if (type(clusters) is not list or not 1 <= len(clusters) <= MAX_BASES
             or cohort["base_count"] != len(clusters)
-            or cohort["configuration_sha256"] != expected_configuration_sha256
-            or canonical_hash(clusters) != expected_clusters_sha256):
-        raise ValueError("Historical cluster fingerprint or count differs")
+            or cohort["configuration_sha256"] != expected_configuration_sha256):
+        raise ValueError("Historical cluster count or configuration differs")
+    return _package(configuration_bytes, config, clusters, history_id,
+                    expected_configuration_sha256, expected_clusters_sha256)
+
+
+def package_public_cohort(configuration_bytes, clusters_bytes, *, history_id,
+                          expected_configuration_sha256, expected_clusters_sha256):
+    """Package original public JSON records without regenerating any wavefront.
+
+    Both canonical fingerprints must come from independently reviewed retained
+    provenance; caller-supplied hashes do not authenticate earlier publication.
+    Common bounded-JSON limits apply to each input. Larger retained histories
+    use the existing exposure-batch interface. No optics or RNG is constructed.
+    """
+    config = _configuration(configuration_bytes, history_id, expected_configuration_sha256,
+                            expected_clusters_sha256)
+    clusters = parse_json(clusters_bytes)
+    result = _package(configuration_bytes, config, clusters, history_id,
+                      expected_configuration_sha256, expected_clusters_sha256)
+    result["clusters_bytes_sha256"] = _sha(clusters_bytes)
+    return result
+
+
+def _associate_clusters(config, clusters):
+    """Check declared cohort identities without recreating optical normalization."""
+    spec = config["specification"]
+    cohort_id = _identifier(spec.get("cohort_id"))
+    registry._optics(spec.get("optics"))
+    strata = spec.get("strata")
+    if type(strata) is not list or not 1 <= len(strata) <= MAX_BASES:
+        raise ValueError("Historical strata exceed their count bound")
+    names, expected = set(), set()
+    for stratum in strata:
+        registry._keys(stratum, {"id", "rms_min_nm", "rms_max_nm", "base_count"})
+        name, count = _identifier(stratum["id"]), stratum["base_count"]
+        if (name in names or type(count) is not int or count < 1
+                or len(expected) + count > MAX_BASES):
+            raise ValueError("Historical stratum identity or count differs")
+        names.add(name)
+        expected.update((name, index) for index in range(count))
+    if len(clusters) != len(expected):
+        raise ValueError("Historical cluster count differs from configuration")
+    for cluster in clusters:
+        registry._keys(cluster, {"base_wavefront_id", "stratum_id", "base_index",
+                                 "sampled_rms_nm", "physical_rms_nm", "members"})
+        name, index = cluster["stratum_id"], cluster["base_index"]
+        if (type(name) is not str or type(index) is not int or (name, index) not in expected
+                or cluster["base_wavefront_id"] != f"{cohort_id}:{name}:{index:06d}"):
+            raise ValueError("Historical cluster identity differs from configuration")
+        expected.remove((name, index))
+
+
+def _package(configuration_bytes, config, clusters, history_id,
+             expected_configuration_sha256, expected_clusters_sha256):
+    if type(clusters) is not list or not 1 <= len(clusters) <= MAX_BASES:
+        raise ValueError("Historical cluster count exceeds its bound")
+    actual_clusters_sha256 = canonical_hash(clusters)
+    if actual_clusters_sha256 != expected_clusters_sha256:
+        raise ValueError("Historical cluster fingerprint differs: "
+                         f"expected {expected_clusters_sha256}, actual {actual_clusters_sha256}")
+    _associate_clusters(config, clusters)
+    for cluster in clusters:
+        registry._label(cluster["base_wavefront_id"])
+        members = cluster.get("members")
+        if (type(members) is not list or not members or type(members[0]) is not dict
+                or members[0].get("member") != "primary"):
+            raise ValueError("Historical cluster has no primary member")
+    tolerance = config["specification"]["overlap_tolerance_nm"]
     # Retain every occurrence, including repeated IDs in other historical sources.
     # Checking each primary against both conjugate orbits also excludes its partner.
     entries, batches = [], {}
