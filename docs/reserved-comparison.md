@@ -148,3 +148,7 @@ function is supplied. Tests use invented commitments and make no scientific
 preregistration claim. A future acquisition gate must independently establish
 source/runtime, exposure-history closure, physical separation, resources and
 the retained chronology before allowing any reserved generation.
+
+The [public-fixture pilot and exposure batches](public-comparison-pilot.md)
+support development qualification and source-bound historical checks. They do
+not admit reserved execution or establish complete historical exclusion closure.
