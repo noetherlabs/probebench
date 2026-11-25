@@ -140,10 +140,28 @@ def test_oversized_requests_are_rejected_before_connecting(local_service):
 @pytest.mark.parametrize("track,expected_generations",[("direct_action",2),("tool_assisted",3)])
 def test_http_fixture_and_optical_process_end_to_end(local_service,tmp_path,track,expected_generations):
     from probebench import model_agent
-    from test_model_agent import FixtureModel
+    from probebench.agent_protocol import PROTOCOL, encode_message
     api,state = local_service
-    fixture = FixtureModel(api.config["model"])
-    state["chat_callback"] = lambda payload: base64.b64decode(fixture.request("/api/chat",payload)["body_base64"])
+    calls = []
+    def chat_response(payload):
+        """Deterministic public-action fixture, not model-performance evidence."""
+        calls.append(deepcopy(payload))
+        visible = json.loads(payload["messages"][-1]["content"])
+        action = {"protocol":PROTOCOL,"request_id":visible["request_id"],
+                  "action":"submit","command_opd_nm":[0]*6}
+        if visible["observation"]["index"] == 0 and "expose" in visible["available_actions"]:
+            action.update(action="expose",command_opd_nm=[80,0,0,0,0,0])
+        elif visible["track"] == "tool_assisted":
+            if visible["tool_result"] is not None:
+                action["command_opd_nm"] = visible["tool_result"]["estimated_opd_nm"]
+            elif "estimate" in visible["available_actions"]:
+                action["action"] = "estimate"
+                del action["command_opd_nm"]
+        return encode_message({"model":api.config["model"],"done":True,"done_reason":"stop",
+            "message":{"role":"assistant","content":json.dumps(action,indent=2),
+                       "thinking":"fixture-only reasoning"},
+            "prompt_eval_count":100,"eval_count":30,"total_duration":1000}).encode()
+    state["chat_callback"] = chat_response
     session = json.loads((Path(__file__).parents[1]/"configs/agent_protocol_development.json").read_text())
     session["optics"]["pupil_pixels"] = 12
     session.update(track=track,max_tool_calls=0 if track == "direct_action" else 3,
@@ -155,7 +173,7 @@ def test_http_fixture_and_optical_process_end_to_end(local_service,tmp_path,trac
     assert model_agent.verify(root) == result
     assert model_agent.run(root,api.config,session,resume=True) == result
     assert len(state["calls"]) == before
-    for payload in fixture.calls:
+    for payload in calls:
         assert payload["stream"] is False and payload["format"] == "json"
         assert payload["options"] == api.config["options"]
         assert "hidden_opd_nm" not in json.dumps(payload)

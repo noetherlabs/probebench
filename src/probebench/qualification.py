@@ -17,6 +17,7 @@ from .environment import Episode, EpisodeConfig, Observation
 from .estimation import estimate_phase_mle
 from .optics import OpticalModel, OpticsConfig, coefficients
 from .policies import estimate_phase
+from .provenance import identity_fields, verify_identity
 from .run import digest, source_inventory, verify_files, write_json
 
 
@@ -173,8 +174,10 @@ def verify_qualification(root):
     if manifest.get("schema") != 1 or manifest.get("purpose") != "estimator_development_qualification":
         raise ValueError("Unknown qualification schema")
     study = json.loads((root / "study.json").read_text())
+    verify_identity(study)
+    verify_identity(manifest)
     for relative, expected in study["source_sha256"].items():
-        if digest(root / "source" / relative) != expected:
+        if manifest["files"].get("source/" + relative) != expected:
             raise ValueError("Source snapshot disagrees with study binding")
     binding = canonical_hash(study)
     cases = cases_for(study["configuration"])
@@ -198,6 +201,7 @@ def run_qualification(root, config_path, resume=False, limit_cases=None):
     runtime = {"python": platform.python_version(), "numpy": np.__version__, "scipy": scipy.__version__,
                "platform": platform.platform(), "machine": platform.machine()}
     study = {"configuration": config, "source_sha256": sources, "runtime": runtime}
+    study.update(identity_fields(sources))
     root.parent.mkdir(parents=True, exist_ok=True)
     raw_bytes = len(cases)*len(config["acquisition_commands_nm"])*(config["optics"]["pupil_pixels"]
                  *config["optics"]["oversampling"])**2*8
@@ -280,6 +284,7 @@ def run_qualification(root, config_path, resume=False, limit_cases=None):
         rows = _report(root, records, config)
         manifest = {"schema": 1, "purpose": "estimator_development_qualification",
             "case_count": len(cases), "fit_count": len(rows), "source_sha256": sources,
+            **identity_fields(sources),
             "files": {str(p.relative_to(root)): digest(p) for p in sorted(root.rglob("*")) if p.is_file()}}
         # A previous interrupted publication buffer is not scientific evidence.
         manifest["files"].pop("manifest.json.pending", None)

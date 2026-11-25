@@ -11,6 +11,7 @@ import numpy as np
 import scipy
 
 from .qualification import publish_json
+from .provenance import identity_fields, verify_identity
 from .run import digest, source_inventory, verify_files
 
 
@@ -27,6 +28,7 @@ def study_directory(root, configuration, raw_bytes, resume=False, *, resume_cred
     root = Path(root)
     source_root, sources = source_inventory()
     study = {"configuration": configuration, "source_sha256": sources,
+        **identity_fields(sources),
         "runtime": {"python": platform.python_version(), "numpy": np.__version__,
                     "scipy": scipy.__version__, "platform": platform.platform(),
                     "machine": platform.machine()}}
@@ -81,6 +83,7 @@ def publish_manifest(root, study, purpose, **counts):
     if source_inventory()[1] != study["source_sha256"]:
         raise RuntimeError("Source changed during acquisition; final publication refused")
     manifest = {"schema": 1, "purpose": purpose, "source_sha256": study["source_sha256"],
+        **identity_fields(study["source_sha256"]),
         **counts, "files": {str(p.relative_to(root)): digest(p) for p in sorted(root.rglob("*"))
                            if p.is_file() and p.name != "manifest.json.pending"}}
     if any(name.endswith(".pending") for name in manifest["files"]):
@@ -105,4 +108,6 @@ def verify_study(root, purpose):
             raise ValueError("Unsafe source snapshot path")
         if manifest["files"][artifact] != expected:
             raise ValueError("Source snapshot mismatch")
+    verify_identity(study)
+    verify_identity(manifest)
     return manifest, study

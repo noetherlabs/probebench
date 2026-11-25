@@ -205,10 +205,18 @@ def test_real_stdio_process_exposes_no_evaluator_fields(config,tmp_path,track):
     path = tmp_path/"config.json"
     path.write_text(json.dumps(config))
     root = Path(__file__).parents[1]
-    environment = {**os.environ,"PYTHONPATH":str(root/"src"),"PYTHONDONTWRITEBYTECODE":"1"}
-    child = subprocess.Popen([sys.executable,"-m","probebench.agent_session","--config",str(path),
+    installed_python = os.environ.get("PROBEBENCH_INSTALLED_PYTHON")
+    if installed_python:
+        environment = {key:value for key,value in os.environ.items()
+                       if key not in {"PYTHONPATH","PYTHONHOME"}}
+        environment["PYTHONDONTWRITEBYTECODE"] = "1"
+        command, cwd = [installed_python,"-I","-B"], tmp_path
+    else:
+        environment = {**os.environ,"PYTHONPATH":str(root/"src"),"PYTHONDONTWRITEBYTECODE":"1"}
+        command, cwd = [sys.executable], root
+    child = subprocess.Popen([*command,"-m","probebench.agent_session","--config",str(path),
         "--output",str(tmp_path/"run")],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
-        env=environment,cwd=root)
+        env=environment,cwd=cwd)
     try:
         def receive():
             assert select.select([child.stdout],[],[],20)[0],"Missing protocol response"

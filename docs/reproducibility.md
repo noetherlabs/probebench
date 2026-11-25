@@ -1,9 +1,33 @@
 # Reproducing the retained experiments
 
 Each completed experiment includes configuration, numerical runtime versions, a source
-snapshot, raw measurements, evaluator records and a SHA-256 file manifest. The dependency
-lock is included with the snapshot. Retained datasets are deterministic simulation
+snapshot, raw measurements, evaluator records and a SHA-256 file manifest. Source-checkout
+runs include the dependency lock when present. Retained datasets are deterministic simulation
 fixtures; they are not reserved evaluation cohorts.
+
+## Installed-package provenance
+
+Development runners also support ordinary wheel installations. Their source identity
+uses `probebench.installed-wheel-record/1`: the actual `probebench/` files and owning
+distribution metadata are checked against the installed wheel's `RECORD`, then retained
+under `source/`. Missing, altered, additional or ambiguous distribution files are refused.
+Interpreter bytecode caches are excluded.
+
+The installer origin (`direct_url.json`) can contain private filesystem paths or
+authenticated URLs. Its bytes are verified locally but excluded from retained snapshots;
+the unchanged `RECORD` retains its digest, and `omitted_metadata_content` declares the
+exclusion. No redacted content is substituted under an original hash.
+
+This identity establishes local file consistency. It does not authenticate the package
+publisher, identify the original wheel archive, assert a clean Git checkout or retain
+a complete dependency lock. Keep the original wheel and the environment's dependency
+lock separately when those are required for reproduction.
+
+Source-checkout snapshots retain their existing `src/probebench/` paths and record
+format. A wheel installation is a distinct source identity: it cannot resume a source
+checkout's run or satisfy frozen comparison protocols that require the original source
+paths and hashes. Existing exposure-history and reserved-cohort admission requirements
+remain in force.
 
 ## Archived-source reproduction
 
@@ -66,7 +90,7 @@ version that requires diverse commands for every fit.
 
 | Artifact | Contents |
 | --- | --- |
-| `source/` | Exact Python source, package metadata and dependency lock |
+| `source/` | Python source and package metadata; checkout snapshots also retain the available dependency lock |
 | `configuration.json` or `study.json` | Optical parameters, experiment design, seeds and source/runtime identity |
 | `observations/`, `acquisitions/` or `frames/` | Raw signed detector arrays and applied calibration commands |
 | `evaluator/` or `cases/` | Latent simulated state, estimated corrections, metrics and fit diagnostics |

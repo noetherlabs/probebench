@@ -16,6 +16,7 @@ import scipy
 from .environment import Episode, EpisodeConfig
 from .optics import MODES, OpticalModel, OpticsConfig
 from .policies import Policy
+from . import provenance
 
 METHODS = ("no_action", "random_probe", "coordinate_search", "phase_diversity")
 # These exposed development fixtures must never be relabelled held-out results.
@@ -38,12 +39,7 @@ def write_json(path, value):
 
 
 def source_inventory():
-    package = Path(__file__).resolve().parent
-    root = package.parent.parent
-    paths = sorted(package.glob("*.py")) + [root / "pyproject.toml"]
-    if (root / "uv.lock").exists():
-        paths.append(root / "uv.lock")
-    return root, {str(p.relative_to(root)): digest(p) for p in paths}
+    return provenance.source_inventory(Path(__file__).resolve().parent)
 
 
 def verify_files(path):
@@ -73,6 +69,10 @@ def verify_run(path):
     manifest = verify_files(root)
     if manifest.get("schema") != 1 or manifest.get("purpose") != "development_only":
         raise ValueError("Unknown run schema or purpose")
+    provenance.verify_identity(manifest)
+    for relative, expected in manifest["source_sha256"].items():
+        if manifest["files"].get("source/" + relative) != expected:
+            raise ValueError("Source snapshot disagrees with development manifest")
     summaries = json.loads((root / "summary.json").read_text())
     if len(summaries) != manifest["episodes"]:
         raise ValueError("Incomplete episode summary")
@@ -145,7 +145,7 @@ def write_development_report(run_root):
         "reserved final evaluation under a different label.", "",
         "See configuration.json for fixtures, mode order, wavelength, limits and budgets;",
         "observations/ for controller-visible records; evaluator/ for private truth and",
-        "per-exposure quality; source/ for the executed source snapshot and lockfile; and",
+        "per-exposure quality; source/ for executed project files and build metadata; and",
         "manifest.json for content hashes and runtime versions.", "",
         "Prior work: [pupil-diversity phase ambiguity](https://arxiv.org/abs/1607.01776) and",
         "[active perception by optical agents](https://arxiv.org/html/2609.32918v1).",
@@ -215,6 +215,7 @@ def run_development(output):
                     "scipy": scipy.__version__, "platform": platform.platform(),
                     "machine": platform.machine()},
         "source_sha256": sources,
+        **provenance.identity_fields(sources),
         "files": {str(p.relative_to(output)): digest(p) for p in sorted(output.rglob("*")) if p.is_file()},
         "limitations": ["development fixtures only", "no agent or API calls",
             "least-squares estimator not yet statistically qualified",
